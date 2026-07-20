@@ -142,13 +142,13 @@ function Home() {
           <SectionTitle title="CATEGORIAS" subtitle="Portas, Janelas, Esquadrias, Pisos e muito mais..." />
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mt-6">
             {categorias.map((c) => (
-              <a key={c.id} href="#" className="group text-center block">
+              <Link key={c.id} to="/categoria/$slug" params={{ slug: c.slug }} className="group text-center block">
                 <div className="aspect-square rounded-full overflow-hidden bg-neutral-100 border border-neutral-200 group-hover:border-[#A7144C] transition-all">
                   {c.image_url && <img src={c.image_url} alt={c.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />}
                 </div>
                 <div className="mt-3 font-semibold text-sm tracking-wide">{c.name}</div>
                 <div className="text-xs text-neutral-500">{c.product_count} produtos</div>
-              </a>
+              </Link>
             ))}
           </div>
         </section>
