@@ -82,24 +82,26 @@ function BuscaPage() {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {products.map((p) => (
-              <Link
-                key={p.id}
-                to="/produto/$slug"
-                params={{ slug: p.slug }}
-                className="bg-white rounded-lg border hover:shadow-md transition-shadow overflow-hidden group"
-              >
-                <div className="aspect-square bg-neutral-100 overflow-hidden">
-                  <SupabaseImage
-                    src={p.main_image ?? undefined}
-                    alt={p.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                  />
+              <div key={p.id} className="bg-white rounded-lg border hover:shadow-md transition-shadow overflow-hidden group flex flex-col">
+                <Link to="/produto/$slug" params={{ slug: p.slug }} className="block">
+                  <div className="aspect-square bg-neutral-100 overflow-hidden">
+                    <SupabaseImage
+                      src={p.main_image ?? undefined}
+                      alt={p.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                    />
+                  </div>
+                  <div className="p-3">
+                    <h3 className="text-sm font-semibold text-neutral-800 line-clamp-2 min-h-[40px]">{p.name}</h3>
+                    <p className="mt-2 text-[#A7144C] font-bold">{p.price}</p>
+                  </div>
+                </Link>
+                <div className="px-3 pb-3 mt-auto">
+                  <Link to="/checkout" search={{ slug: p.slug, qty: 1 }} className="block w-full text-center bg-[#A7144C] hover:bg-[#8b1140] text-white text-xs font-semibold py-2 rounded-full">
+                    SOLICITAR ORÇAMENTO
+                  </Link>
                 </div>
-                <div className="p-3">
-                  <h3 className="text-sm font-semibold text-neutral-800 line-clamp-2 min-h-[40px]">{p.name}</h3>
-                  <p className="mt-2 text-[#A7144C] font-bold">{p.price}</p>
-                </div>
-              </Link>
+              </div>
             ))}
           </div>
         )}
