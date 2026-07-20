@@ -2,9 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import {
-  Search, User, Heart, ShoppingCart, Phone, Mail, MapPin,
-  Facebook, Instagram, Truck, CreditCard, ShieldCheck,
+  Heart, Phone, Mail, MapPin, Facebook, Instagram,
   MessageCircle, Star, ChevronRight, ChevronLeft, Image as ImageIcon,
+  Truck, CreditCard, ShieldCheck, Mail as MailIcon,
 } from "lucide-react";
 import {
   fetchCategories, fetchProducts, fetchBanners, fetchSettings, proxyImg, productPath,
@@ -12,6 +12,10 @@ import {
 } from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
+
+const ORANGE = "#f59318";
+const NAVY = "#0b1a34";
+const IMG = "https://idealmadeiras.com.br/wp-content/uploads";
 
 function HeroCarousel({ banners }: { banners: Banner[] }) {
   const [idx, setIdx] = useState(0);
@@ -28,38 +32,25 @@ function HeroCarousel({ banners }: { banners: Banner[] }) {
   const current = banners[idx];
 
   return (
-    <section className="mx-auto max-w-7xl px-4 py-6">
-      <div className="relative overflow-hidden rounded-lg group">
+    <section className="mx-auto max-w-7xl px-4 pt-4">
+      <div className="relative overflow-hidden group">
         <a href={current.link_url ?? "#"} className="block">
           <SupabaseImage src={current.image_url} alt={current.title ?? ""} className="w-full h-auto" />
         </a>
         {total > 1 && (
           <>
-            <button
-              type="button"
-              aria-label="Anterior"
-              onClick={() => go(idx - 1)}
-              className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-neutral-800 rounded-full p-2 shadow opacity-0 group-hover:opacity-100 transition-opacity"
-            >
+            <button type="button" aria-label="Anterior" onClick={() => go(idx - 1)}
+              className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-neutral-800 rounded-full p-2 shadow opacity-0 group-hover:opacity-100 transition-opacity">
               <ChevronLeft size={22} />
             </button>
-            <button
-              type="button"
-              aria-label="Próximo"
-              onClick={() => go(idx + 1)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-neutral-800 rounded-full p-2 shadow opacity-0 group-hover:opacity-100 transition-opacity"
-            >
+            <button type="button" aria-label="Próximo" onClick={() => go(idx + 1)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-neutral-800 rounded-full p-2 shadow opacity-0 group-hover:opacity-100 transition-opacity">
               <ChevronRight size={22} />
             </button>
             <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2">
               {banners.map((_, i) => (
-                <button
-                  key={i}
-                  type="button"
-                  aria-label={`Ir para banner ${i + 1}`}
-                  onClick={() => setIdx(i)}
-                  className={`h-2.5 rounded-full transition-all ${i === idx ? "w-6 bg-white" : "w-2.5 bg-white/60 hover:bg-white/90"}`}
-                />
+                <button key={i} type="button" aria-label={`Ir para banner ${i + 1}`} onClick={() => setIdx(i)}
+                  className={`h-2.5 rounded-full transition-all ${i === idx ? "w-6 bg-white" : "w-2.5 bg-white/60 hover:bg-white/90"}`} />
               ))}
             </div>
           </>
@@ -68,8 +59,6 @@ function HeroCarousel({ banners }: { banners: Banner[] }) {
     </section>
   );
 }
-
-const IMG = "https://idealmadeiras.com.br/wp-content/uploads";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -86,16 +75,15 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const ambientes = [
-  { nome: "Sala de Estar", img: `${IMG}/2024/11/SALA-DE-ESTAR-795x600.webp` },
-  { nome: "Cozinha", img: `${IMG}/2024/11/COZINHA-795x600.webp` },
+const depoimentos = [
+  { nome: "Anderson Vieira", texto: "A Ideal Madeiras é um ótimo lugar para comprar os primeiros portas da minha casa. Tive ótimas orientações." },
+  { nome: "Eliana Sampaio", texto: "Segunda vez que faço compras de portas nessa loja, nunca mudaram o atendimento, sempre nos atenderam bem." },
+  { nome: "Sandra Karito", texto: "Gisele fez um atendimento nota MIL. Voltarei a comprar com certeza." },
 ];
 
-const depoimentos = [
-  { nome: "Ana Paula", texto: "Atendimento excelente e portas de altíssima qualidade. Entregaram no prazo e tudo perfeito!" },
-  { nome: "Carlos Eduardo", texto: "Comprei uma pivotante e o resultado ficou incrível. Recomendo demais a Ideal Madeiras." },
-  { nome: "Juliana", texto: "Gisele fez um atendimento nota MIL. Voltarei a comprar com certeza." },
-  { nome: "Marcos", texto: "Preços justos, produtos de primeira e uma equipe muito atenciosa. Super indico." },
+const dicas = [
+  { tag: "DICAS IMPORTANTES", titulo: "25 Ideias para Comprar a Porta Certa para sua Casa ou Escritório", img: `${IMG}/2024/11/SALA-DE-ESTAR-795x600.webp` },
+  { tag: "DICAS IMPORTANTES", titulo: "15 Tipos de Madeiras que darão Charme e Requinte para sua Casa ou Escritório", img: `${IMG}/2024/11/COZINHA-795x600.webp` },
 ];
 
 function Home() {
@@ -104,48 +92,56 @@ function Home() {
   const { data: banners = [] } = useQuery({ queryKey: ["banners"], queryFn: fetchBanners });
   const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
 
-  const destaques = produtos.filter((p) => p.featured);
-  const maisVistos = produtos.filter((p) => p.most_viewed);
+  const destaques = produtos.filter((p) => p.featured).slice(0, 5);
+  const grade = produtos.filter((p) => !p.featured).slice(0, 12);
+  const maisPopular = produtos.find((p) => p.most_viewed) || produtos[0];
   const oferta = produtos.find((p) => p.old_price);
-  
+  const novos = produtos.slice(0, 5);
+  const indicados = produtos.slice(5, 10);
+  const campeoes = produtos.filter((p) => p.most_viewed).slice(0, 5);
+
   const whatsapp = settings?.site.whatsapp || "5511942000000";
-  const topbarText = settings?.topbar.texto || "FRETE GRÁTIS PARA TODOS OS PEDIDOS ACIMA DE R$ 150";
   const telefone = settings?.site.telefone || "(11) 4200-0000";
   const email = settings?.site.email || "contato@idealmadeiras.com.br";
-  const endereco = settings?.site.endereco || "Av. Exemplo, 1000 — São Paulo/SP";
   const whatsappHref = `https://wa.me/${whatsapp.replace(/\D/g, "")}`;
 
   return (
     <div className="min-h-screen bg-white text-neutral-900">
       <SiteHeader />
 
-
-      {/* Hero banner carousel */}
+      {/* Hero */}
       <HeroCarousel banners={banners} />
 
-      {/* Benefits */}
-      <section className="mx-auto max-w-7xl px-4 pb-8 grid grid-cols-2 md:grid-cols-4 gap-3">
-        {[
-          { icon: Truck, t: "Entrega Rápida", s: "Para todo o Brasil" },
-          { icon: CreditCard, t: "Parcelamento", s: "Em até 12x sem juros" },
-          { icon: ShieldCheck, t: "Compra Segura", s: "Site 100% protegido" },
-          { icon: MessageCircle, t: "Atendimento", s: "Consultores especializados" },
-        ].map(({ icon: Icon, t, s }) => (
-          <div key={t} className="flex items-center gap-3 border border-neutral-200 rounded-lg p-4 hover:border-[#A7144C] transition-colors">
-            <Icon className="text-[#A7144C] shrink-0" size={32} />
-            <div><div className="font-semibold text-sm">{t}</div><div className="text-xs text-neutral-500">{s}</div></div>
-          </div>
-        ))}
+      {/* Benefits pill row (like reference) */}
+      <section className="mx-auto max-w-7xl px-4 py-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 bg-neutral-100/70 rounded-xl p-4">
+          {[
+            { icon: MessageCircle, t: "COMPRE PELO WHATSAPP", s: "Clique aqui e fale agora mesmo", href: whatsappHref },
+            { icon: Truck, t: "ENTREGA SUPER RÁPIDA", s: "Rápido e garantido" },
+            { icon: CreditCard, t: "10x PARCELAMENTO DIRETO", s: "Sem juros no cartão" },
+            { icon: ShieldCheck, t: "COMPRA 100% SEGURA", s: "Ambiente de alto nível" },
+          ].map(({ icon: Icon, t, s, href }) => (
+            <a key={t} href={href ?? "#"} className="flex items-center gap-3 bg-white rounded-full pl-3 pr-5 py-3 shadow-sm hover:shadow-md transition-shadow">
+              <span className="w-10 h-10 rounded-full grid place-items-center text-white shrink-0" style={{ background: ORANGE }}>
+                <Icon size={20} />
+              </span>
+              <div className="min-w-0">
+                <div className="text-[11px] font-extrabold tracking-wide truncate">{t}</div>
+                <div className="text-[10px] text-neutral-500 truncate">{s}</div>
+              </div>
+            </a>
+          ))}
+        </div>
       </section>
 
       {/* Categorias */}
       {categorias.length > 0 && (
-        <section className="mx-auto max-w-7xl px-4 py-10">
-          <SectionTitle title="CATEGORIAS" subtitle="Portas, Janelas, Esquadrias, Pisos e muito mais..." />
+        <section className="mx-auto max-w-7xl px-4 py-6">
+          <SectionTitle title="CATEGORIAS" />
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mt-6">
-            {categorias.filter((c) => !c.parent_id).map((c) => (
+            {categorias.filter((c) => !c.parent_id).slice(0, 12).map((c) => (
               <Link key={c.id} to="/categoria/$slug" params={{ slug: c.slug }} className="group text-center block">
-                <div className="aspect-square rounded-full overflow-hidden bg-neutral-100 border border-neutral-200 group-hover:border-[#A7144C] transition-all grid place-items-center">
+                <div className="aspect-square rounded-full overflow-hidden bg-neutral-100 border border-neutral-200 group-hover:border-[color:var(--o)] transition-all grid place-items-center" style={{ ["--o" as any]: ORANGE }}>
                   {c.image_url ? (
                     <SupabaseImage src={c.image_url} alt={c.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
                   ) : (
@@ -163,140 +159,257 @@ function Home() {
       {/* Produtos em Destaque */}
       {destaques.length > 0 && (
         <section className="mx-auto max-w-7xl px-4 py-6">
-          <SectionTitle title="PRODUTOS EM DESTAQUE" subtitle="Os mais procurados da nossa loja" />
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-6">
-            {destaques.map((p) => <ProductCard key={p.id} p={p} />)}
+          <SectionTitle title="PRODUTOS EM DESTAQUE" />
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-6">
+            {destaques.map((p) => <ProductCard key={p.id} p={p} showOferta />)}
           </div>
         </section>
       )}
 
-      {/* Banner duplo ambientes */}
-      <section className="mx-auto max-w-7xl px-4 py-10 grid md:grid-cols-2 gap-5">
-        {ambientes.map((a) => (
-          <a key={a.nome} href="#" className="relative block overflow-hidden rounded-lg group">
-            <img src={proxyImg(a.img)} alt={a.nome} className="w-full h-72 object-cover group-hover:scale-105 transition-transform duration-500" />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-            <div className="absolute bottom-6 left-6 text-white">
-              <div className="text-xs uppercase tracking-widest opacity-90">Inspire-se</div>
-              <div className="text-2xl font-bold">{a.nome}</div>
-              <div className="mt-2 inline-flex items-center gap-1 text-sm border-b border-white/70 pb-0.5">
-                Ver produtos <ChevronRight size={16} />
+      {/* Veja aqui alguns dos nossos produtos */}
+      {grade.length > 0 && (
+        <section className="mx-auto max-w-7xl px-4 py-6">
+          <div className="text-center">
+            <h3 className="text-lg md:text-xl font-bold">Veja Aqui Alguns dos Nossos Produtos</h3>
+            <p className="text-xs text-neutral-500">Portas, Janelas, Esquadrias, Pisos e muito mais...</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
+            {grade.map((p) => <ProductCard key={p.id} p={p} />)}
+          </div>
+        </section>
+      )}
+
+      {/* Google reviews strip */}
+      <section className="mx-auto max-w-7xl px-4 py-8">
+        <div className="grid md:grid-cols-4 gap-4 items-stretch bg-neutral-50 rounded-lg border border-neutral-200 p-4">
+          <div className="text-center md:border-r md:border-neutral-200 md:pr-4 flex flex-col justify-center">
+            <div className="text-lg font-bold">Excelente</div>
+            <div className="flex justify-center text-yellow-400 my-1">
+              {[...Array(5)].map((_, i) => <Star key={i} size={18} fill="currentColor" />)}
+            </div>
+            <div className="text-xs text-neutral-500">Com base em <b>84 avaliações</b></div>
+            <div className="mt-2 text-[11px] text-neutral-400">Google</div>
+          </div>
+          {depoimentos.map((d) => (
+            <div key={d.nome} className="bg-white rounded-md p-3 border border-neutral-200">
+              <div className="flex items-center gap-2 mb-1">
+                <span className="w-7 h-7 rounded-full grid place-items-center text-white text-xs font-bold" style={{ background: "#4285F4" }}>
+                  {d.nome.charAt(0)}
+                </span>
+                <div>
+                  <div className="text-xs font-semibold">{d.nome}</div>
+                  <div className="text-[10px] text-neutral-400">1 ano atrás</div>
+                </div>
+                <span className="ml-auto text-[10px] font-bold text-neutral-400">G</span>
+              </div>
+              <div className="flex text-yellow-400 mb-1">
+                {[...Array(5)].map((_, i) => <Star key={i} size={11} fill="currentColor" />)}
+              </div>
+              <p className="text-[11px] text-neutral-700 leading-relaxed line-clamp-4">{d.texto}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* O Mais Popular + ambiente */}
+      {maisPopular && (
+        <section className="mx-auto max-w-7xl px-4 py-6">
+          <div className="grid md:grid-cols-[2fr_1fr] gap-4 items-stretch">
+            <div className="relative rounded-lg overflow-hidden bg-neutral-100">
+              <img src={proxyImg(`${IMG}/2024/11/SALA-DE-ESTAR-795x600.webp`)} alt="Ambiente" className="w-full h-full object-cover" />
+            </div>
+            <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-5 flex flex-col">
+              <div className="text-xs font-bold tracking-widest text-neutral-500">O MAIS POPULAR</div>
+              <p className="text-[11px] text-neutral-500 mt-1">Este item é o mais popular em nosso Catálogo</p>
+              <div className="my-4 aspect-square bg-white rounded overflow-hidden grid place-items-center">
+                {maisPopular.main_image && <SupabaseImage src={maisPopular.main_image} alt={maisPopular.name} className="w-full h-full object-contain p-4" />}
+              </div>
+              <div className="text-sm font-semibold text-center">{maisPopular.name}</div>
+              <div className="text-center mt-2 font-bold" style={{ color: ORANGE }}>{maisPopular.price}</div>
+              <Link to={productPath(maisPopular, categorias) as any} className="mt-3 block text-center border border-neutral-800 text-neutral-800 hover:bg-neutral-800 hover:text-white text-xs font-semibold py-2 rounded transition-colors">
+                QUICK VIEW
+              </Link>
+              <button className="mt-2 text-xs text-neutral-500 hover:text-neutral-800 inline-flex items-center justify-center gap-1">
+                <Heart size={12} /> Adicionar à Lista de Desejos
+              </button>
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Oferta Incrível */}
+      {oferta && (
+        <section className="mx-auto max-w-7xl px-4 py-6">
+          <div className="grid md:grid-cols-[1fr_2fr] gap-4 items-stretch">
+            <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-5 flex flex-col">
+              <div className="text-xs font-bold tracking-widest text-neutral-500">OFERTA INCRÍVEL</div>
+              <p className="text-[11px] text-neutral-500 mt-1">Este produto está numa Oferta Incrível</p>
+              <div className="my-4 aspect-square bg-white rounded overflow-hidden grid place-items-center">
+                {oferta.main_image && <SupabaseImage src={oferta.main_image} alt={oferta.name} className="w-full h-full object-contain p-4" />}
+              </div>
+              <div className="text-sm font-semibold text-center">{oferta.name}</div>
+              <div className="flex items-center justify-center gap-2 mt-2">
+                {oferta.old_price && <span className="text-xs text-neutral-400 line-through">{oferta.old_price}</span>}
+                <span className="font-bold" style={{ color: ORANGE }}>{oferta.price}</span>
+              </div>
+              <Link to={productPath(oferta, categorias) as any} className="mt-3 block text-center border border-neutral-800 text-neutral-800 hover:bg-neutral-800 hover:text-white text-xs font-semibold py-2 rounded transition-colors">
+                QUICK VIEW
+              </Link>
+              <button className="mt-2 text-xs text-neutral-500 hover:text-neutral-800 inline-flex items-center justify-center gap-1">
+                <Heart size={12} /> Adicionar à Lista de Desejos
+              </button>
+            </div>
+            <div className="relative rounded-lg overflow-hidden bg-neutral-100">
+              <img src={proxyImg(`${IMG}/2024/11/COZINHA-795x600.webp`)} alt="Ambiente" className="w-full h-full object-cover" />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Aprenda com a Ideal - dual dark banners */}
+      <section className="mx-auto max-w-7xl px-4 py-6 grid md:grid-cols-2 gap-4">
+        {[
+          { t: "Como manter o acabamento de suas Portas em perfeito estado", img: `${IMG}/2024/11/SALA-DE-ESTAR-795x600.webp` },
+          { t: "Formas de Lubrificar Janelas e Venezianas de forma eficiente e sem perdas", img: `${IMG}/2024/11/COZINHA-795x600.webp` },
+        ].map((b) => (
+          <a key={b.t} href="#" className="relative block overflow-hidden rounded-lg group h-40">
+            <img src={proxyImg(b.img)} alt="" className="absolute inset-0 w-full h-full object-cover" />
+            <div className="absolute inset-0 bg-black/60" />
+            <div className="relative p-6 text-white h-full flex flex-col justify-center">
+              <div className="text-[10px] font-bold tracking-widest opacity-80">APRENDA COM A IDEAL</div>
+              <div className="text-lg font-bold mt-1 max-w-sm leading-snug">{b.t}</div>
+              <div className="mt-3 inline-flex w-fit items-center gap-1 text-xs font-bold border-b pb-0.5" style={{ borderColor: ORANGE, color: ORANGE }}>
+                LEIA MAIS
               </div>
             </div>
           </a>
         ))}
       </section>
 
-      {/* Oferta Incrível */}
-      {oferta && (
-        <section className="mx-auto max-w-7xl px-4 py-10">
-          <div className="grid md:grid-cols-2 gap-8 items-center bg-neutral-50 rounded-xl p-6 md:p-10 border border-neutral-200">
-            <div className="relative">
-              <span className="absolute top-2 left-2 z-10 bg-[#A7144C] text-white text-xs font-bold px-3 py-1 rounded-full">OFERTA INCRÍVEL</span>
-              {oferta.main_image && <SupabaseImage src={oferta.main_image} alt={oferta.name} className="w-full max-w-md mx-auto" />}
-            </div>
-            <div>
-              <p className="text-sm text-[#A7144C] font-semibold uppercase tracking-widest">Este produto está numa Oferta Incrível</p>
-              <h3 className="text-3xl font-bold mt-2">{oferta.name}</h3>
-              <div className="mt-4 flex items-baseline gap-3">
-                {oferta.old_price && <span className="text-neutral-400 line-through">{oferta.old_price}</span>}
-                <span className="text-3xl font-bold text-[#A7144C]">{oferta.price}</span>
+      {/* Ofertas Especiais tabs + dicas */}
+      <section className="mx-auto max-w-7xl px-4 py-6 grid md:grid-cols-[1fr_3fr] gap-4">
+        <div className="space-y-4">
+          {dicas.map((d) => (
+            <a key={d.titulo} href="#" className="relative block overflow-hidden rounded-lg h-40 group">
+              <img src={proxyImg(d.img)} alt="" className="absolute inset-0 w-full h-full object-cover" />
+              <div className="absolute inset-0 bg-black/60" />
+              <div className="relative p-4 h-full flex flex-col justify-center text-white">
+                <div className="text-[10px] font-bold tracking-widest opacity-80">{d.tag}</div>
+                <div className="text-sm font-bold leading-snug mt-1">{d.titulo}</div>
+                <div className="mt-2 text-[10px] font-bold" style={{ color: ORANGE }}>Aprenda como escolher hoje</div>
               </div>
-              <Link to={productPath(oferta, categorias) as any} className="mt-6 inline-block bg-[#A7144C] hover:bg-[#8b1140] text-white px-8 py-3 rounded-full font-semibold text-sm tracking-wide transition-colors">
-                SOLICITAR ORÇAMENTO
-              </Link>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Mais Vistos */}
-      {maisVistos.length > 0 && (
-        <section className="mx-auto max-w-7xl px-4 py-6">
-          <SectionTitle title="MAIS VISTOS" subtitle="Este item é o mais popular em nosso Catálogo" />
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-5 mt-6">
-            {maisVistos.map((p) => <ProductCard key={p.id} p={p} compact />)}
-          </div>
-        </section>
-      )}
-
-      {/* Depoimentos */}
-      <section className="bg-neutral-50 mt-12 py-14">
-        <div className="mx-auto max-w-7xl px-4">
-          <SectionTitle title="O QUE DIZEM NOSSOS CLIENTES" subtitle="Publicado em Google" center />
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5 mt-8">
-            {depoimentos.map((d) => (
-              <div key={d.nome} className="bg-white rounded-lg p-6 border border-neutral-200">
-                <div className="flex text-yellow-400 mb-3">{[...Array(5)].map((_, i) => <Star key={i} size={16} fill="currentColor" />)}</div>
-                <p className="text-sm text-neutral-700 leading-relaxed">"{d.texto}"</p>
-                <div className="mt-4 pt-4 border-t border-neutral-100">
-                  <div className="font-semibold text-sm">{d.nome}</div>
-                  <div className="text-xs text-neutral-500">Publicado em Google</div>
-                </div>
-              </div>
-            ))}
-          </div>
+            </a>
+          ))}
+        </div>
+        <div>
+          <OfertasTabs novos={novos} indicados={indicados} campeoes={campeoes} categorias={categorias} />
         </div>
       </section>
 
-      {/* Newsletter */}
-      <section className="bg-[#A7144C] text-white py-10">
-        <div className="mx-auto max-w-7xl px-4 grid md:grid-cols-2 gap-6 items-center">
-          <div>
-            <h3 className="text-2xl font-bold">Receba nossas ofertas</h3>
-            <p className="text-sm opacity-90 mt-1">Cadastre seu e-mail e ganhe descontos exclusivos.</p>
+      {/* Conheça as nossas lojas */}
+      <section className="mx-auto max-w-7xl px-4 py-6">
+        <a href="#" className="relative block rounded-lg overflow-hidden h-48 group">
+          <div className="absolute inset-0" style={{ background: NAVY }} />
+          <img src={proxyImg(`${IMG}/2024/11/SALA-DE-ESTAR-795x600.webp`)} alt="" className="absolute inset-0 w-full h-full object-cover opacity-30" />
+          <div className="relative h-full grid place-items-center text-center text-white">
+            <div>
+              <div className="text-2xl md:text-3xl font-bold tracking-wide">CONHEÇA AS NOSSAS LOJAS</div>
+              <button className="mt-4 px-6 py-2 rounded-full font-bold text-xs text-white" style={{ background: ORANGE }}>CLIQUE AQUI</button>
+            </div>
+          </div>
+        </a>
+      </section>
+
+      {/* Instagram strip */}
+      <section className="mx-auto max-w-7xl px-4 py-6">
+        <div className="text-center mb-4">
+          <div className="w-14 h-14 rounded-full mx-auto grid place-items-center text-white" style={{ background: "linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888)" }}>
+            <Instagram size={26} />
+          </div>
+          <div className="text-sm font-semibold mt-2">idealmadeiras.oficial</div>
+          <div className="text-xs text-neutral-500">987 posts · 2.5K followers</div>
+          <a href="https://instagram.com/idealmadeiras.oficial" target="_blank" rel="noreferrer" className="inline-block mt-2 text-xs bg-[#1DA1F2] text-white px-3 py-1 rounded font-semibold">
+            Follow
+          </a>
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {[1,2,3,4].map((i) => (
+            <a key={i} href="#" className="block aspect-square rounded overflow-hidden bg-neutral-100">
+              <img src={proxyImg(`${IMG}/2024/11/${i % 2 === 0 ? "COZINHA" : "SALA-DE-ESTAR"}-795x600.webp`)} alt="" className="w-full h-full object-cover hover:scale-105 transition-transform" />
+            </a>
+          ))}
+        </div>
+      </section>
+
+      {/* Newsletter yellow */}
+      <section className="py-8" style={{ background: ORANGE }}>
+        <div className="mx-auto max-w-7xl px-4 grid md:grid-cols-2 gap-4 items-center text-white">
+          <div className="flex items-center gap-3">
+            <MailIcon size={40} />
+            <div>
+              <div className="text-lg font-bold">Receba nossas novidades primeiro</div>
+              <div className="text-xs opacity-90">Inscreva seu e-mail e receba ofertas e descontos exclusivos!</div>
+            </div>
           </div>
           <form className="flex gap-2">
-            <input type="email" placeholder="Seu melhor e-mail" className="flex-1 px-4 py-3 rounded-md text-neutral-900 outline-none" />
+            <input type="email" placeholder="Seu melhor e-mail" className="flex-1 px-4 py-3 rounded-md text-neutral-900 outline-none bg-white" />
             <button className="bg-neutral-900 hover:bg-black px-6 rounded-md font-semibold text-sm">CADASTRAR</button>
           </form>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-neutral-900 text-neutral-300">
+      <footer className="text-neutral-300" style={{ background: NAVY }}>
         <div className="mx-auto max-w-7xl px-4 py-12 grid md:grid-cols-4 gap-8">
           <div>
-            <img src={proxyImg(`${IMG}/2024/11/logo-ideal-madeiras-mobile.png`)} alt="Lojas Ideal Madeiras" className="h-16 w-auto brightness-0 invert mb-4" />
-            <p className="text-sm leading-relaxed">Loja de Portas, Janelas, Ferragens e Fechaduras em São Paulo. Qualidade e o melhor atendimento do mercado.</p>
-            <div className="flex gap-3 mt-4">
-              <a href="#" className="w-9 h-9 grid place-items-center rounded-full border border-neutral-700 hover:bg-[#A7144C] hover:border-[#A7144C]"><Facebook size={16} /></a>
-              <a href="#" className="w-9 h-9 grid place-items-center rounded-full border border-neutral-700 hover:bg-[#A7144C] hover:border-[#A7144C]"><Instagram size={16} /></a>
-            </div>
+            <img src={proxyImg(`${IMG}/2024/09/logo-ideal-madeiras.png`)} alt="Lojas Ideal Madeiras" className="h-16 w-auto mb-4" />
+            <p className="text-xs leading-relaxed">A Maior Loja de Portas, Janelas e Pisos de Madeira da Rua do Gasômetro. Venha Conferir nossas Show Room e conhecer a maior coleção de Madeiras da região de São Paulo.</p>
+            <a href={whatsappHref} className="mt-4 inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1eb659] text-white px-4 py-2 rounded font-semibold text-xs">
+              <MessageCircle size={14} /> COMPRE PELO WHATSAPP AGORA
+            </a>
           </div>
           <div>
-            <h4 className="text-white font-semibold mb-4">Institucional</h4>
-            <ul className="space-y-2 text-sm">
-              <li><a href="#" className="hover:text-white">Quem somos</a></li>
-              <li><a href="#" className="hover:text-white">Nossas lojas</a></li>
-              <li><a href="#" className="hover:text-white">Política de privacidade</a></li>
-              <li><a href="#" className="hover:text-white">Trocas e devoluções</a></li>
+            <h4 className="text-white font-bold mb-4 tracking-wide">MENU PRINCIPAL</h4>
+            <ul className="space-y-2 text-xs">
+              <li><a href="#" className="hover:text-white">Sobre a Ideal Madeiras</a></li>
+              <li><a href="#" className="hover:text-white">Nossas Lojas</a></li>
+              <li><a href="#" className="hover:text-white">Formas de Pagamento</a></li>
+              <li><a href="#" className="hover:text-white">Segurança e Privacidade</a></li>
+              <li><a href="#" className="hover:text-white">Trocas e Devoluções</a></li>
             </ul>
           </div>
           <div>
-            <h4 className="text-white font-semibold mb-4">Categorias</h4>
-            <ul className="space-y-2 text-sm">
-              {categorias.map((c) => (
-                <li key={c.id}>
-                  <Link to="/categoria/$slug" params={{ slug: c.slug }} className="hover:text-white">
-                    {c.name.charAt(0) + c.name.slice(1).toLowerCase()}
-                  </Link>
-                </li>
-              ))}
+            <h4 className="text-white font-bold mb-4 tracking-wide">ATENDIMENTO</h4>
+            <ul className="space-y-2 text-xs">
+              <li className="flex items-center gap-2"><Mail size={12} style={{ color: ORANGE }} /> {email}</li>
+              <li className="flex items-center gap-2"><Phone size={12} style={{ color: ORANGE }} /> {telefone}</li>
+              <li><a href="#" className="hover:text-white">Meus Pedidos</a></li>
+              <li><a href="#" className="hover:text-white">Cadastre-se</a></li>
             </ul>
           </div>
-          <div>
-            <h4 className="text-white font-semibold mb-4">Contato</h4>
-            <ul className="space-y-3 text-sm">
-              <li className="flex items-start gap-2"><MapPin size={16} className="mt-0.5 text-[#A7144C]" /><span>{endereco}</span></li>
-              <li className="flex items-center gap-2"><Phone size={16} className="text-[#A7144C]" /> {telefone}</li>
-              <li className="flex items-center gap-2"><Mail size={16} className="text-[#A7144C]" /> {email}</li>
-              <li className="flex items-center gap-2"><MessageCircle size={16} className="text-[#A7144C]" /> WhatsApp</li>
-            </ul>
+          <div className="space-y-4 text-xs">
+            {[
+              { l: "LOJA 1", e: "Rua do Gasômetro, 350 - Brás - SP", t: "(11) 99400-0507" },
+              { l: "LOJA 2", e: "Rua do Gasômetro, 284 - Brás - SP", t: "(11) 3326-3197" },
+              { l: "LOJA 3", e: "Rua do Gasômetro, 306 - Brás - SP", t: "(11) 98801-3370" },
+            ].map((l) => (
+              <div key={l.l}>
+                <div className="text-white font-bold">{l.l}</div>
+                <div className="flex items-start gap-1 mt-1"><MapPin size={11} className="mt-0.5" style={{ color: ORANGE }} /><span>{l.e}</span></div>
+                <div className="flex items-center gap-1 mt-1"><MessageCircle size={11} style={{ color: ORANGE }} /><span>{l.t}</span></div>
+              </div>
+            ))}
           </div>
         </div>
-        <div className="border-t border-neutral-800">
-          <div className="mx-auto max-w-7xl px-4 py-4 text-xs text-neutral-500 text-center">
+        <div className="border-t border-white/10">
+          <div className="mx-auto max-w-7xl px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] text-neutral-400">
+            <div>Formas de Pagamento aceitas</div>
+            <div className="flex gap-3 opacity-70">
+              <a href="#" aria-label="Facebook" className="hover:text-white"><Facebook size={14} /></a>
+              <a href="#" aria-label="Instagram" className="hover:text-white"><Instagram size={14} /></a>
+            </div>
+          </div>
+          <div className="mx-auto max-w-7xl px-4 pb-4 text-center text-[10px] text-neutral-500">
             © {new Date().getFullYear()} Lojas Ideal Madeiras. Todos os direitos reservados.
           </div>
         </div>
@@ -309,46 +422,64 @@ function Home() {
   );
 }
 
-function SectionTitle({ title, subtitle, center }: { title: string; subtitle?: string; center?: boolean }) {
+function OfertasTabs({ novos, indicados, campeoes, categorias }: { novos: Product[]; indicados: Product[]; campeoes: Product[]; categorias: any[] }) {
+  const [tab, setTab] = useState<"novos" | "indicados" | "campeoes">("novos");
+  const lista = tab === "novos" ? novos : tab === "indicados" ? indicados : campeoes;
   return (
-    <div className={center ? "text-center" : ""}>
-      <h2 className="text-2xl md:text-3xl font-bold tracking-tight">
-        <span className="text-[#A7144C]">{title.split(" ")[0]}</span>{" "}
-        {title.split(" ").slice(1).join(" ")}
-      </h2>
-      {subtitle && <p className="text-sm text-neutral-500 mt-1">{subtitle}</p>}
-      <div className={`mt-3 h-0.5 w-16 bg-[#A7144C] ${center ? "mx-auto" : ""}`} />
+    <div>
+      <div className="flex items-center gap-6 border-b border-neutral-200 mb-4">
+        <div className="text-sm font-bold uppercase tracking-wide mr-auto">Ofertas Especiais</div>
+        {(["novos", "indicados", "campeoes"] as const).map((k) => (
+          <button key={k} onClick={() => setTab(k)}
+            className={`pb-2 text-xs font-bold uppercase tracking-wide ${tab === k ? "border-b-2" : "text-neutral-500"}`}
+            style={tab === k ? { color: ORANGE, borderColor: ORANGE } : undefined}>
+            {k === "campeoes" ? "Campeões de Vendas" : k}
+          </button>
+        ))}
+      </div>
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3">
+        {lista.map((p) => <ProductCard key={p.id} p={p} compact categorias={categorias} />)}
+      </div>
     </div>
   );
 }
 
-function ProductCard({ p, compact }: { p: Product; compact?: boolean }) {
-  const { data: categorias = [] } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
+function SectionTitle({ title, subtitle, center }: { title: string; subtitle?: string; center?: boolean }) {
+  return (
+    <div className={`border-b border-neutral-200 pb-2 ${center ? "text-center" : ""}`}>
+      <h2 className="text-lg md:text-xl font-bold tracking-wide inline-block relative">
+        {title}
+        <span className="absolute left-0 -bottom-[9px] h-0.5 w-full" style={{ background: ORANGE }} />
+      </h2>
+      {subtitle && <p className="text-xs text-neutral-500 mt-1">{subtitle}</p>}
+    </div>
+  );
+}
+
+function ProductCard({ p, compact, showOferta, categorias: catsProp }: { p: Product; compact?: boolean; showOferta?: boolean; categorias?: any[] }) {
+  const { data: categoriasQ = [] } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories, enabled: !catsProp });
+  const categorias = catsProp ?? categoriasQ;
   const to = productPath(p, categorias) as any;
   return (
-    <div className="group border border-neutral-200 rounded-lg overflow-hidden bg-white hover:shadow-lg hover:border-[#A7144C]/40 transition-all flex flex-col">
+    <div className="group border border-neutral-200 rounded overflow-hidden bg-white hover:shadow-lg transition-all flex flex-col">
       <Link to={to} className="block">
         <div className="relative aspect-square bg-neutral-50 overflow-hidden">
+          {showOferta && p.old_price && (
+            <span className="absolute top-2 left-2 z-10 text-white text-[10px] font-bold px-2 py-1" style={{ background: ORANGE }}>OFERTA</span>
+          )}
           {p.main_image && (
             <SupabaseImage src={p.main_image} alt={p.name} loading="lazy" className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300" />
           )}
-          <span aria-label="Adicionar à Lista de Desejos" className="absolute top-2 right-2 w-9 h-9 rounded-full bg-white/90 grid place-items-center text-neutral-600 hover:text-[#A7144C] shadow">
-            <Heart size={16} />
+          <span aria-label="Adicionar à Lista de Desejos" className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 grid place-items-center text-neutral-600 hover:text-[color:var(--o)] shadow" style={{ ["--o" as any]: ORANGE }}>
+            <Heart size={14} />
           </span>
         </div>
-        <div className={`p-4 ${compact ? "text-center" : ""}`}>
-          <h3 className={`font-medium text-neutral-800 ${compact ? "text-xs" : "text-sm"} line-clamp-2 min-h-[2.5rem]`}>{p.name}</h3>
-          <div className="mt-2 flex text-yellow-400 justify-start">
-            {[...Array(5)].map((_, i) => <Star key={i} size={12} fill="currentColor" />)}
-          </div>
-          <div className={`mt-2 font-bold text-[#A7144C] ${compact ? "text-sm" : "text-lg"}`}>{p.price}</div>
+        <div className={`p-3 ${compact ? "text-center" : ""}`}>
+          <h3 className={`font-medium text-neutral-800 ${compact ? "text-[11px]" : "text-xs"} line-clamp-2 min-h-[2.25rem]`}>{p.name}</h3>
+          
+          <div className={`mt-1 font-bold ${compact ? "text-xs" : "text-sm"}`} style={{ color: ORANGE }}>{p.price}</div>
         </div>
       </Link>
-      <div className="px-4 pb-4 mt-auto">
-        <Link to={to} className="block w-full text-center bg-[#A7144C] hover:bg-[#8b1140] text-white text-xs font-semibold py-2.5 rounded-full">
-          SOLICITAR ORÇAMENTO
-        </Link>
-      </div>
     </div>
   );
 }
