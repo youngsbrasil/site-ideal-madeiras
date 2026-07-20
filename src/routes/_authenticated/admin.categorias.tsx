@@ -10,6 +10,7 @@ import { Card } from "@/components/ui/card";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { ImageInput } from "@/components/admin/ImageInput";
+import { SupabaseImage } from "@/components/SupabaseImage";
 
 export const Route = createFileRoute("/_authenticated/admin/categorias")({
   component: CategoriesAdmin,
@@ -73,7 +74,7 @@ function CategoriesAdmin() {
           <tbody>
             {items.map((c) => (
               <tr key={c.id} className="border-b hover:bg-slate-50">
-                <td className="p-3">{c.image_url && <img src={c.image_url} alt="" className="w-12 h-12 object-cover rounded" />}</td>
+                <td className="p-3">{c.image_url && <SupabaseImage src={c.image_url} alt="" className="w-12 h-12 object-cover rounded" />}</td>
                 <td className="p-3 font-medium">{c.name}</td>
                 <td className="p-3 text-sm text-muted-foreground">{c.slug}</td>
                 <td className="p-3">{c.product_count}</td>

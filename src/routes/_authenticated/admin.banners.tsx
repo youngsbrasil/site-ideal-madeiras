@@ -10,6 +10,7 @@ import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import { ImageInput } from "@/components/admin/ImageInput";
+import { SupabaseImage } from "@/components/SupabaseImage";
 import type { Banner } from "@/lib/site-data";
 
 export const Route = createFileRoute("/_authenticated/admin/banners")({
@@ -31,9 +32,10 @@ function BannersAdmin() {
 
   const save = useMutation({
     mutationFn: async (f: Partial<Banner>) => {
+      if (!f.image_url?.trim()) throw new Error("Informe ou envie uma imagem para o banner.");
       const payload: any = {
         title: f.title || null, subtitle: f.subtitle || null,
-        image_url: f.image_url, link_url: f.link_url || null,
+        image_url: f.image_url.trim(), link_url: f.link_url || null,
         sort_order: f.sort_order ?? 0, active: f.active ?? true,
       };
       if (f.id) {
@@ -66,7 +68,7 @@ function BannersAdmin() {
       <div className="grid gap-4">
         {items.map((b) => (
           <Card key={b.id} className="p-4 flex gap-4 items-center">
-            <img src={b.image_url} alt="" className="w-32 h-20 object-cover rounded" />
+            <SupabaseImage src={b.image_url} alt="" className="w-32 h-20 object-cover rounded" />
             <div className="flex-1">
               <div className="font-medium">{b.title ?? "(sem título)"}</div>
               <div className="text-sm text-muted-foreground">{b.subtitle}</div>
@@ -101,7 +103,7 @@ function BannersAdmin() {
           )}
           <DialogFooter>
             <Button variant="outline" onClick={() => setEditing(null)}>Cancelar</Button>
-            <Button onClick={() => editing && save.mutate(editing)} disabled={save.isPending}>Salvar</Button>
+            <Button onClick={() => editing && save.mutate(editing)} disabled={save.isPending}>{save.isPending ? "Salvando..." : "Salvar"}</Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

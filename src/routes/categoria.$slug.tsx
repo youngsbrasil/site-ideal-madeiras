@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Heart, ChevronRight, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchCategories, fetchSettings, proxyImg, type Product, type Category } from "@/lib/site-data";
+import { SupabaseImage } from "@/components/SupabaseImage";
 
 export const Route = createFileRoute("/categoria/$slug")({
   loader: async ({ params }) => {
@@ -125,7 +126,7 @@ function CategoryPage() {
                 >
                   <div className="relative aspect-square bg-neutral-50 overflow-hidden">
                     {p.main_image && (
-                      <img src={proxyImg(p.main_image)} alt={p.name} loading="lazy" className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300" />
+                      <SupabaseImage src={p.main_image} alt={p.name} loading="lazy" className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300" />
                     )}
                     <span className="absolute top-2 right-2 w-9 h-9 rounded-full bg-white/90 grid place-items-center text-neutral-600 shadow">
                       <Heart size={16} />

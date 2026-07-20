@@ -17,6 +17,7 @@ import {
 } from "@/components/ui/select";
 import { Plus, Pencil, Trash2, X } from "lucide-react";
 import { ImageInput } from "@/components/admin/ImageInput";
+import { SupabaseImage } from "@/components/SupabaseImage";
 
 export const Route = createFileRoute("/_authenticated/admin/produtos")({
   component: ProductsAdmin,
@@ -121,7 +122,7 @@ function ProductsAdmin() {
               {filtered.map((p) => (
                 <tr key={p.id} className="border-b hover:bg-slate-50">
                   <td className="p-3">
-                    {p.main_image && <img src={p.main_image} alt="" className="w-12 h-12 object-cover rounded" />}
+                    {p.main_image && <SupabaseImage src={p.main_image} alt="" className="w-12 h-12 object-cover rounded" />}
                   </td>
                   <td className="p-3">
                     <div className="font-medium">{p.name}</div>
