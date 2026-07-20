@@ -4,7 +4,8 @@ import { useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SupabaseImage } from "@/components/SupabaseImage";
-import type { Product, Category } from "@/lib/site-data";
+import { ProductHoverCard } from "@/components/ProductHoverCard";
+import { fetchSettings, type Product, type Category } from "@/lib/site-data";
 
 type BuscaSearch = { q: string; categoria: string };
 
