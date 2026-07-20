@@ -14,6 +14,7 @@ import {
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
 import { ProductHoverCard } from "@/components/ProductHoverCard";
+import { HotspotImage } from "@/components/HotspotImage";
 
 const IMG = "https://idealmadeiras.com.br/wp-content/uploads";
 
@@ -209,9 +210,12 @@ function Home() {
       {/* O MAIS POPULAR */}
       {maisPopular && (
         <section className="mx-auto max-w-6xl px-4 py-8 grid md:grid-cols-[1fr_320px] gap-6 items-stretch">
-          <div className="relative overflow-hidden rounded-lg">
-            <img src={proxyImg(`${IMG}/2024/11/SALA-DE-ESTAR-795x600.webp`)} alt="Ambiente" className="w-full h-full object-cover" />
-          </div>
+          <HotspotImage
+            imageKey="home_popular"
+            src={`${IMG}/2024/11/SALA-DE-ESTAR-795x600.webp`}
+            alt="Ambiente sala"
+            className="min-h-[320px]"
+          />
           <div className="bg-neutral-50 rounded-lg p-6 border border-neutral-200 flex flex-col justify-center">
             <p className="text-sm text-neutral-500">O MAIS POPULAR</p>
             <p className="text-[11px] text-neutral-400 mt-1">Este item é o mais popular em nosso Catálogo</p>
