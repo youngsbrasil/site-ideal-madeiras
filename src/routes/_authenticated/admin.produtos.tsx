@@ -18,6 +18,7 @@ import {
 import { Plus, Pencil, Trash2, X } from "lucide-react";
 import { ImageInput } from "@/components/admin/ImageInput";
 import { SupabaseImage } from "@/components/SupabaseImage";
+import { ProductImportExport } from "@/components/admin/ProductImportExport";
 
 export const Route = createFileRoute("/_authenticated/admin/produtos")({
   component: ProductsAdmin,
