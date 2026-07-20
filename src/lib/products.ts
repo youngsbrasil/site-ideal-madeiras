@@ -21,8 +21,6 @@ function slugify(s: string) {
     .replace(/(^-|-$)/g, "");
 }
 
-const raw: Omit<Product, "slug" | "galeria" | "descricao" | "especificacoes"> &
-  Partial<Pick<Product, "galeria" | "descricao" | "especificacoes">>[] = [] as any;
 
 const base: Array<Omit<Product, "slug" | "galeria" | "descricao" | "especificacoes"> & {
   galeria?: string[];
