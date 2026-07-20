@@ -19,7 +19,6 @@ import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminProdutosRouteImport } from './routes/_authenticated/admin.produtos'
-import { Route as AuthenticatedAdminHotspotsRouteImport } from './routes/_authenticated/admin.hotspots'
 import { Route as AuthenticatedAdminFeedsRouteImport } from './routes/_authenticated/admin.feeds'
 import { Route as AuthenticatedAdminConfiguracoesRouteImport } from './routes/_authenticated/admin.configuracoes'
 import { Route as AuthenticatedAdminCategoriasRouteImport } from './routes/_authenticated/admin.categorias'
@@ -78,12 +77,6 @@ const AuthenticatedAdminProdutosRoute =
     path: '/produtos',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
-const AuthenticatedAdminHotspotsRoute =
-  AuthenticatedAdminHotspotsRouteImport.update({
-    id: '/hotspots',
-    path: '/hotspots',
-    getParentRoute: () => AuthenticatedAdminRoute,
-  } as any)
 const AuthenticatedAdminFeedsRoute = AuthenticatedAdminFeedsRouteImport.update({
   id: '/feeds',
   path: '/feeds',
@@ -135,7 +128,6 @@ export interface FileRoutesByFullPath {
   '/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/admin/feeds': typeof AuthenticatedAdminFeedsRoute
-  '/admin/hotspots': typeof AuthenticatedAdminHotspotsRoute
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/feed/google/csv': typeof ApiPublicFeedGoogleCsvRoute
@@ -153,7 +145,6 @@ export interface FileRoutesByTo {
   '/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/admin/feeds': typeof AuthenticatedAdminFeedsRoute
-  '/admin/hotspots': typeof AuthenticatedAdminHotspotsRoute
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/feed/google/csv': typeof ApiPublicFeedGoogleCsvRoute
@@ -174,7 +165,6 @@ export interface FileRoutesById {
   '/_authenticated/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
   '/_authenticated/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/_authenticated/admin/feeds': typeof AuthenticatedAdminFeedsRoute
-  '/_authenticated/admin/hotspots': typeof AuthenticatedAdminHotspotsRoute
   '/_authenticated/admin/produtos': typeof AuthenticatedAdminProdutosRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/feed/google/csv': typeof ApiPublicFeedGoogleCsvRoute
@@ -195,7 +185,6 @@ export interface FileRouteTypes {
     | '/admin/categorias'
     | '/admin/configuracoes'
     | '/admin/feeds'
-    | '/admin/hotspots'
     | '/admin/produtos'
     | '/admin/'
     | '/api/public/feed/google/csv'
@@ -213,7 +202,6 @@ export interface FileRouteTypes {
     | '/admin/categorias'
     | '/admin/configuracoes'
     | '/admin/feeds'
-    | '/admin/hotspots'
     | '/admin/produtos'
     | '/admin'
     | '/api/public/feed/google/csv'
@@ -233,7 +221,6 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/categorias'
     | '/_authenticated/admin/configuracoes'
     | '/_authenticated/admin/feeds'
-    | '/_authenticated/admin/hotspots'
     | '/_authenticated/admin/produtos'
     | '/_authenticated/admin/'
     | '/api/public/feed/google/csv'
@@ -326,13 +313,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminProdutosRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
-    '/_authenticated/admin/hotspots': {
-      id: '/_authenticated/admin/hotspots'
-      path: '/hotspots'
-      fullPath: '/admin/hotspots'
-      preLoaderRoute: typeof AuthenticatedAdminHotspotsRouteImport
-      parentRoute: typeof AuthenticatedAdminRoute
-    }
     '/_authenticated/admin/feeds': {
       id: '/_authenticated/admin/feeds'
       path: '/feeds'
@@ -390,7 +370,6 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminCategoriasRoute: typeof AuthenticatedAdminCategoriasRoute
   AuthenticatedAdminConfiguracoesRoute: typeof AuthenticatedAdminConfiguracoesRoute
   AuthenticatedAdminFeedsRoute: typeof AuthenticatedAdminFeedsRoute
-  AuthenticatedAdminHotspotsRoute: typeof AuthenticatedAdminHotspotsRoute
   AuthenticatedAdminProdutosRoute: typeof AuthenticatedAdminProdutosRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
@@ -400,7 +379,6 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminCategoriasRoute: AuthenticatedAdminCategoriasRoute,
   AuthenticatedAdminConfiguracoesRoute: AuthenticatedAdminConfiguracoesRoute,
   AuthenticatedAdminFeedsRoute: AuthenticatedAdminFeedsRoute,
-  AuthenticatedAdminHotspotsRoute: AuthenticatedAdminHotspotsRoute,
   AuthenticatedAdminProdutosRoute: AuthenticatedAdminProdutosRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
@@ -434,13 +412,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

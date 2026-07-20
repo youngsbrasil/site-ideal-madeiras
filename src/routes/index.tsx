@@ -13,8 +13,6 @@ import {
 } from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
-import { ProductHoverCard } from "@/components/ProductHoverCard";
-import { HotspotImage } from "@/components/HotspotImage";
 
 const IMG = "https://idealmadeiras.com.br/wp-content/uploads";
 
@@ -210,12 +208,9 @@ function Home() {
       {/* O MAIS POPULAR */}
       {maisPopular && (
         <section className="mx-auto max-w-6xl px-4 py-8 grid md:grid-cols-[1fr_320px] gap-6 items-stretch">
-          <HotspotImage
-            imageKey="home_popular"
-            src={`${IMG}/2024/11/SALA-DE-ESTAR-795x600.webp`}
-            alt="Ambiente sala"
-            className="min-h-[320px]"
-          />
+          <div className="relative overflow-hidden rounded-lg">
+            <img src={proxyImg(`${IMG}/2024/11/SALA-DE-ESTAR-795x600.webp`)} alt="Ambiente" className="w-full h-full object-cover" />
+          </div>
           <div className="bg-neutral-50 rounded-lg p-6 border border-neutral-200 flex flex-col justify-center">
             <p className="text-sm text-neutral-500">O MAIS POPULAR</p>
             <p className="text-[11px] text-neutral-400 mt-1">Este item é o mais popular em nosso Catálogo</p>
@@ -248,12 +243,9 @@ function Home() {
             <Link to="/produto/$slug" params={{ slug: oferta.slug }} className="mt-4 block text-center border border-[#f39200] text-[#f39200] hover:bg-[#f39200] hover:text-white text-xs font-semibold py-2 rounded-full">QUICK VIEW</Link>
             <button className="mt-2 inline-flex items-center justify-center gap-1 text-xs text-neutral-500 hover:text-[#f39200]"><Heart size={12} /> Adicionar à lista de Desejos</button>
           </div>
-          <HotspotImage
-            imageKey="home_oferta"
-            src={`${IMG}/2024/11/COZINHA-795x600.webp`}
-            alt="Ambiente cozinha"
-            className="min-h-[320px]"
-          />
+          <div className="relative overflow-hidden rounded-lg">
+            <img src={proxyImg(`${IMG}/2024/11/COZINHA-795x600.webp`)} alt="Ambiente" className="w-full h-full object-cover" />
+          </div>
         </section>
       )}
 
@@ -436,12 +428,10 @@ function SectionTitle({ title }: { title: string }) {
 
 function ProductCard({ p, compact, showOferta }: { p: Product; compact?: boolean; showOferta?: boolean }) {
   const hasOferta = showOferta && !!p.old_price;
-  const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
-  const whatsapp = settings?.site.whatsapp || "5511942000000";
   return (
-    <div className="group relative border border-neutral-200 rounded-lg overflow-visible bg-white hover:shadow-lg hover:border-[#f39200]/50 transition-all flex flex-col">
+    <div className="group border border-neutral-200 rounded-lg overflow-hidden bg-white hover:shadow-lg hover:border-[#f39200]/50 transition-all flex flex-col">
       <Link to="/produto/$slug" params={{ slug: p.slug }} className="block">
-        <div className="relative aspect-square bg-white overflow-hidden rounded-t-lg">
+        <div className="relative aspect-square bg-white overflow-hidden">
           {hasOferta && (
             <span className="absolute top-2 left-2 z-10 bg-[#c9184a] text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">Oferta</span>
           )}
@@ -464,7 +454,11 @@ function ProductCard({ p, compact, showOferta }: { p: Product; compact?: boolean
           </div>
         </div>
       </Link>
-      <ProductHoverCard product={p} whatsapp={whatsapp} accent="#f39200" category={p.types?.[0]} />
+      <div className="px-3 pb-3 mt-auto">
+        <Link to="/checkout" search={{ slug: p.slug, qty: 1 }} className="block w-full text-center bg-[#f39200] hover:bg-[#e08600] text-white text-[11px] font-bold py-2 rounded-full uppercase">
+          Solicitar Orçamento
+        </Link>
+      </div>
     </div>
   );
 }

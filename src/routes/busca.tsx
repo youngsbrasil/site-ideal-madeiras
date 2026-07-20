@@ -4,8 +4,7 @@ import { useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SupabaseImage } from "@/components/SupabaseImage";
-import { ProductHoverCard } from "@/components/ProductHoverCard";
-import { fetchSettings, type Product, type Category } from "@/lib/site-data";
+import type { Product, Category } from "@/lib/site-data";
 
 type BuscaSearch = { q: string; categoria: string };
 
@@ -52,8 +51,6 @@ function BuscaPage() {
     queryKey: ["search", q, categoria],
     queryFn: () => fetchResults(q, categoria),
   });
-  const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
-  const whatsapp = settings?.site.whatsapp || "5511942000000";
   const { data: cat } = useQuery({
     queryKey: ["category-by-slug", categoria],
     queryFn: async () => {
@@ -85,9 +82,9 @@ function BuscaPage() {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {products.map((p) => (
-              <div key={p.id} className="bg-white rounded-lg border hover:shadow-md transition-shadow overflow-visible group flex flex-col relative">
+              <div key={p.id} className="bg-white rounded-lg border hover:shadow-md transition-shadow overflow-hidden group flex flex-col">
                 <Link to="/produto/$slug" params={{ slug: p.slug }} className="block">
-                  <div className="aspect-square bg-neutral-100 overflow-hidden rounded-t-lg">
+                  <div className="aspect-square bg-neutral-100 overflow-hidden">
                     <SupabaseImage
                       src={p.main_image ?? undefined}
                       alt={p.name}
@@ -99,7 +96,11 @@ function BuscaPage() {
                     <p className="mt-2 text-[#A7144C] font-bold">{p.price}</p>
                   </div>
                 </Link>
-                <ProductHoverCard product={p} whatsapp={whatsapp} accent="#A7144C" category={cat?.name} />
+                <div className="px-3 pb-3 mt-auto">
+                  <Link to="/checkout" search={{ slug: p.slug, qty: 1 }} className="block w-full text-center bg-[#A7144C] hover:bg-[#8b1140] text-white text-xs font-semibold py-2 rounded-full">
+                    SOLICITAR ORÇAMENTO
+                  </Link>
+                </div>
               </div>
             ))}
           </div>

@@ -6,7 +6,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { fetchCategories, fetchSettings, type Product, type Category } from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
-import { ProductHoverCard } from "@/components/ProductHoverCard";
 
 export const Route = createFileRoute("/categoria/$slug")({
   loader: async ({ params }) => {
@@ -320,10 +319,10 @@ function CategoryPage() {
                 {paged.map((p) => (
                   <div
                     key={p.id}
-                    className="group relative border border-neutral-200 rounded-lg overflow-visible bg-white hover:shadow-lg hover:border-[#A7144C]/40 transition-all flex flex-col"
+                    className="group border border-neutral-200 rounded-lg overflow-hidden bg-white hover:shadow-lg hover:border-[#A7144C]/40 transition-all flex flex-col"
                   >
                     <Link to="/produto/$slug" params={{ slug: p.slug }} className="block">
-                      <div className="relative aspect-square bg-neutral-50 overflow-hidden rounded-t-lg">
+                      <div className="relative aspect-square bg-neutral-50 overflow-hidden">
                         {p.main_image && (
                           <SupabaseImage src={p.main_image} alt={p.name} loading="lazy" className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300" />
                         )}
@@ -339,7 +338,11 @@ function CategoryPage() {
                         </div>
                       </div>
                     </Link>
-                    <ProductHoverCard product={p} whatsapp={whatsapp} accent="#A7144C" category={category?.name} />
+                    <div className="px-4 pb-4 mt-auto">
+                      <Link to="/checkout" search={{ slug: p.slug, qty: 1 }} className="block w-full text-center bg-[#A7144C] hover:bg-[#8b1140] text-white text-xs font-semibold py-2.5 rounded-full">
+                        SOLICITAR ORÇAMENTO
+                      </Link>
+                    </div>
                   </div>
                 ))}
               </div>
