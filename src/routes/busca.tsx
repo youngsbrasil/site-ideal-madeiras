@@ -90,7 +90,7 @@ function BuscaPage() {
               >
                 <div className="aspect-square bg-neutral-100 overflow-hidden">
                   <SupabaseImage
-                    src={p.image_url}
+                    src={p.main_image}
                     alt={p.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform"
                   />
