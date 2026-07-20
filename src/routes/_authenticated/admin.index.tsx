@@ -1,15 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { supabase } from "@/integrations/supabase/client";
 import { Card } from "@/components/ui/card";
-import { Package, Tags, Image as ImageIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Package, Tags, Image as ImageIcon, DownloadCloud } from "lucide-react";
+import { runWpImport } from "@/lib/wp-import.functions";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
   component: Dashboard,
 });
 
 function Dashboard() {
-  const { data } = useQuery({
+  const { data, refetch } = useQuery({
     queryKey: ["admin-counts"],
     queryFn: async () => {
       const [p, c, b] = await Promise.all([
@@ -26,6 +30,24 @@ function Dashboard() {
     { label: "Categorias", value: data?.categorias ?? "-", icon: Tags, to: "/admin/categorias", color: "bg-blue-600" },
     { label: "Banners", value: data?.banners ?? "-", icon: ImageIcon, to: "/admin/banners", color: "bg-amber-600" },
   ];
+
+  const importFn = useServerFn(runWpImport);
+  const [status, setStatus] = useState<string>("");
+  const [busy, setBusy] = useState(false);
+
+  const runImport = async () => {
+    if (!confirm("Isso apagará todos os produtos atuais e importará 299 produtos do XML. Continuar?")) return;
+    setBusy(true); setStatus("Importando...");
+    try {
+      const r: any = await importFn();
+      setStatus(`✅ Importados ${r.inserted} produtos em ${r.categories} categorias.`);
+      refetch();
+    } catch (e: any) {
+      setStatus("❌ Erro: " + (e?.message ?? String(e)));
+    } finally {
+      setBusy(false);
+    }
+  };
 
   return (
     <div className="p-8">
@@ -50,6 +72,23 @@ function Dashboard() {
           );
         })}
       </div>
+
+      <Card className="mt-6 p-6">
+        <div className="flex items-start justify-between gap-4 flex-wrap">
+          <div>
+            <h2 className="font-semibold flex items-center gap-2"><DownloadCloud className="w-5 h-5" /> Importação do XML WordPress</h2>
+            <p className="text-sm text-muted-foreground mt-1">
+              Apaga todos os produtos atuais e importa os 299 produtos extraídos do arquivo <code>lojasidealmadeiras.WordPress.xml</code>.
+              As categorias hierárquicas já foram criadas.
+            </p>
+          </div>
+          <Button onClick={runImport} disabled={busy}>
+            {busy ? "Importando..." : "Executar importação"}
+          </Button>
+        </div>
+        {status && <div className="mt-3 text-sm">{status}</div>}
+      </Card>
+
       <div className="mt-8 text-sm text-muted-foreground">
         Bem-vindo ao painel administrativo. Use o menu lateral para gerenciar o conteúdo do site.
       </div>
