@@ -1,9 +1,11 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Heart, ChevronRight, MessageCircle } from "lucide-react";
+import { useMemo, useState } from "react";
+import { Heart, ChevronRight, MessageCircle, SlidersHorizontal, X } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { fetchCategories, fetchSettings, proxyImg, type Product, type Category } from "@/lib/site-data";
+import { fetchCategories, fetchSettings, type Product, type Category } from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
+import { SiteHeader } from "@/components/SiteHeader";
 
 export const Route = createFileRoute("/categoria/$slug")({
   loader: async ({ params }) => {
@@ -25,6 +27,10 @@ export const Route = createFileRoute("/categoria/$slug")({
       ...p,
       gallery: Array.isArray(p.gallery) ? p.gallery : [],
       specifications: Array.isArray(p.specifications) ? p.specifications : [],
+      sizes: Array.isArray(p.sizes) ? p.sizes : [],
+      types: Array.isArray(p.types) ? p.types : [],
+      woods: Array.isArray(p.woods) ? p.woods : [],
+      finishes: Array.isArray(p.finishes) ? p.finishes : [],
     })) as Product[];
     return { category: cat as Category, products };
   },
@@ -57,6 +63,14 @@ export const Route = createFileRoute("/categoria/$slug")({
   errorComponent: () => <div className="min-h-screen grid place-items-center"><p>Erro ao carregar categoria.</p></div>,
 });
 
+type FilterKey = "sizes" | "types" | "woods" | "finishes";
+const FILTER_LABELS: Record<FilterKey, string> = {
+  sizes: "Tamanho",
+  types: "Tipo",
+  woods: "Madeira",
+  finishes: "Acabamento",
+};
+
 function CategoryPage() {
   const { category, products } = Route.useLoaderData() as { category: Category; products: Product[] };
   const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
@@ -64,18 +78,55 @@ function CategoryPage() {
   const whatsapp = (settings?.site.whatsapp || "5511942000000").replace(/\D/g, "");
   const whatsappHref = `https://wa.me/${whatsapp}`;
 
+  const [selected, setSelected] = useState<Record<FilterKey, string[]>>({
+    sizes: [], types: [], woods: [], finishes: [],
+  });
+  const priceBounds = useMemo(() => {
+    const vals = products.map((p) => p.price_value ?? 0).filter((v) => v > 0);
+    if (!vals.length) return { min: 0, max: 0 };
+    return { min: Math.floor(Math.min(...vals)), max: Math.ceil(Math.max(...vals)) };
+  }, [products]);
+  const [priceMax, setPriceMax] = useState<number | null>(null);
+  const activePriceMax = priceMax ?? priceBounds.max;
+
+  const options = useMemo(() => {
+    const collect = (key: FilterKey) => {
+      const s = new Set<string>();
+      products.forEach((p) => (p[key] as string[]).forEach((v) => v && s.add(v)));
+      return Array.from(s).sort();
+    };
+    return {
+      sizes: collect("sizes"),
+      types: collect("types"),
+      woods: collect("woods"),
+      finishes: collect("finishes"),
+    };
+  }, [products]);
+
+  const filtered = useMemo(() => {
+    return products.filter((p) => {
+      for (const k of Object.keys(selected) as FilterKey[]) {
+        const sel = selected[k];
+        if (sel.length && !sel.some((v) => (p[k] as string[]).includes(v))) return false;
+      }
+      if (priceBounds.max > 0 && p.price_value != null && p.price_value > activePriceMax) return false;
+      return true;
+    });
+  }, [products, selected, activePriceMax, priceBounds.max]);
+
+  const toggle = (k: FilterKey, v: string) => {
+    setSelected((s) => ({ ...s, [k]: s[k].includes(v) ? s[k].filter((x) => x !== v) : [...s[k], v] }));
+  };
+  const clearAll = () => {
+    setSelected({ sizes: [], types: [], woods: [], finishes: [] });
+    setPriceMax(null);
+  };
+  const activeCount =
+    Object.values(selected).reduce((a, b) => a + b.length, 0) + (priceMax != null ? 1 : 0);
+
   return (
     <div className="min-h-screen bg-white text-neutral-900">
-      <header className="border-b border-neutral-200">
-        <div className="mx-auto max-w-7xl px-4 py-4 flex items-center justify-between">
-          <Link to="/" className="shrink-0">
-            <img src={proxyImg("https://idealmadeiras.com.br/wp-content/uploads/2024/09/logo-ideal-madeiras.png")} alt="Lojas Ideal Madeiras" className="h-12 w-auto" />
-          </Link>
-          <a href={whatsappHref} target="_blank" rel="noreferrer" className="hidden md:inline-flex items-center gap-2 text-sm bg-[#25D366] hover:bg-[#1eb659] text-white px-4 py-2 rounded-full font-semibold">
-            <MessageCircle size={16} /> Compre pelo WhatsApp
-          </a>
-        </div>
-      </header>
+      <SiteHeader />
 
       <div className="bg-neutral-50 border-b border-neutral-200">
         <div className="mx-auto max-w-7xl px-4 py-3 flex items-center gap-2 text-xs text-neutral-600">
@@ -85,39 +136,100 @@ function CategoryPage() {
         </div>
       </div>
 
-      <section className="mx-auto max-w-7xl px-4 py-8 grid md:grid-cols-[220px_1fr] gap-8">
-        <aside className="hidden md:block">
-          <h3 className="font-bold text-sm mb-4 border-b-2 border-[#A7144C] pb-2 inline-block">CATEGORIAS</h3>
-          <ul className="space-y-2 text-sm">
-            {categorias.map((c) => (
-              <li key={c.id}>
-                <Link
-                  to="/categoria/$slug"
-                  params={{ slug: c.slug }}
-                  className={`hover:text-[#A7144C] ${c.id === category.id ? "text-[#A7144C] font-semibold" : "text-neutral-700"}`}
-                >
-                  {c.name} <span className="text-neutral-400">({c.product_count})</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
+      <section className="mx-auto max-w-7xl px-4 py-8 grid md:grid-cols-[260px_1fr] gap-8">
+        <aside className="hidden md:block space-y-6">
+          <div>
+            <h3 className="font-bold text-sm mb-3 border-b-2 border-[#A7144C] pb-2 inline-block">CATEGORIAS</h3>
+            <ul className="space-y-2 text-sm">
+              {categorias.map((c) => (
+                <li key={c.id}>
+                  <Link
+                    to="/categoria/$slug"
+                    params={{ slug: c.slug }}
+                    className={`hover:text-[#A7144C] ${c.id === category.id ? "text-[#A7144C] font-semibold" : "text-neutral-700"}`}
+                  >
+                    {c.name} <span className="text-neutral-400">({c.product_count})</span>
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="border-t pt-6">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-bold text-sm flex items-center gap-2">
+                <SlidersHorizontal size={14} /> FILTROS
+              </h3>
+              {activeCount > 0 && (
+                <button onClick={clearAll} className="text-xs text-[#A7144C] hover:underline flex items-center gap-1">
+                  <X size={12} /> Limpar
+                </button>
+              )}
+            </div>
+
+            {(Object.keys(FILTER_LABELS) as FilterKey[]).map((k) =>
+              options[k].length > 0 ? (
+                <div key={k} className="mb-5">
+                  <div className="text-xs font-semibold uppercase tracking-wide text-neutral-600 mb-2">{FILTER_LABELS[k]}</div>
+                  <ul className="space-y-1.5">
+                    {options[k].map((v) => {
+                      const checked = selected[k].includes(v);
+                      return (
+                        <li key={v}>
+                          <label className="flex items-center gap-2 text-sm cursor-pointer hover:text-[#A7144C]">
+                            <input
+                              type="checkbox"
+                              checked={checked}
+                              onChange={() => toggle(k, v)}
+                              className="accent-[#A7144C]"
+                            />
+                            {v}
+                          </label>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              ) : null
+            )}
+
+            {priceBounds.max > 0 && (
+              <div className="mb-5">
+                <div className="text-xs font-semibold uppercase tracking-wide text-neutral-600 mb-2">
+                  Faixa de preço
+                </div>
+                <input
+                  type="range"
+                  min={priceBounds.min}
+                  max={priceBounds.max}
+                  value={activePriceMax}
+                  onChange={(e) => setPriceMax(Number(e.target.value))}
+                  className="w-full accent-[#A7144C]"
+                />
+                <div className="flex justify-between text-xs text-neutral-600 mt-1">
+                  <span>R$ {priceBounds.min}</span>
+                  <span className="font-semibold">até R$ {activePriceMax}</span>
+                </div>
+              </div>
+            )}
+          </div>
         </aside>
 
         <div>
           <div className="flex items-end justify-between mb-6">
             <div>
               <h1 className="text-3xl font-bold">{category.name}</h1>
-              <p className="text-sm text-neutral-500 mt-1">{products.length} produto{products.length !== 1 ? "s" : ""}</p>
+              <p className="text-sm text-neutral-500 mt-1">{filtered.length} de {products.length} produto{products.length !== 1 ? "s" : ""}</p>
             </div>
           </div>
 
-          {products.length === 0 ? (
+          {filtered.length === 0 ? (
             <div className="border border-dashed border-neutral-300 rounded-lg p-12 text-center text-neutral-500">
-              Nenhum produto disponível nesta categoria no momento.
+              Nenhum produto encontrado com os filtros selecionados.
             </div>
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
-              {products.map((p) => (
+              {filtered.map((p) => (
                 <Link
                   key={p.id}
                   to="/produto/$slug"

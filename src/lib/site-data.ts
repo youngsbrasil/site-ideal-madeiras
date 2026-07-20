@@ -24,6 +24,11 @@ export type Product = {
   most_viewed: boolean;
   active: boolean;
   sort_order: number;
+  sizes: string[];
+  types: string[];
+  woods: string[];
+  finishes: string[];
+  price_value: number | null;
 };
 
 export type Banner = {
@@ -58,32 +63,32 @@ export async function fetchProducts(): Promise<Product[]> {
     .eq("active", true)
     .order("sort_order");
   if (error) throw error;
-  return (data ?? []).map((p: any) => ({
+  return (data ?? []).map(normalizeProduct) as Product[];
+}
+
+function normalizeProduct(p: any): Product {
+  return {
     ...p,
     gallery: Array.isArray(p.gallery) ? p.gallery : [],
     specifications: Array.isArray(p.specifications) ? p.specifications : [],
-  })) as Product[];
+    sizes: Array.isArray(p.sizes) ? p.sizes : [],
+    types: Array.isArray(p.types) ? p.types : [],
+    woods: Array.isArray(p.woods) ? p.woods : [],
+    finishes: Array.isArray(p.finishes) ? p.finishes : [],
+  };
 }
 
 export async function fetchAllProductsAdmin(): Promise<Product[]> {
   const { data, error } = await supabase.from("products").select("*").order("created_at", { ascending: false });
   if (error) throw error;
-  return (data ?? []).map((p: any) => ({
-    ...p,
-    gallery: Array.isArray(p.gallery) ? p.gallery : [],
-    specifications: Array.isArray(p.specifications) ? p.specifications : [],
-  })) as Product[];
+  return (data ?? []).map(normalizeProduct) as Product[];
 }
 
 export async function fetchProductBySlug(slug: string): Promise<Product | null> {
   const { data, error } = await supabase.from("products").select("*").eq("slug", slug).maybeSingle();
   if (error) throw error;
   if (!data) return null;
-  return {
-    ...(data as any),
-    gallery: Array.isArray((data as any).gallery) ? (data as any).gallery : [],
-    specifications: Array.isArray((data as any).specifications) ? (data as any).specifications : [],
-  } as Product;
+  return normalizeProduct(data);
 }
 
 export async function fetchBanners(): Promise<Banner[]> {

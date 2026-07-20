@@ -90,6 +90,7 @@ export type Database = {
           created_at: string
           description: string | null
           featured: boolean
+          finishes: string[]
           gallery: Json
           id: string
           main_image: string | null
@@ -97,10 +98,14 @@ export type Database = {
           name: string
           old_price: string | null
           price: string
+          price_value: number | null
+          sizes: string[]
           slug: string
           sort_order: number
           specifications: Json
+          types: string[]
           updated_at: string
+          woods: string[]
         }
         Insert: {
           active?: boolean
@@ -108,6 +113,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           featured?: boolean
+          finishes?: string[]
           gallery?: Json
           id?: string
           main_image?: string | null
@@ -115,10 +121,14 @@ export type Database = {
           name: string
           old_price?: string | null
           price: string
+          price_value?: number | null
+          sizes?: string[]
           slug: string
           sort_order?: number
           specifications?: Json
+          types?: string[]
           updated_at?: string
+          woods?: string[]
         }
         Update: {
           active?: boolean
@@ -126,6 +136,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           featured?: boolean
+          finishes?: string[]
           gallery?: Json
           id?: string
           main_image?: string | null
@@ -133,10 +144,14 @@ export type Database = {
           name?: string
           old_price?: string | null
           price?: string
+          price_value?: number | null
+          sizes?: string[]
           slug?: string
           sort_order?: number
           specifications?: Json
+          types?: string[]
           updated_at?: string
+          woods?: string[]
         }
         Relationships: [
           {

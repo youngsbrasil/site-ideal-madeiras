@@ -23,7 +23,14 @@ export const Route = createFileRoute("/_authenticated/admin/produtos")({
   component: ProductsAdmin,
 });
 
-type FormState = Partial<Product> & { gallery: string[]; specifications: { label: string; valor: string }[] };
+type FormState = Partial<Product> & {
+  gallery: string[];
+  specifications: { label: string; valor: string }[];
+  sizes: string[];
+  types: string[];
+  woods: string[];
+  finishes: string[];
+};
 
 const empty: FormState = {
   slug: "",
@@ -39,7 +46,14 @@ const empty: FormState = {
   most_viewed: false,
   active: true,
   sort_order: 0,
+  sizes: [],
+  types: [],
+  woods: [],
+  finishes: [],
+  price_value: null,
 };
+
+const parseList = (s: string) => s.split(",").map((v) => v.trim()).filter(Boolean);
 
 function ProductsAdmin() {
   const qc = useQueryClient();
@@ -64,6 +78,11 @@ function ProductsAdmin() {
         most_viewed: form.most_viewed,
         active: form.active,
         sort_order: form.sort_order ?? 0,
+        sizes: form.sizes,
+        types: form.types,
+        woods: form.woods,
+        finishes: form.finishes,
+        price_value: form.price_value ?? null,
       };
       if (form.id) {
         const { error } = await supabase.from("products").update(payload).eq("id", form.id);
@@ -294,6 +313,58 @@ function ProductForm({
           </Button>
         </div>
       </div>
+
+      <div className="pt-4 border-t">
+        <Label className="text-base">Filtros de busca</Label>
+        <p className="text-xs text-muted-foreground mb-3">
+          Valores separados por vírgula. Aparecem como filtros nas páginas de categoria e busca.
+        </p>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label>Tamanhos</Label>
+            <Input
+              placeholder="Ex: 60cm, 70cm, 80cm"
+              value={(value.sizes ?? []).join(", ")}
+              onChange={(e) => set({ sizes: parseList(e.target.value) })}
+            />
+          </div>
+          <div>
+            <Label>Tipos</Label>
+            <Input
+              placeholder="Ex: Pivotante, De abrir"
+              value={(value.types ?? []).join(", ")}
+              onChange={(e) => set({ types: parseList(e.target.value) })}
+            />
+          </div>
+          <div>
+            <Label>Madeiras</Label>
+            <Input
+              placeholder="Ex: Angelim, Cedro, Freijó"
+              value={(value.woods ?? []).join(", ")}
+              onChange={(e) => set({ woods: parseList(e.target.value) })}
+            />
+          </div>
+          <div>
+            <Label>Acabamentos</Label>
+            <Input
+              placeholder="Ex: Natural, Envernizado, Pintado"
+              value={(value.finishes ?? []).join(", ")}
+              onChange={(e) => set({ finishes: parseList(e.target.value) })}
+            />
+          </div>
+          <div>
+            <Label>Preço numérico (para filtro de faixa)</Label>
+            <Input
+              type="number"
+              step="0.01"
+              placeholder="Ex: 1250.00"
+              value={value.price_value ?? ""}
+              onChange={(e) => set({ price_value: e.target.value === "" ? null : parseFloat(e.target.value) })}
+            />
+          </div>
+        </div>
+      </div>
+
 
       <div className="grid grid-cols-3 gap-4 pt-4 border-t">
         <div className="flex items-center gap-2">
