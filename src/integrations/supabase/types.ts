@@ -94,6 +94,53 @@ export type Database = {
           },
         ]
       }
+      hotspots: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          image_key: string
+          label: string | null
+          product_id: string | null
+          sort_order: number
+          updated_at: string
+          x: number
+          y: number
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          image_key: string
+          label?: string | null
+          product_id?: string | null
+          sort_order?: number
+          updated_at?: string
+          x?: number
+          y?: number
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          image_key?: string
+          label?: string | null
+          product_id?: string | null
+          sort_order?: number
+          updated_at?: string
+          x?: number
+          y?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "hotspots_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           active: boolean
