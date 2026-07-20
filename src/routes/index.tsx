@@ -11,6 +11,7 @@ import {
   type Product, type Banner,
 } from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
+import { SiteHeader } from "@/components/SiteHeader";
 
 function HeroCarousel({ banners }: { banners: Banner[] }) {
   const [idx, setIdx] = useState(0);
