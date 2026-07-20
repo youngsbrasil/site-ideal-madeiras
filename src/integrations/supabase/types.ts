@@ -221,6 +221,78 @@ export type Database = {
           },
         ]
       }
+      shoppable_pins: {
+        Row: {
+          created_at: string
+          id: string
+          label: string | null
+          product_id: string | null
+          scene_id: string
+          x: number
+          y: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          label?: string | null
+          product_id?: string | null
+          scene_id: string
+          x: number
+          y: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          label?: string | null
+          product_id?: string | null
+          scene_id?: string
+          x?: number
+          y?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shoppable_pins_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shoppable_pins_scene_id_fkey"
+            columns: ["scene_id"]
+            isOneToOne: false
+            referencedRelation: "shoppable_scenes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      shoppable_scenes: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          image_url: string
+          sort_order: number
+          title: string | null
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          image_url: string
+          sort_order?: number
+          title?: string | null
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          image_url?: string
+          sort_order?: number
+          title?: string | null
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           key: string

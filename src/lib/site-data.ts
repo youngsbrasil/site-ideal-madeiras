@@ -43,6 +43,24 @@ export type Banner = {
   active: boolean;
 };
 
+export type ShoppablePin = {
+  id: string;
+  scene_id: string;
+  product_id: string | null;
+  x: number;
+  y: number;
+  label: string | null;
+};
+
+export type ShoppableScene = {
+  id: string;
+  title: string | null;
+  image_url: string;
+  active: boolean;
+  sort_order: number;
+  pins: ShoppablePin[];
+};
+
 export type SiteSettings = {
   nome?: string;
   whatsapp?: string;
@@ -91,6 +109,23 @@ export async function fetchProductBySlug(slug: string): Promise<Product | null> 
   if (error) throw error;
   if (!data) return null;
   return normalizeProduct(data);
+}
+
+export async function fetchShoppableScenes(activeOnly = true): Promise<ShoppableScene[]> {
+  let q = supabase.from("shoppable_scenes").select("*").order("sort_order");
+  if (activeOnly) q = q.eq("active", true);
+  const { data: scenes, error } = await q;
+  if (error) throw error;
+  if (!scenes || scenes.length === 0) return [];
+  const ids = scenes.map((s: any) => s.id);
+  const { data: pins, error: pErr } = await supabase.from("shoppable_pins").select("*").in("scene_id", ids);
+  if (pErr) throw pErr;
+  return (scenes as any[]).map((s) => ({
+    ...s,
+    pins: ((pins ?? []) as any[]).filter((p) => p.scene_id === s.id).map((p) => ({
+      ...p, x: Number(p.x), y: Number(p.y),
+    })),
+  })) as ShoppableScene[];
 }
 
 export async function fetchBanners(): Promise<Banner[]> {

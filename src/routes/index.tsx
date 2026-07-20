@@ -7,8 +7,8 @@ import {
   Truck, CreditCard, ShieldCheck, Mail as MailIcon,
 } from "lucide-react";
 import {
-  fetchCategories, fetchProducts, fetchBanners, fetchSettings, proxyImg, productPath,
-  type Product, type Banner,
+  fetchCategories, fetchProducts, fetchBanners, fetchSettings, fetchShoppableScenes, proxyImg, productPath,
+  type Product, type Banner, type ShoppableScene,
 } from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -91,6 +91,7 @@ function Home() {
   const { data: produtos = [] } = useQuery({ queryKey: ["products"], queryFn: fetchProducts });
   const { data: banners = [] } = useQuery({ queryKey: ["banners"], queryFn: fetchBanners });
   const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
+  const { data: shoppable = [] } = useQuery({ queryKey: ["shoppable-scenes"], queryFn: () => fetchShoppableScenes(true) });
 
   const destaques = produtos.filter((p) => p.featured).slice(0, 5);
   const grade = produtos.filter((p) => !p.featured).slice(0, 12);
@@ -175,6 +176,21 @@ function Home() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
             {grade.map((p) => <ProductCard key={p.id} p={p} />)}
+          </div>
+        </section>
+      )}
+
+      {/* Cena interativa com pins (shoppable) */}
+      {shoppable.length > 0 && (
+        <section className="mx-auto max-w-7xl px-4 py-8">
+          <div className="text-center mb-6">
+            <h3 className="text-lg md:text-xl font-bold">INSPIRE-SE COM NOSSOS AMBIENTES</h3>
+            <p className="text-xs text-neutral-500">Passe o mouse nos pontos destacados para conhecer os produtos</p>
+          </div>
+          <div className="space-y-8">
+            {shoppable.map((s) => (
+              <ShoppableSceneView key={s.id} scene={s} products={produtos} categorias={categorias} />
+            ))}
           </div>
         </section>
       )}
@@ -500,6 +516,51 @@ function ProductCard({ p, compact, showOferta, categorias: catsProp }: { p: Prod
           </button>
         </div>
       </div>
+    </div>
+  );
+}
+
+function ShoppableSceneView({ scene, products, categorias }: { scene: ShoppableScene; products: Product[]; categorias: any[] }) {
+  const productById = new Map(products.map((p) => [p.id, p]));
+  return (
+    <div className="relative w-full overflow-hidden rounded-xl border border-neutral-200 shadow-sm">
+      <SupabaseImage src={scene.image_url} alt={scene.title ?? ""} className="w-full h-auto block" />
+      {scene.pins.map((pin) => {
+        const p = pin.product_id ? productById.get(pin.product_id) : null;
+        return (
+          <div key={pin.id} className="absolute -translate-x-1/2 -translate-y-1/2 group/pin" style={{ left: `${pin.x}%`, top: `${pin.y}%` }}>
+            <button
+              aria-label={pin.label ?? p?.name ?? "Produto"}
+              className="relative w-6 h-6 rounded-full border-2 border-white shadow-lg grid place-items-center focus:outline-none"
+              style={{ background: ORANGE }}
+            >
+              <span className="absolute inset-0 rounded-full animate-ping opacity-75" style={{ background: ORANGE }} />
+              <span className="relative w-2 h-2 rounded-full bg-white" />
+            </button>
+            {p && (
+              <div className="pointer-events-none opacity-0 group-hover/pin:opacity-100 group-hover/pin:pointer-events-auto transition-opacity duration-200 absolute left-1/2 -translate-x-1/2 top-full mt-3 w-64 bg-white rounded-lg shadow-2xl border border-neutral-200 p-3 z-20">
+                <div className="aspect-square bg-neutral-50 rounded overflow-hidden">
+                  {p.main_image && <SupabaseImage src={p.main_image} alt={p.name} className="w-full h-full object-contain p-2" />}
+                </div>
+                <h4 className="mt-2 text-sm font-semibold line-clamp-2 text-center">{p.name}</h4>
+                <div className="mt-1 text-center font-bold" style={{ color: ORANGE }}>{p.price}</div>
+                <Link
+                  to={productPath(p, categorias) as any}
+                  className="mt-3 block w-full text-center text-white text-[11px] font-bold px-3 py-2 rounded-full uppercase tracking-wide hover:opacity-90"
+                  style={{ background: ORANGE }}
+                >
+                  Faça seu orçamento aqui
+                </Link>
+              </div>
+            )}
+            {!p && pin.label && (
+              <div className="pointer-events-none opacity-0 group-hover/pin:opacity-100 transition-opacity duration-200 absolute left-1/2 -translate-x-1/2 top-full mt-2 whitespace-nowrap bg-neutral-900 text-white text-xs px-2 py-1 rounded">
+                {pin.label}
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }

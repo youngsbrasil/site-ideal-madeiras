@@ -19,6 +19,7 @@ import { Route as ProdutoSlugRouteImport } from './routes/produto.$slug'
 import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedAdminShoppableRouteImport } from './routes/_authenticated/admin.shoppable'
 import { Route as AuthenticatedAdminProdutosRouteImport } from './routes/_authenticated/admin.produtos'
 import { Route as AuthenticatedAdminFeedsRouteImport } from './routes/_authenticated/admin.feeds'
 import { Route as AuthenticatedAdminConfiguracoesRouteImport } from './routes/_authenticated/admin.configuracoes'
@@ -77,6 +78,12 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminShoppableRoute =
+  AuthenticatedAdminShoppableRouteImport.update({
+    id: '/shoppable',
+    path: '/shoppable',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminProdutosRoute =
   AuthenticatedAdminProdutosRouteImport.update({
     id: '/produtos',
@@ -136,6 +143,7 @@ export interface FileRoutesByFullPath {
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/admin/feeds': typeof AuthenticatedAdminFeedsRoute
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
+  '/admin/shoppable': typeof AuthenticatedAdminShoppableRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/feed/google/csv': typeof ApiPublicFeedGoogleCsvRoute
   '/api/public/feed/google/xml': typeof ApiPublicFeedGoogleXmlRoute
@@ -154,6 +162,7 @@ export interface FileRoutesByTo {
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/admin/feeds': typeof AuthenticatedAdminFeedsRoute
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
+  '/admin/shoppable': typeof AuthenticatedAdminShoppableRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/feed/google/csv': typeof ApiPublicFeedGoogleCsvRoute
   '/api/public/feed/google/xml': typeof ApiPublicFeedGoogleXmlRoute
@@ -175,6 +184,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/_authenticated/admin/feeds': typeof AuthenticatedAdminFeedsRoute
   '/_authenticated/admin/produtos': typeof AuthenticatedAdminProdutosRoute
+  '/_authenticated/admin/shoppable': typeof AuthenticatedAdminShoppableRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/feed/google/csv': typeof ApiPublicFeedGoogleCsvRoute
   '/api/public/feed/google/xml': typeof ApiPublicFeedGoogleXmlRoute
@@ -196,6 +206,7 @@ export interface FileRouteTypes {
     | '/admin/configuracoes'
     | '/admin/feeds'
     | '/admin/produtos'
+    | '/admin/shoppable'
     | '/admin/'
     | '/api/public/feed/google/csv'
     | '/api/public/feed/google/xml'
@@ -214,6 +225,7 @@ export interface FileRouteTypes {
     | '/admin/configuracoes'
     | '/admin/feeds'
     | '/admin/produtos'
+    | '/admin/shoppable'
     | '/admin'
     | '/api/public/feed/google/csv'
     | '/api/public/feed/google/xml'
@@ -234,6 +246,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/configuracoes'
     | '/_authenticated/admin/feeds'
     | '/_authenticated/admin/produtos'
+    | '/_authenticated/admin/shoppable'
     | '/_authenticated/admin/'
     | '/api/public/feed/google/csv'
     | '/api/public/feed/google/xml'
@@ -326,6 +339,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/shoppable': {
+      id: '/_authenticated/admin/shoppable'
+      path: '/shoppable'
+      fullPath: '/admin/shoppable'
+      preLoaderRoute: typeof AuthenticatedAdminShoppableRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/produtos': {
       id: '/_authenticated/admin/produtos'
       path: '/produtos'
@@ -391,6 +411,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminConfiguracoesRoute: typeof AuthenticatedAdminConfiguracoesRoute
   AuthenticatedAdminFeedsRoute: typeof AuthenticatedAdminFeedsRoute
   AuthenticatedAdminProdutosRoute: typeof AuthenticatedAdminProdutosRoute
+  AuthenticatedAdminShoppableRoute: typeof AuthenticatedAdminShoppableRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
 
@@ -400,6 +421,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminConfiguracoesRoute: AuthenticatedAdminConfiguracoesRoute,
   AuthenticatedAdminFeedsRoute: AuthenticatedAdminFeedsRoute,
   AuthenticatedAdminProdutosRoute: AuthenticatedAdminProdutosRoute,
+  AuthenticatedAdminShoppableRoute: AuthenticatedAdminShoppableRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
 
