@@ -292,11 +292,7 @@ export function ProductXmlImportExport({
     return { categories: [], products: [] };
   };
 
-      };
-    }).filter((p) => p.name);
 
-    return { categories: cats, products: prods };
-  };
 
   const onFile = async (f: File) => {
     try {
