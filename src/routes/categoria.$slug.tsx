@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { Heart, ChevronRight, MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { fetchCategories, fetchSettings, type Product, type Category } from "@/lib/site-data";
+import { fetchCategories, fetchSettings, proxyImg, type Product, type Category } from "@/lib/site-data";
 
 export const Route = createFileRoute("/categoria/$slug")({
   loader: async ({ params }) => {
@@ -68,7 +68,7 @@ function CategoryPage() {
       <header className="border-b border-neutral-200">
         <div className="mx-auto max-w-7xl px-4 py-4 flex items-center justify-between">
           <Link to="/" className="shrink-0">
-            <img src="https://idealmadeiras.com.br/wp-content/uploads/2024/09/logo-ideal-madeiras.png" alt="Lojas Ideal Madeiras" className="h-12 w-auto" />
+            <img src={proxyImg("https://idealmadeiras.com.br/wp-content/uploads/2024/09/logo-ideal-madeiras.png")} alt="Lojas Ideal Madeiras" className="h-12 w-auto" />
           </Link>
           <a href={whatsappHref} target="_blank" rel="noreferrer" className="hidden md:inline-flex items-center gap-2 text-sm bg-[#25D366] hover:bg-[#1eb659] text-white px-4 py-2 rounded-full font-semibold">
             <MessageCircle size={16} /> Compre pelo WhatsApp
@@ -125,7 +125,7 @@ function CategoryPage() {
                 >
                   <div className="relative aspect-square bg-neutral-50 overflow-hidden">
                     {p.main_image && (
-                      <img src={p.main_image} alt={p.name} loading="lazy" className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300" />
+                      <img src={proxyImg(p.main_image)} alt={p.name} loading="lazy" className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300" />
                     )}
                     <span className="absolute top-2 right-2 w-9 h-9 rounded-full bg-white/90 grid place-items-center text-neutral-600 shadow">
                       <Heart size={16} />
