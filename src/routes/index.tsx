@@ -180,6 +180,21 @@ function Home() {
         </section>
       )}
 
+      {/* Cena interativa com pins (shoppable) */}
+      {shoppable.length > 0 && (
+        <section className="mx-auto max-w-7xl px-4 py-8">
+          <div className="text-center mb-6">
+            <h3 className="text-lg md:text-xl font-bold">INSPIRE-SE COM NOSSOS AMBIENTES</h3>
+            <p className="text-xs text-neutral-500">Passe o mouse nos pontos destacados para conhecer os produtos</p>
+          </div>
+          <div className="space-y-8">
+            {shoppable.map((s) => (
+              <ShoppableSceneView key={s.id} scene={s} products={produtos} categorias={categorias} />
+            ))}
+          </div>
+        </section>
+      )}
+
       {/* Google reviews strip */}
       <section className="mx-auto max-w-7xl px-4 py-8">
         <div className="grid md:grid-cols-4 gap-4 items-stretch bg-neutral-50 rounded-lg border border-neutral-200 p-4">
