@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { readFile } from "node:fs/promises";
-import path from "node:path";
+// @ts-ignore - JSON asset
+import wpData from "../../../../data/wp-import.json";
 
 // One-shot importer: wipes products & categories, then imports from data/wp-import.json.
 // Guarded by IMPORT_TOKEN. Delete this file after use.
@@ -13,9 +13,7 @@ export const Route = createFileRoute("/api/public/import-wp")({
           return new Response("forbidden", { status: 403 });
         }
         const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-        const filePath = path.join(process.cwd(), "data", "wp-import.json");
-        const raw = await readFile(filePath, "utf8");
-        const { categories, products } = JSON.parse(raw) as {
+        const { categories, products } = wpData as {
           categories: { slug: string; name: string; parent_slug: string | null }[];
           products: any[];
         };
