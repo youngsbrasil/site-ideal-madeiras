@@ -59,6 +59,7 @@ function BuscaPage() {
       return data as Category | null;
     },
   });
+  const { data: allCategories = [] } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
 
   const heading = useMemo(() => {
     const parts: string[] = [];
