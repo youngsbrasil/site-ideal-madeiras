@@ -428,10 +428,12 @@ function SectionTitle({ title }: { title: string }) {
 
 function ProductCard({ p, compact, showOferta }: { p: Product; compact?: boolean; showOferta?: boolean }) {
   const hasOferta = showOferta && !!p.old_price;
+  const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
+  const whatsapp = settings?.site.whatsapp || "5511942000000";
   return (
-    <div className="group border border-neutral-200 rounded-lg overflow-hidden bg-white hover:shadow-lg hover:border-[#f39200]/50 transition-all flex flex-col">
+    <div className="group relative border border-neutral-200 rounded-lg overflow-visible bg-white hover:shadow-lg hover:border-[#f39200]/50 transition-all flex flex-col">
       <Link to="/produto/$slug" params={{ slug: p.slug }} className="block">
-        <div className="relative aspect-square bg-white overflow-hidden">
+        <div className="relative aspect-square bg-white overflow-hidden rounded-t-lg">
           {hasOferta && (
             <span className="absolute top-2 left-2 z-10 bg-[#c9184a] text-white text-[10px] font-bold px-2 py-0.5 rounded uppercase">Oferta</span>
           )}
@@ -454,11 +456,7 @@ function ProductCard({ p, compact, showOferta }: { p: Product; compact?: boolean
           </div>
         </div>
       </Link>
-      <div className="px-3 pb-3 mt-auto">
-        <Link to="/checkout" search={{ slug: p.slug, qty: 1 }} className="block w-full text-center bg-[#f39200] hover:bg-[#e08600] text-white text-[11px] font-bold py-2 rounded-full uppercase">
-          Solicitar Orçamento
-        </Link>
-      </div>
+      <ProductHoverCard product={p} whatsapp={whatsapp} accent="#f39200" category={p.types?.[0]} />
     </div>
   );
 }
