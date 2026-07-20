@@ -7,7 +7,7 @@ import {
   MessageCircle, Star, ChevronRight, ChevronLeft, Image as ImageIcon,
 } from "lucide-react";
 import {
-  fetchCategories, fetchProducts, fetchBanners, fetchSettings, proxyImg,
+  fetchCategories, fetchProducts, fetchBanners, fetchSettings, proxyImg, productPath,
   type Product, type Banner,
 } from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
@@ -202,7 +202,7 @@ function Home() {
                 {oferta.old_price && <span className="text-neutral-400 line-through">{oferta.old_price}</span>}
                 <span className="text-3xl font-bold text-[#A7144C]">{oferta.price}</span>
               </div>
-              <Link to="/checkout" search={{ slug: oferta.slug, qty: 1 }} className="mt-6 inline-block bg-[#A7144C] hover:bg-[#8b1140] text-white px-8 py-3 rounded-full font-semibold text-sm tracking-wide transition-colors">
+              <Link to={productPath(oferta, categorias) as any} className="mt-6 inline-block bg-[#A7144C] hover:bg-[#8b1140] text-white px-8 py-3 rounded-full font-semibold text-sm tracking-wide transition-colors">
                 SOLICITAR ORÇAMENTO
               </Link>
             </div>
@@ -323,9 +323,11 @@ function SectionTitle({ title, subtitle, center }: { title: string; subtitle?: s
 }
 
 function ProductCard({ p, compact }: { p: Product; compact?: boolean }) {
+  const { data: categorias = [] } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
+  const to = productPath(p, categorias) as any;
   return (
     <div className="group border border-neutral-200 rounded-lg overflow-hidden bg-white hover:shadow-lg hover:border-[#A7144C]/40 transition-all flex flex-col">
-      <Link to="/produto/$slug" params={{ slug: p.slug }} className="block">
+      <Link to={to} className="block">
         <div className="relative aspect-square bg-neutral-50 overflow-hidden">
           {p.main_image && (
             <SupabaseImage src={p.main_image} alt={p.name} loading="lazy" className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300" />
@@ -343,7 +345,7 @@ function ProductCard({ p, compact }: { p: Product; compact?: boolean }) {
         </div>
       </Link>
       <div className="px-4 pb-4 mt-auto">
-        <Link to="/checkout" search={{ slug: p.slug, qty: 1 }} className="block w-full text-center bg-[#A7144C] hover:bg-[#8b1140] text-white text-xs font-semibold py-2.5 rounded-full">
+        <Link to={to} className="block w-full text-center bg-[#A7144C] hover:bg-[#8b1140] text-white text-xs font-semibold py-2.5 rounded-full">
           SOLICITAR ORÇAMENTO
         </Link>
       </div>

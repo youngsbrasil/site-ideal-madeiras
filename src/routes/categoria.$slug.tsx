@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Heart, ChevronRight, MessageCircle, SlidersHorizontal, X, LayoutGrid, Grid3x3, Grid2x2, ChevronLeft, ChevronRight as ChevRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { fetchCategories, fetchSettings, type Product, type Category } from "@/lib/site-data";
+import { fetchCategories, fetchSettings, productPath, type Product, type Category } from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
 
@@ -321,7 +321,7 @@ function CategoryPage() {
                     key={p.id}
                     className="group border border-neutral-200 rounded-lg overflow-hidden bg-white hover:shadow-lg hover:border-[#A7144C]/40 transition-all flex flex-col"
                   >
-                    <Link to="/produto/$slug" params={{ slug: p.slug }} className="block">
+                    <Link to={productPath(p, categorias) as any} className="block">
                       <div className="relative aspect-square bg-neutral-50 overflow-hidden">
                         {p.main_image && (
                           <SupabaseImage src={p.main_image} alt={p.name} loading="lazy" className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300" />
@@ -339,7 +339,7 @@ function CategoryPage() {
                       </div>
                     </Link>
                     <div className="px-4 pb-4 mt-auto">
-                      <Link to="/checkout" search={{ slug: p.slug, qty: 1 }} className="block w-full text-center bg-[#A7144C] hover:bg-[#8b1140] text-white text-xs font-semibold py-2.5 rounded-full">
+                      <Link to={productPath(p, categorias) as any} className="block w-full text-center bg-[#A7144C] hover:bg-[#8b1140] text-white text-xs font-semibold py-2.5 rounded-full">
                         SOLICITAR ORÇAMENTO
                       </Link>
                     </div>

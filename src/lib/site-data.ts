@@ -117,6 +117,18 @@ export function slugify(s: string) {
 }
 
 /**
+ * Builds the canonical URL for a product: /categoria/[subcategoria]/produto-slug.
+ * Falls back to /produto/<slug> when the category chain cannot be resolved.
+ */
+export function productPath(product: Product, categories: Category[]): string {
+  const cat = categories.find((c) => c.id === product.category_id);
+  if (!cat) return `/produto/${product.slug}`;
+  const parent = cat.parent_id ? categories.find((c) => c.id === cat.parent_id) : null;
+  const parts = parent ? [parent.slug, cat.slug, product.slug] : [cat.slug, product.slug];
+  return "/" + parts.map(encodeURIComponent).join("/");
+}
+
+/**
  * Proxy remote images through images.weserv.nl to bypass hotlink protection / rate limits
  * on the original idealmadeiras.com.br host. Leaves local, data:, blob:, and Supabase URLs alone.
  */
