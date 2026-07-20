@@ -3,7 +3,7 @@ import { escapeCsv, priceValue, siteOrigin, stripHtml } from "@/lib/feed-utils";
 
 // Google Merchant Center CSV feed
 // Docs: https://support.google.com/merchants/answer/7052112
-export const Route = createFileRoute("/api/public/feed/google.csv")({
+export const Route = createFileRoute("/api/public/feed/google/csv")({
   server: {
     handlers: {
       GET: async ({ request }) => {

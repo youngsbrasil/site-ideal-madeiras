@@ -3,7 +3,7 @@ import { escapeCsv, priceValue, siteOrigin, stripHtml } from "@/lib/feed-utils";
 
 // Meta (Facebook / Instagram) Commerce catalog CSV
 // Docs: https://www.facebook.com/business/help/120325381656392
-export const Route = createFileRoute("/api/public/feed/meta.csv")({
+export const Route = createFileRoute("/api/public/feed/meta/csv")({
   server: {
     handlers: {
       GET: async ({ request }) => {

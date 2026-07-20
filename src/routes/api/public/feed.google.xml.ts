@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { escapeXml, priceValue, siteOrigin, stripHtml } from "@/lib/feed-utils";
 
-export const Route = createFileRoute("/api/public/feed/google.xml")({
+export const Route = createFileRoute("/api/public/feed/google/xml")({
   server: {
     handlers: {
       GET: async ({ request }) => {
