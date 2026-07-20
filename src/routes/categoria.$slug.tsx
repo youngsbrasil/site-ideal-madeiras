@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Heart, ChevronRight, MessageCircle, SlidersHorizontal, X } from "lucide-react";
+import { Heart, ChevronRight, MessageCircle, SlidersHorizontal, X, LayoutGrid, Grid3x3, Grid2x2, ChevronLeft, ChevronRight as ChevRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchCategories, fetchSettings, type Product, type Category } from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
@@ -124,6 +124,38 @@ function CategoryPage() {
   const activeCount =
     Object.values(selected).reduce((a, b) => a + b.length, 0) + (priceMax != null ? 1 : 0);
 
+  type SortKey = "default" | "popularity" | "rating" | "newest" | "price_asc" | "price_desc";
+  const SORT_LABELS: Record<SortKey, string> = {
+    default: "Ordenação padrão",
+    popularity: "Ordenar por popularidade",
+    rating: "Ordenar por média de classificação",
+    newest: "Ordenar por mais recente",
+    price_asc: "Ordenar por preço: menor para maior",
+    price_desc: "Ordenar por preço: maior para menor",
+  };
+  const [sort, setSort] = useState<SortKey>("default");
+  const [perPage, setPerPage] = useState<number>(12);
+  const [cols, setCols] = useState<2 | 3 | 4>(3);
+  const [page, setPage] = useState(1);
+
+  const sorted = useMemo(() => {
+    const arr = [...filtered];
+    switch (sort) {
+      case "price_asc": arr.sort((a, b) => (a.price_value ?? 0) - (b.price_value ?? 0)); break;
+      case "price_desc": arr.sort((a, b) => (b.price_value ?? 0) - (a.price_value ?? 0)); break;
+      case "newest": arr.sort((a, b) => (b.most_viewed ? 1 : 0) - (a.most_viewed ? 1 : 0)); break;
+      case "popularity": arr.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0)); break;
+      default: break;
+    }
+    return arr;
+  }, [filtered, sort]);
+
+  const totalPages = Math.max(1, Math.ceil(sorted.length / perPage));
+  const currentPage = Math.min(page, totalPages);
+  const paged = sorted.slice((currentPage - 1) * perPage, currentPage * perPage);
+
+  const gridCols = cols === 2 ? "md:grid-cols-2" : cols === 3 ? "md:grid-cols-3" : "md:grid-cols-4";
+
   return (
     <div className="min-h-screen bg-white text-neutral-900">
       <SiteHeader />
@@ -216,44 +248,124 @@ function CategoryPage() {
         </aside>
 
         <div>
-          <div className="flex items-end justify-between mb-6">
+          <div className="flex flex-wrap items-end justify-between gap-4 mb-4">
             <div>
               <h1 className="text-3xl font-bold">{category.name}</h1>
-              <p className="text-sm text-neutral-500 mt-1">{filtered.length} de {products.length} produto{products.length !== 1 ? "s" : ""}</p>
+              <p className="text-sm text-neutral-500 mt-1">{sorted.length} de {products.length} produto{products.length !== 1 ? "s" : ""}</p>
             </div>
           </div>
 
-          {filtered.length === 0 ? (
+          {/* Toolbar */}
+          <div className="flex flex-wrap items-center justify-between gap-4 border-y border-neutral-200 py-3 mb-6 text-sm">
+            <div className="flex items-center gap-4">
+              <div className="flex items-center gap-2 text-neutral-600">
+                <span>Mostrar:</span>
+                {[9, 12, 18, 24].map((n, i) => (
+                  <span key={n} className="flex items-center gap-2">
+                    <button
+                      onClick={() => { setPerPage(n); setPage(1); }}
+                      className={`hover:text-[#A7144C] ${perPage === n ? "font-bold text-neutral-900" : ""}`}
+                    >
+                      {n}
+                    </button>
+                    {i < 3 && <span className="text-neutral-300">/</span>}
+                  </span>
+                ))}
+              </div>
+              <div className="hidden sm:flex items-center gap-1 border-l border-neutral-200 pl-4">
+                {[
+                  { c: 2 as const, Icon: Grid2x2 },
+                  { c: 3 as const, Icon: Grid3x3 },
+                  { c: 4 as const, Icon: LayoutGrid },
+                ].map(({ c, Icon }) => (
+                  <button
+                    key={c}
+                    onClick={() => setCols(c)}
+                    aria-label={`${c} colunas`}
+                    className={`p-1.5 rounded hover:bg-neutral-100 ${cols === c ? "text-[#A7144C]" : "text-neutral-500"}`}
+                  >
+                    <Icon size={18} />
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value as SortKey)}
+              className="border border-neutral-300 rounded px-3 py-1.5 text-sm bg-white outline-none focus:border-[#A7144C]"
+            >
+              {(Object.keys(SORT_LABELS) as SortKey[]).map((k) => (
+                <option key={k} value={k}>{SORT_LABELS[k]}</option>
+              ))}
+            </select>
+          </div>
+
+          {sorted.length === 0 ? (
             <div className="border border-dashed border-neutral-300 rounded-lg p-12 text-center text-neutral-500">
               Nenhum produto encontrado com os filtros selecionados.
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
-              {filtered.map((p) => (
-                <Link
-                  key={p.id}
-                  to="/produto/$slug"
-                  params={{ slug: p.slug }}
-                  className="group border border-neutral-200 rounded-lg overflow-hidden bg-white hover:shadow-lg hover:border-[#A7144C]/40 transition-all block"
-                >
-                  <div className="relative aspect-square bg-neutral-50 overflow-hidden">
-                    {p.main_image && (
-                      <SupabaseImage src={p.main_image} alt={p.name} loading="lazy" className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300" />
-                    )}
-                    <span className="absolute top-2 right-2 w-9 h-9 rounded-full bg-white/90 grid place-items-center text-neutral-600 shadow">
-                      <Heart size={16} />
-                    </span>
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-sm font-medium line-clamp-2 min-h-[2.5rem]">{p.name}</h3>
-                    <div className="mt-2 flex items-baseline gap-2">
-                      {p.old_price && <span className="text-xs text-neutral-400 line-through">{p.old_price}</span>}
-                      <span className="font-bold text-[#A7144C]">{p.price}</span>
+            <>
+              <div className={`grid grid-cols-2 ${gridCols} gap-5`}>
+                {paged.map((p) => (
+                  <Link
+                    key={p.id}
+                    to="/produto/$slug"
+                    params={{ slug: p.slug }}
+                    className="group border border-neutral-200 rounded-lg overflow-hidden bg-white hover:shadow-lg hover:border-[#A7144C]/40 transition-all block"
+                  >
+                    <div className="relative aspect-square bg-neutral-50 overflow-hidden">
+                      {p.main_image && (
+                        <SupabaseImage src={p.main_image} alt={p.name} loading="lazy" className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300" />
+                      )}
+                      <span className="absolute top-2 right-2 w-9 h-9 rounded-full bg-white/90 grid place-items-center text-neutral-600 shadow">
+                        <Heart size={16} />
+                      </span>
                     </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+                    <div className="p-4">
+                      <h3 className="text-sm font-medium line-clamp-2 min-h-[2.5rem]">{p.name}</h3>
+                      <div className="mt-2 flex items-baseline gap-2">
+                        {p.old_price && <span className="text-xs text-neutral-400 line-through">{p.old_price}</span>}
+                        <span className="font-bold text-[#A7144C]">{p.price}</span>
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center gap-2 mt-8">
+                  <button
+                    onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    disabled={currentPage === 1}
+                    className="p-2 rounded border border-neutral-200 disabled:opacity-40 hover:border-[#A7144C]"
+                  >
+                    <ChevronLeft size={16} />
+                  </button>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
+                    <button
+                      key={n}
+                      onClick={() => setPage(n)}
+                      className={`w-9 h-9 rounded border text-sm ${
+                        n === currentPage
+                          ? "bg-[#A7144C] text-white border-[#A7144C]"
+                          : "border-neutral-200 hover:border-[#A7144C]"
+                      }`}
+                    >
+                      {n}
+                    </button>
+                  ))}
+                  <button
+                    onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                    disabled={currentPage === totalPages}
+                    className="p-2 rounded border border-neutral-200 disabled:opacity-40 hover:border-[#A7144C]"
+                  >
+                    <ChevRight size={16} />
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </div>
       </section>
