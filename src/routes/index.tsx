@@ -145,8 +145,12 @@ function Home() {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mt-6">
             {categorias.filter((c) => !c.parent_id).map((c) => (
               <Link key={c.id} to="/categoria/$slug" params={{ slug: c.slug }} className="group text-center block">
-                <div className="aspect-square rounded-full overflow-hidden bg-neutral-100 border border-neutral-200 group-hover:border-[#A7144C] transition-all">
-                  {c.image_url && <SupabaseImage src={c.image_url} alt={c.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />}
+                <div className="aspect-square rounded-full overflow-hidden bg-neutral-100 border border-neutral-200 group-hover:border-[#A7144C] transition-all grid place-items-center">
+                  {c.image_url ? (
+                    <SupabaseImage src={c.image_url} alt={c.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+                  ) : (
+                    <ImageIcon className="w-10 h-10 text-neutral-300" />
+                  )}
                 </div>
                 <div className="mt-3 font-semibold text-sm tracking-wide">{c.name}</div>
                 <div className="text-xs text-neutral-500">{c.product_count} produtos</div>
