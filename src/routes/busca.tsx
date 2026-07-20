@@ -85,9 +85,9 @@ function BuscaPage() {
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {products.map((p) => (
-              <div key={p.id} className="bg-white rounded-lg border hover:shadow-md transition-shadow overflow-hidden group flex flex-col">
+              <div key={p.id} className="bg-white rounded-lg border hover:shadow-md transition-shadow overflow-visible group flex flex-col relative">
                 <Link to="/produto/$slug" params={{ slug: p.slug }} className="block">
-                  <div className="aspect-square bg-neutral-100 overflow-hidden">
+                  <div className="aspect-square bg-neutral-100 overflow-hidden rounded-t-lg">
                     <SupabaseImage
                       src={p.main_image ?? undefined}
                       alt={p.name}
@@ -99,11 +99,7 @@ function BuscaPage() {
                     <p className="mt-2 text-[#A7144C] font-bold">{p.price}</p>
                   </div>
                 </Link>
-                <div className="px-3 pb-3 mt-auto">
-                  <Link to="/checkout" search={{ slug: p.slug, qty: 1 }} className="block w-full text-center bg-[#A7144C] hover:bg-[#8b1140] text-white text-xs font-semibold py-2 rounded-full">
-                    SOLICITAR ORÇAMENTO
-                  </Link>
-                </div>
+                <ProductHoverCard product={p} whatsapp={whatsapp} accent="#A7144C" category={cat?.name} />
               </div>
             ))}
           </div>
