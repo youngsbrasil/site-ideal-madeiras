@@ -18,9 +18,13 @@ import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminProdutosRouteImport } from './routes/_authenticated/admin.produtos'
+import { Route as AuthenticatedAdminFeedsRouteImport } from './routes/_authenticated/admin.feeds'
 import { Route as AuthenticatedAdminConfiguracoesRouteImport } from './routes/_authenticated/admin.configuracoes'
 import { Route as AuthenticatedAdminCategoriasRouteImport } from './routes/_authenticated/admin.categorias'
 import { Route as AuthenticatedAdminBannersRouteImport } from './routes/_authenticated/admin.banners'
+import { Route as ApiPublicFeedMetaCsvRouteImport } from './routes/api/public/feed.meta.csv'
+import { Route as ApiPublicFeedGoogleXmlRouteImport } from './routes/api/public/feed.google.xml'
+import { Route as ApiPublicFeedGoogleCsvRouteImport } from './routes/api/public/feed.google.csv'
 
 const BuscaRoute = BuscaRouteImport.update({
   id: '/busca',
@@ -67,6 +71,11 @@ const AuthenticatedAdminProdutosRoute =
     path: '/produtos',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminFeedsRoute = AuthenticatedAdminFeedsRouteImport.update({
+  id: '/feeds',
+  path: '/feeds',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminConfiguracoesRoute =
   AuthenticatedAdminConfiguracoesRouteImport.update({
     id: '/configuracoes',
@@ -85,6 +94,21 @@ const AuthenticatedAdminBannersRoute =
     path: '/banners',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const ApiPublicFeedMetaCsvRoute = ApiPublicFeedMetaCsvRouteImport.update({
+  id: '/api/public/feed/meta/csv',
+  path: '/api/public/feed/meta/csv',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicFeedGoogleXmlRoute = ApiPublicFeedGoogleXmlRouteImport.update({
+  id: '/api/public/feed/google/xml',
+  path: '/api/public/feed/google/xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicFeedGoogleCsvRoute = ApiPublicFeedGoogleCsvRouteImport.update({
+  id: '/api/public/feed/google/csv',
+  path: '/api/public/feed/google/csv',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -96,8 +120,12 @@ export interface FileRoutesByFullPath {
   '/admin/banners': typeof AuthenticatedAdminBannersRoute
   '/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
+  '/admin/feeds': typeof AuthenticatedAdminFeedsRoute
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/api/public/feed/google/csv': typeof ApiPublicFeedGoogleCsvRoute
+  '/api/public/feed/google/xml': typeof ApiPublicFeedGoogleXmlRoute
+  '/api/public/feed/meta/csv': typeof ApiPublicFeedMetaCsvRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -108,8 +136,12 @@ export interface FileRoutesByTo {
   '/admin/banners': typeof AuthenticatedAdminBannersRoute
   '/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
+  '/admin/feeds': typeof AuthenticatedAdminFeedsRoute
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/api/public/feed/google/csv': typeof ApiPublicFeedGoogleCsvRoute
+  '/api/public/feed/google/xml': typeof ApiPublicFeedGoogleXmlRoute
+  '/api/public/feed/meta/csv': typeof ApiPublicFeedMetaCsvRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -123,8 +155,12 @@ export interface FileRoutesById {
   '/_authenticated/admin/banners': typeof AuthenticatedAdminBannersRoute
   '/_authenticated/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
   '/_authenticated/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
+  '/_authenticated/admin/feeds': typeof AuthenticatedAdminFeedsRoute
   '/_authenticated/admin/produtos': typeof AuthenticatedAdminProdutosRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/api/public/feed/google/csv': typeof ApiPublicFeedGoogleCsvRoute
+  '/api/public/feed/google/xml': typeof ApiPublicFeedGoogleXmlRoute
+  '/api/public/feed/meta/csv': typeof ApiPublicFeedMetaCsvRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -138,8 +174,12 @@ export interface FileRouteTypes {
     | '/admin/banners'
     | '/admin/categorias'
     | '/admin/configuracoes'
+    | '/admin/feeds'
     | '/admin/produtos'
     | '/admin/'
+    | '/api/public/feed/google/csv'
+    | '/api/public/feed/google/xml'
+    | '/api/public/feed/meta/csv'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -150,8 +190,12 @@ export interface FileRouteTypes {
     | '/admin/banners'
     | '/admin/categorias'
     | '/admin/configuracoes'
+    | '/admin/feeds'
     | '/admin/produtos'
     | '/admin'
+    | '/api/public/feed/google/csv'
+    | '/api/public/feed/google/xml'
+    | '/api/public/feed/meta/csv'
   id:
     | '__root__'
     | '/'
@@ -164,8 +208,12 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/banners'
     | '/_authenticated/admin/categorias'
     | '/_authenticated/admin/configuracoes'
+    | '/_authenticated/admin/feeds'
     | '/_authenticated/admin/produtos'
     | '/_authenticated/admin/'
+    | '/api/public/feed/google/csv'
+    | '/api/public/feed/google/xml'
+    | '/api/public/feed/meta/csv'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -175,6 +223,9 @@ export interface RootRouteChildren {
   BuscaRoute: typeof BuscaRoute
   CategoriaSlugRoute: typeof CategoriaSlugRoute
   ProdutoSlugRoute: typeof ProdutoSlugRoute
+  ApiPublicFeedGoogleCsvRoute: typeof ApiPublicFeedGoogleCsvRoute
+  ApiPublicFeedGoogleXmlRoute: typeof ApiPublicFeedGoogleXmlRoute
+  ApiPublicFeedMetaCsvRoute: typeof ApiPublicFeedMetaCsvRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -242,6 +293,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminProdutosRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/feeds': {
+      id: '/_authenticated/admin/feeds'
+      path: '/feeds'
+      fullPath: '/admin/feeds'
+      preLoaderRoute: typeof AuthenticatedAdminFeedsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/configuracoes': {
       id: '/_authenticated/admin/configuracoes'
       path: '/configuracoes'
@@ -263,6 +321,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminBannersRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/api/public/feed/meta/csv': {
+      id: '/api/public/feed/meta/csv'
+      path: '/api/public/feed/meta/csv'
+      fullPath: '/api/public/feed/meta/csv'
+      preLoaderRoute: typeof ApiPublicFeedMetaCsvRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/feed/google/xml': {
+      id: '/api/public/feed/google/xml'
+      path: '/api/public/feed/google/xml'
+      fullPath: '/api/public/feed/google/xml'
+      preLoaderRoute: typeof ApiPublicFeedGoogleXmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/feed/google/csv': {
+      id: '/api/public/feed/google/csv'
+      path: '/api/public/feed/google/csv'
+      fullPath: '/api/public/feed/google/csv'
+      preLoaderRoute: typeof ApiPublicFeedGoogleCsvRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -270,6 +349,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminBannersRoute: typeof AuthenticatedAdminBannersRoute
   AuthenticatedAdminCategoriasRoute: typeof AuthenticatedAdminCategoriasRoute
   AuthenticatedAdminConfiguracoesRoute: typeof AuthenticatedAdminConfiguracoesRoute
+  AuthenticatedAdminFeedsRoute: typeof AuthenticatedAdminFeedsRoute
   AuthenticatedAdminProdutosRoute: typeof AuthenticatedAdminProdutosRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
@@ -278,6 +358,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminBannersRoute: AuthenticatedAdminBannersRoute,
   AuthenticatedAdminCategoriasRoute: AuthenticatedAdminCategoriasRoute,
   AuthenticatedAdminConfiguracoesRoute: AuthenticatedAdminConfiguracoesRoute,
+  AuthenticatedAdminFeedsRoute: AuthenticatedAdminFeedsRoute,
   AuthenticatedAdminProdutosRoute: AuthenticatedAdminProdutosRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
@@ -303,6 +384,9 @@ const rootRouteChildren: RootRouteChildren = {
   BuscaRoute: BuscaRoute,
   CategoriaSlugRoute: CategoriaSlugRoute,
   ProdutoSlugRoute: ProdutoSlugRoute,
+  ApiPublicFeedGoogleCsvRoute: ApiPublicFeedGoogleCsvRoute,
+  ApiPublicFeedGoogleXmlRoute: ApiPublicFeedGoogleXmlRoute,
+  ApiPublicFeedMetaCsvRoute: ApiPublicFeedMetaCsvRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
