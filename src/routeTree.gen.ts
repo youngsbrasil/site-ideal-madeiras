@@ -17,6 +17,7 @@ import { Route as ProdutoSlugRouteImport } from './routes/produto.$slug'
 import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as ApiPublicImportWpRouteImport } from './routes/api/public/import-wp'
 import { Route as AuthenticatedAdminProdutosRouteImport } from './routes/_authenticated/admin.produtos'
 import { Route as AuthenticatedAdminFeedsRouteImport } from './routes/_authenticated/admin.feeds'
 import { Route as AuthenticatedAdminConfiguracoesRouteImport } from './routes/_authenticated/admin.configuracoes'
@@ -64,6 +65,11 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const ApiPublicImportWpRoute = ApiPublicImportWpRouteImport.update({
+  id: '/api/public/import-wp',
+  path: '/api/public/import-wp',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminProdutosRoute =
   AuthenticatedAdminProdutosRouteImport.update({
@@ -122,6 +128,7 @@ export interface FileRoutesByFullPath {
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/admin/feeds': typeof AuthenticatedAdminFeedsRoute
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
+  '/api/public/import-wp': typeof ApiPublicImportWpRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/feed/google/csv': typeof ApiPublicFeedGoogleCsvRoute
   '/api/public/feed/google/xml': typeof ApiPublicFeedGoogleXmlRoute
@@ -138,6 +145,7 @@ export interface FileRoutesByTo {
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/admin/feeds': typeof AuthenticatedAdminFeedsRoute
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
+  '/api/public/import-wp': typeof ApiPublicImportWpRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/feed/google/csv': typeof ApiPublicFeedGoogleCsvRoute
   '/api/public/feed/google/xml': typeof ApiPublicFeedGoogleXmlRoute
@@ -157,6 +165,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/_authenticated/admin/feeds': typeof AuthenticatedAdminFeedsRoute
   '/_authenticated/admin/produtos': typeof AuthenticatedAdminProdutosRoute
+  '/api/public/import-wp': typeof ApiPublicImportWpRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/feed/google/csv': typeof ApiPublicFeedGoogleCsvRoute
   '/api/public/feed/google/xml': typeof ApiPublicFeedGoogleXmlRoute
@@ -176,6 +185,7 @@ export interface FileRouteTypes {
     | '/admin/configuracoes'
     | '/admin/feeds'
     | '/admin/produtos'
+    | '/api/public/import-wp'
     | '/admin/'
     | '/api/public/feed/google/csv'
     | '/api/public/feed/google/xml'
@@ -192,6 +202,7 @@ export interface FileRouteTypes {
     | '/admin/configuracoes'
     | '/admin/feeds'
     | '/admin/produtos'
+    | '/api/public/import-wp'
     | '/admin'
     | '/api/public/feed/google/csv'
     | '/api/public/feed/google/xml'
@@ -210,6 +221,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/configuracoes'
     | '/_authenticated/admin/feeds'
     | '/_authenticated/admin/produtos'
+    | '/api/public/import-wp'
     | '/_authenticated/admin/'
     | '/api/public/feed/google/csv'
     | '/api/public/feed/google/xml'
@@ -223,6 +235,7 @@ export interface RootRouteChildren {
   BuscaRoute: typeof BuscaRoute
   CategoriaSlugRoute: typeof CategoriaSlugRoute
   ProdutoSlugRoute: typeof ProdutoSlugRoute
+  ApiPublicImportWpRoute: typeof ApiPublicImportWpRoute
   ApiPublicFeedGoogleCsvRoute: typeof ApiPublicFeedGoogleCsvRoute
   ApiPublicFeedGoogleXmlRoute: typeof ApiPublicFeedGoogleXmlRoute
   ApiPublicFeedMetaCsvRoute: typeof ApiPublicFeedMetaCsvRoute
@@ -285,6 +298,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/'
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/api/public/import-wp': {
+      id: '/api/public/import-wp'
+      path: '/api/public/import-wp'
+      fullPath: '/api/public/import-wp'
+      preLoaderRoute: typeof ApiPublicImportWpRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/produtos': {
       id: '/_authenticated/admin/produtos'
@@ -384,6 +404,7 @@ const rootRouteChildren: RootRouteChildren = {
   BuscaRoute: BuscaRoute,
   CategoriaSlugRoute: CategoriaSlugRoute,
   ProdutoSlugRoute: ProdutoSlugRoute,
+  ApiPublicImportWpRoute: ApiPublicImportWpRoute,
   ApiPublicFeedGoogleCsvRoute: ApiPublicFeedGoogleCsvRoute,
   ApiPublicFeedGoogleXmlRoute: ApiPublicFeedGoogleXmlRoute,
   ApiPublicFeedMetaCsvRoute: ApiPublicFeedMetaCsvRoute,
@@ -391,3 +412,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
