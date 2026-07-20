@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ImgHTMLAttributes } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { proxyImg } from "@/lib/site-data";
 
@@ -19,7 +19,7 @@ function mediaPathFromUrl(url: string) {
   }
 }
 
-export function SupabaseImage({ src, alt, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) {
+export function SupabaseImage({ src, alt, ...props }: ImgHTMLAttributes<HTMLImageElement>) {
   const [resolvedSrc, setResolvedSrc] = useState(() => proxyImg(src));
 
   useEffect(() => {

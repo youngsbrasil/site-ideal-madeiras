@@ -2,7 +2,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Upload, Link as LinkIcon } from "lucide-react";
+import { Upload } from "lucide-react";
 import { SupabaseImage } from "@/components/SupabaseImage";
 
 export function ImageInput({
