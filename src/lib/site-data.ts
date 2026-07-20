@@ -43,6 +43,24 @@ export type Banner = {
   active: boolean;
 };
 
+export type ShoppablePin = {
+  id: string;
+  scene_id: string;
+  product_id: string | null;
+  x: number;
+  y: number;
+  label: string | null;
+};
+
+export type ShoppableScene = {
+  id: string;
+  title: string | null;
+  image_url: string;
+  active: boolean;
+  sort_order: number;
+  pins: ShoppablePin[];
+};
+
 export type SiteSettings = {
   nome?: string;
   whatsapp?: string;
