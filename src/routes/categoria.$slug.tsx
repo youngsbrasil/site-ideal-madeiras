@@ -138,13 +138,21 @@ function CategoryPage() {
   const [cols, setCols] = useState<2 | 3 | 4>(3);
   const [page, setPage] = useState(1);
 
+  const priceOf = (p: Product): number => {
+    if (p.price_value != null && !isNaN(p.price_value)) return p.price_value;
+    const raw = (p.price ?? "").replace(/[^\d,.-]/g, "").replace(/\.(?=\d{3}(\D|$))/g, "").replace(",", ".");
+    const n = parseFloat(raw);
+    return isNaN(n) ? 0 : n;
+  };
+
   const sorted = useMemo(() => {
     const arr = [...filtered];
     switch (sort) {
-      case "price_asc": arr.sort((a, b) => (a.price_value ?? 0) - (b.price_value ?? 0)); break;
-      case "price_desc": arr.sort((a, b) => (b.price_value ?? 0) - (a.price_value ?? 0)); break;
-      case "newest": arr.sort((a, b) => (b.most_viewed ? 1 : 0) - (a.most_viewed ? 1 : 0)); break;
-      case "popularity": arr.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0)); break;
+      case "price_asc": arr.sort((a, b) => priceOf(a) - priceOf(b)); break;
+      case "price_desc": arr.sort((a, b) => priceOf(b) - priceOf(a)); break;
+      case "newest": arr.sort((a, b) => (b.created_at ?? "").localeCompare(a.created_at ?? "")); break;
+      case "popularity": arr.sort((a, b) => Number(b.most_viewed) - Number(a.most_viewed) || Number(b.featured) - Number(a.featured)); break;
+      case "rating": arr.sort((a, b) => Number(b.featured) - Number(a.featured)); break;
       default: break;
     }
     return arr;

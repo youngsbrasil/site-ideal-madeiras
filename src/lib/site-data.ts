@@ -29,6 +29,7 @@ export type Product = {
   woods: string[];
   finishes: string[];
   price_value: number | null;
+  created_at?: string;
 };
 
 export type Banner = {
