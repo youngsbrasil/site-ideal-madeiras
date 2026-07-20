@@ -312,6 +312,58 @@ function ProductForm({
         </div>
       </div>
 
+      <div className="pt-4 border-t">
+        <Label className="text-base">Filtros de busca</Label>
+        <p className="text-xs text-muted-foreground mb-3">
+          Valores separados por vírgula. Aparecem como filtros nas páginas de categoria e busca.
+        </p>
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <Label>Tamanhos</Label>
+            <Input
+              placeholder="Ex: 60cm, 70cm, 80cm"
+              value={(value.sizes ?? []).join(", ")}
+              onChange={(e) => set({ sizes: parseList(e.target.value) })}
+            />
+          </div>
+          <div>
+            <Label>Tipos</Label>
+            <Input
+              placeholder="Ex: Pivotante, De abrir"
+              value={(value.types ?? []).join(", ")}
+              onChange={(e) => set({ types: parseList(e.target.value) })}
+            />
+          </div>
+          <div>
+            <Label>Madeiras</Label>
+            <Input
+              placeholder="Ex: Angelim, Cedro, Freijó"
+              value={(value.woods ?? []).join(", ")}
+              onChange={(e) => set({ woods: parseList(e.target.value) })}
+            />
+          </div>
+          <div>
+            <Label>Acabamentos</Label>
+            <Input
+              placeholder="Ex: Natural, Envernizado, Pintado"
+              value={(value.finishes ?? []).join(", ")}
+              onChange={(e) => set({ finishes: parseList(e.target.value) })}
+            />
+          </div>
+          <div>
+            <Label>Preço numérico (para filtro de faixa)</Label>
+            <Input
+              type="number"
+              step="0.01"
+              placeholder="Ex: 1250.00"
+              value={value.price_value ?? ""}
+              onChange={(e) => set({ price_value: e.target.value === "" ? null : parseFloat(e.target.value) })}
+            />
+          </div>
+        </div>
+      </div>
+
+
       <div className="grid grid-cols-3 gap-4 pt-4 border-t">
         <div className="flex items-center gap-2">
           <Switch checked={value.active ?? true} onCheckedChange={(v) => set({ active: v })} />
