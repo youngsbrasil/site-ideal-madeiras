@@ -63,11 +63,19 @@ export async function fetchProducts(): Promise<Product[]> {
     .eq("active", true)
     .order("sort_order");
   if (error) throw error;
-  return (data ?? []).map((p: any) => ({
+  return (data ?? []).map(normalizeProduct) as Product[];
+}
+
+function normalizeProduct(p: any): Product {
+  return {
     ...p,
     gallery: Array.isArray(p.gallery) ? p.gallery : [],
     specifications: Array.isArray(p.specifications) ? p.specifications : [],
-  })) as Product[];
+    sizes: Array.isArray(p.sizes) ? p.sizes : [],
+    types: Array.isArray(p.types) ? p.types : [],
+    woods: Array.isArray(p.woods) ? p.woods : [],
+    finishes: Array.isArray(p.finishes) ? p.finishes : [],
+  };
 }
 
 export async function fetchAllProductsAdmin(): Promise<Product[]> {
