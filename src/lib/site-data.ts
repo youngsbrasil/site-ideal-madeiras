@@ -81,22 +81,14 @@ function normalizeProduct(p: any): Product {
 export async function fetchAllProductsAdmin(): Promise<Product[]> {
   const { data, error } = await supabase.from("products").select("*").order("created_at", { ascending: false });
   if (error) throw error;
-  return (data ?? []).map((p: any) => ({
-    ...p,
-    gallery: Array.isArray(p.gallery) ? p.gallery : [],
-    specifications: Array.isArray(p.specifications) ? p.specifications : [],
-  })) as Product[];
+  return (data ?? []).map(normalizeProduct) as Product[];
 }
 
 export async function fetchProductBySlug(slug: string): Promise<Product | null> {
   const { data, error } = await supabase.from("products").select("*").eq("slug", slug).maybeSingle();
   if (error) throw error;
   if (!data) return null;
-  return {
-    ...(data as any),
-    gallery: Array.isArray((data as any).gallery) ? (data as any).gallery : [],
-    specifications: Array.isArray((data as any).specifications) ? (data as any).specifications : [],
-  } as Product;
+  return normalizeProduct(data);
 }
 
 export async function fetchBanners(): Promise<Banner[]> {
