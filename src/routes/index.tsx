@@ -7,7 +7,7 @@ import {
   MessageCircle, Star, ChevronRight, ChevronLeft, Image as ImageIcon,
 } from "lucide-react";
 import {
-  fetchCategories, fetchProducts, fetchBanners, fetchSettings, proxyImg,
+  fetchCategories, fetchProducts, fetchBanners, fetchSettings, proxyImg, productPath,
   type Product, type Banner,
 } from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
