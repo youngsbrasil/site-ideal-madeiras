@@ -1,5 +1,6 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { Search, User, Heart, ShoppingCart, Phone, Facebook, Instagram } from "lucide-react";
 import { fetchCategories, fetchSettings, proxyImg } from "@/lib/site-data";
 
@@ -8,9 +9,21 @@ const LOGO = "https://idealmadeiras.com.br/wp-content/uploads/2024/09/logo-ideal
 export function SiteHeader() {
   const { data: categorias = [] } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
   const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
+  const navigate = useNavigate();
+  const [q, setQ] = useState("");
+  const [categoria, setCategoria] = useState("");
 
   const topbarText = settings?.topbar.texto || "FRETE GRÁTIS PARA TODOS OS PEDIDOS ACIMA DE R$ 150";
   const telefone = settings?.site.telefone || "(11) 4200-0000";
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (categoria && !q.trim()) {
+      navigate({ to: "/categoria/$slug", params: { slug: categoria } });
+      return;
+    }
+    navigate({ to: "/busca", search: { q: q.trim(), categoria } });
+  };
 
   return (
     <>
@@ -34,17 +47,20 @@ export function SiteHeader() {
               <img src={proxyImg(LOGO)} alt="Lojas Ideal Madeiras" className="h-14 w-auto" />
             </Link>
 
-            <form className="min-w-0">
+            <form className="min-w-0" onSubmit={onSubmit}>
               <div className="flex items-stretch rounded-full bg-white overflow-hidden h-11">
                 <input
                   type="text"
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
                   placeholder="Buscar produtos"
                   className="flex-1 min-w-0 px-5 text-sm text-neutral-800 outline-none"
                 />
                 <div className="hidden md:flex items-center border-l border-neutral-200 px-3">
                   <select
                     className="bg-transparent text-xs font-semibold text-neutral-700 outline-none pr-1 max-w-[140px] truncate"
-                    defaultValue=""
+                    value={categoria}
+                    onChange={(e) => setCategoria(e.target.value)}
                     aria-label="Categoria"
                   >
                     <option value="">SELECIONE A CATEGORIA</option>
@@ -62,6 +78,7 @@ export function SiteHeader() {
                 </button>
               </div>
             </form>
+
 
             <div className="flex items-center gap-5 md:gap-6">
               <Link to="/auth" className="hidden sm:flex items-center gap-2 text-xs font-bold tracking-wide hover:text-[#f59318]">
