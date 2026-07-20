@@ -248,7 +248,7 @@ function CategoriesAdmin() {
                   ))}
                 </select>
               </div>
-              <ImageInput value={editing.image_url ?? ""} onChange={(url) => setEditing({ ...editing, image_url: url })} />
+              <ImageInput label="Thumbnail (aparece na home e no menu)" value={editing.image_url ?? ""} onChange={(url) => setEditing({ ...editing, image_url: url })} />
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <Label>Qtd. produtos (exibição)</Label>
