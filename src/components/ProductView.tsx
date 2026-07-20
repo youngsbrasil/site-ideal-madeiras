@@ -133,7 +133,7 @@ export function ProductView({ product }: { product: Product }) {
             <div className="mt-3 h-0.5 w-16 bg-[#A7144C]" />
             <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-5">
               {relacionados.map((p) => (
-                <Link key={p.id} to={productPath(p, categorias) as string} className="group border border-neutral-200 rounded-lg overflow-hidden bg-white hover:shadow-lg hover:border-[#A7144C]/40 transition-all">
+                <Link key={p.id} to={productPath(p, categorias) as any} className="group border border-neutral-200 rounded-lg overflow-hidden bg-white hover:shadow-lg hover:border-[#A7144C]/40 transition-all">
                   <div className="aspect-square bg-neutral-50 overflow-hidden">
                     {p.main_image && <SupabaseImage src={p.main_image} alt={p.name} loading="lazy" className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform" />}
                   </div>
