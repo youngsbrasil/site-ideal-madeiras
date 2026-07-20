@@ -276,7 +276,11 @@ function Home() {
             <h4 className="text-white font-semibold mb-4">Categorias</h4>
             <ul className="space-y-2 text-sm">
               {categorias.map((c) => (
-                <li key={c.id}><a href="#" className="hover:text-white">{c.name.charAt(0) + c.name.slice(1).toLowerCase()}</a></li>
+                <li key={c.id}>
+                  <Link to="/categoria/$slug" params={{ slug: c.slug }} className="hover:text-white">
+                    {c.name.charAt(0) + c.name.slice(1).toLowerCase()}
+                  </Link>
+                </li>
               ))}
             </ul>
           </div>
