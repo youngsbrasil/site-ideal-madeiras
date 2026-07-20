@@ -46,7 +46,7 @@ export const Route = createFileRoute("/api/public/feed/google/csv")({
             : null;
           const regular = oldPrice ?? price;
           const sale = oldPrice ? price : "";
-          const gallery = (p.gallery ?? []).slice(0, 10).join(",");
+          const gallery = ((p.gallery as string[] | null) ?? []).slice(0, 10).join(",");
           const desc = stripHtml((p as any).description) || p.name;
           lines.push(
             [

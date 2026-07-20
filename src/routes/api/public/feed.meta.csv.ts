@@ -47,7 +47,7 @@ export const Route = createFileRoute("/api/public/feed/meta/csv")({
           const sale = oldPrice ? price : "";
           const link = `${origin}/produto/${p.slug}`;
           const cat = p.category_id ? catById.get(p.category_id) ?? "" : "";
-          const gallery = (p.gallery ?? []).slice(0, 10).join(",");
+          const gallery = ((p.gallery as string[] | null) ?? []).slice(0, 10).join(",");
           const desc = stripHtml((p as any).description) || p.name;
           lines.push(
             [
