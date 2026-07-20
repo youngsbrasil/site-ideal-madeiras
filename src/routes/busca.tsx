@@ -1,20 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { z } from "zod";
-import { zodValidator, fallback } from "@tanstack/zod-adapter";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SupabaseImage } from "@/components/SupabaseImage";
 import type { Product, Category } from "@/lib/site-data";
 
-const searchSchema = z.object({
-  q: fallback(z.string(), "").default(""),
-  categoria: fallback(z.string(), "").default(""),
-});
+type BuscaSearch = { q: string; categoria: string };
 
 export const Route = createFileRoute("/busca")({
-  validateSearch: zodValidator(searchSchema),
+  validateSearch: (s: Record<string, unknown>): BuscaSearch => ({
+    q: typeof s.q === "string" ? s.q : "",
+    categoria: typeof s.categoria === "string" ? s.categoria : "",
+  }),
   component: BuscaPage,
   head: () => ({
     meta: [
