@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   Search,
   User,
@@ -16,6 +16,11 @@ import {
   Star,
   ChevronRight,
 } from "lucide-react";
+import { products as allProducts } from "@/lib/products";
+
+function findSlug(nome: string) {
+  return allProducts.find((p) => p.nome === nome)?.slug;
+}
 
 const IMG = "https://idealmadeiras.com.br/wp-content/uploads";
 
@@ -537,8 +542,16 @@ function ProductCard({
   p: { nome: string; preco: string; img: string };
   compact?: boolean;
 }) {
+  const slug = findSlug(p.nome);
+  const Wrapper: any = slug ? Link : "div";
+  const wrapperProps: any = slug
+    ? { to: "/produto/$slug", params: { slug } }
+    : {};
   return (
-    <div className="group border border-neutral-200 rounded-lg overflow-hidden bg-white hover:shadow-lg hover:border-[#A7144C]/40 transition-all">
+    <Wrapper
+      {...wrapperProps}
+      className="group border border-neutral-200 rounded-lg overflow-hidden bg-white hover:shadow-lg hover:border-[#A7144C]/40 transition-all block"
+    >
       <div className="relative aspect-square bg-neutral-50 overflow-hidden">
         <img
           src={p.img}
@@ -546,16 +559,16 @@ function ProductCard({
           loading="lazy"
           className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300"
         />
-        <button
+        <span
           aria-label="Adicionar à Lista de Desejos"
           className="absolute top-2 right-2 w-9 h-9 rounded-full bg-white/90 grid place-items-center text-neutral-600 hover:text-[#A7144C] shadow"
         >
           <Heart size={16} />
-        </button>
+        </span>
         <div className="absolute inset-x-0 bottom-0 translate-y-full group-hover:translate-y-0 transition-transform">
-          <button className="w-full bg-[#A7144C] text-white text-xs font-semibold py-2.5 hover:bg-[#8b1140]">
-            VISUALIZAÇÃO RÁPIDA
-          </button>
+          <span className="w-full block text-center bg-[#A7144C] text-white text-xs font-semibold py-2.5 hover:bg-[#8b1140]">
+            VER PRODUTO
+          </span>
         </div>
       </div>
       <div className={`p-4 ${compact ? "text-center" : ""}`}>
@@ -571,6 +584,6 @@ function ProductCard({
           {p.preco}
         </div>
       </div>
-    </div>
+    </Wrapper>
   );
 }
