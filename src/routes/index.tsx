@@ -13,6 +13,7 @@ import {
 } from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
+import { ProductHoverCard } from "@/components/ProductHoverCard";
 
 const IMG = "https://idealmadeiras.com.br/wp-content/uploads";
 
