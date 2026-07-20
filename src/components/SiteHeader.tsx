@@ -102,18 +102,37 @@ export function SiteHeader() {
         <nav className="bg-white border-b border-neutral-200">
           <div className="mx-auto max-w-7xl px-4">
             <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 py-3 text-[13px] font-bold tracking-wide uppercase text-neutral-800">
-              {categorias.map((c) => (
-                <li key={c.id}>
-                  <Link
-                    to="/categoria/$slug"
-                    params={{ slug: c.slug }}
-                    className="hover:text-[#f59318] transition-colors"
-                    activeProps={{ className: "text-[#f59318]" }}
-                  >
-                    {c.name}
-                  </Link>
-                </li>
-              ))}
+              {categorias.filter((c) => !c.parent_id).map((c) => {
+                const subs = categorias.filter((s) => s.parent_id === c.id);
+                return (
+                  <li key={c.id} className="relative group">
+                    <Link
+                      to="/categoria/$slug"
+                      params={{ slug: c.slug }}
+                      className="hover:text-[#f59318] transition-colors inline-flex items-center gap-1"
+                      activeProps={{ className: "text-[#f59318]" }}
+                    >
+                      {c.name}
+                      {subs.length > 0 && <span className="text-[9px]">▼</span>}
+                    </Link>
+                    {subs.length > 0 && (
+                      <ul className="absolute left-0 top-full min-w-[220px] bg-white border border-neutral-200 shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-opacity z-50 py-2">
+                        {subs.map((s) => (
+                          <li key={s.id}>
+                            <Link
+                              to="/categoria/$slug"
+                              params={{ slug: s.slug }}
+                              className="block px-4 py-2 text-xs hover:bg-neutral-100 hover:text-[#f59318] normal-case font-medium"
+                            >
+                              {s.name}
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </nav>
