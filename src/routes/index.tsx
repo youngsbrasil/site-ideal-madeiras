@@ -7,8 +7,8 @@ import {
   Truck, CreditCard, ShieldCheck, Mail as MailIcon,
 } from "lucide-react";
 import {
-  fetchCategories, fetchProducts, fetchBanners, fetchSettings, proxyImg, productPath,
-  type Product, type Banner,
+  fetchCategories, fetchProducts, fetchBanners, fetchSettings, fetchShoppableScenes, proxyImg, productPath,
+  type Product, type Banner, type ShoppableScene,
 } from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
