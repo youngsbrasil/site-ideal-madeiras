@@ -248,9 +248,12 @@ function Home() {
             <Link to="/produto/$slug" params={{ slug: oferta.slug }} className="mt-4 block text-center border border-[#f39200] text-[#f39200] hover:bg-[#f39200] hover:text-white text-xs font-semibold py-2 rounded-full">QUICK VIEW</Link>
             <button className="mt-2 inline-flex items-center justify-center gap-1 text-xs text-neutral-500 hover:text-[#f39200]"><Heart size={12} /> Adicionar à lista de Desejos</button>
           </div>
-          <div className="relative overflow-hidden rounded-lg">
-            <img src={proxyImg(`${IMG}/2024/11/COZINHA-795x600.webp`)} alt="Ambiente" className="w-full h-full object-cover" />
-          </div>
+          <HotspotImage
+            imageKey="home_oferta"
+            src={`${IMG}/2024/11/COZINHA-795x600.webp`}
+            alt="Ambiente cozinha"
+            className="min-h-[320px]"
+          />
         </section>
       )}
 
