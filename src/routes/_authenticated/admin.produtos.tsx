@@ -23,7 +23,14 @@ export const Route = createFileRoute("/_authenticated/admin/produtos")({
   component: ProductsAdmin,
 });
 
-type FormState = Partial<Product> & { gallery: string[]; specifications: { label: string; valor: string }[] };
+type FormState = Partial<Product> & {
+  gallery: string[];
+  specifications: { label: string; valor: string }[];
+  sizes: string[];
+  types: string[];
+  woods: string[];
+  finishes: string[];
+};
 
 const empty: FormState = {
   slug: "",
@@ -39,6 +46,11 @@ const empty: FormState = {
   most_viewed: false,
   active: true,
   sort_order: 0,
+  sizes: [],
+  types: [],
+  woods: [],
+  finishes: [],
+  price_value: null,
 };
 
 function ProductsAdmin() {
