@@ -131,53 +131,167 @@ export function ProductXmlImportExport({
   };
 
   // ---------- import ----------
+  // Get elements by local name, ignoring XML namespaces (handles g:title etc.)
+  const byLocal = (root: Element | Document, local: string): Element[] => {
+    const ns = (root as Document).getElementsByTagNameNS
+      ? (root as Document).getElementsByTagNameNS("*", local)
+      : null;
+    if (ns && ns.length) return Array.from(ns) as Element[];
+    // Fallback: match any prefix
+    return Array.from((root as Element).getElementsByTagName("*")).filter(
+      (el) => el.localName === local || el.nodeName === local || el.nodeName.endsWith(":" + local),
+    );
+  };
+  const firstText = (root: Element, local: string): string => {
+    const els = byLocal(root, local);
+    return els.length ? (els[0].textContent ?? "").trim() : "";
+  };
+  const allText = (root: Element, local: string): string[] =>
+    byLocal(root, local).map((e) => (e.textContent ?? "").trim()).filter(Boolean);
+
+  const parseBrPrice = (s: string): { text: string; value: number | null } => {
+    if (!s) return { text: "", value: null };
+    const clean = s.replace(/[^\d,.\-]/g, "");
+    let num: number;
+    if (clean.includes(",") && clean.lastIndexOf(",") > clean.lastIndexOf(".")) {
+      num = parseFloat(clean.replace(/\./g, "").replace(",", "."));
+    } else {
+      num = parseFloat(clean.replace(/,/g, ""));
+    }
+    if (isNaN(num)) return { text: s, value: null };
+    const text = `R$ ${num.toFixed(2).replace(".", ",").replace(/\B(?=(\d{3})+(?!\d))/g, ".")}`;
+    return { text, value: num };
+  };
+
+  const slugFromUrl = (url: string): string => {
+    try {
+      const u = new URL(url);
+      const parts = u.pathname.split("/").filter(Boolean);
+      return parts[parts.length - 1] ?? "";
+    } catch {
+      return "";
+    }
+  };
+
   const parseXml = (xmlText: string): Parsed => {
     const doc = new DOMParser().parseFromString(xmlText, "application/xml");
     const err = doc.getElementsByTagName("parsererror")[0];
     if (err) throw new Error("XML inválido: " + err.textContent);
 
-    const cats: Parsed["categories"] = Array.from(doc.getElementsByTagName("category")).map((c) => {
-      const name = childText(c, "name");
-      const slugRaw = childText(c, "slug");
-      return {
-        name,
-        slug: slugRaw ? slugify(slugRaw) : slugify(name),
-        image_url: childText(c, "image_url") || null,
-        sort_order: Number(childText(c, "sort_order")) || 0,
-      };
-    }).filter((c) => c.name);
+    // ---- Format A: our own <catalog> ----
+    const nativeCats = Array.from(doc.getElementsByTagName("category"));
+    const nativeProds = Array.from(doc.getElementsByTagName("product"));
+    if (nativeCats.length || nativeProds.length) {
+      const cats: Parsed["categories"] = nativeCats.map((c) => {
+        const name = childText(c, "name");
+        const slugRaw = childText(c, "slug");
+        return {
+          name,
+          slug: slugRaw ? slugify(slugRaw) : slugify(name),
+          image_url: childText(c, "image_url") || null,
+          sort_order: Number(childText(c, "sort_order")) || 0,
+        };
+      }).filter((c) => c.name);
 
-    const prods = Array.from(doc.getElementsByTagName("product")).map((p) => {
-      const name = childText(p, "name");
-      const slugRaw = childText(p, "slug");
-      const priceValueStr = childText(p, "price_value");
-      const priceValue = priceValueStr ? Number(priceValueStr) : null;
-      const specsWrap = p.getElementsByTagName("specifications")[0];
-      const specs = specsWrap
-        ? Array.from(specsWrap.getElementsByTagName("spec")).map((s) => ({
-            label: childText(s, "label"),
-            valor: childText(s, "valor"),
-          }))
-        : [];
-      return {
-        name,
-        slug: slugRaw ? slugify(slugRaw) : slugify(name),
-        price: childText(p, "price"),
-        old_price: childText(p, "old_price") || null,
-        price_value: isNaN(priceValue as number) ? null : priceValue,
-        category_slug: childText(p, "category_slug"),
-        main_image: childText(p, "main_image") || null,
-        gallery: childList(p, "gallery", "image"),
-        description: childText(p, "description"),
-        specifications: specs,
-        sizes: childList(p, "sizes", "item"),
-        types: childList(p, "types", "item"),
-        woods: childList(p, "woods", "item"),
-        finishes: childList(p, "finishes", "item"),
-        featured: ["1", "true"].includes(childText(p, "featured").toLowerCase()),
-        most_viewed: ["1", "true"].includes(childText(p, "most_viewed").toLowerCase()),
-        active: childText(p, "active") === "" ? true : ["1", "true"].includes(childText(p, "active").toLowerCase()),
-        sort_order: Number(childText(p, "sort_order")) || 0,
+      const prods = nativeProds.map((p) => {
+        const name = childText(p, "name");
+        const slugRaw = childText(p, "slug");
+        const priceValueStr = childText(p, "price_value");
+        const priceValue = priceValueStr ? Number(priceValueStr) : null;
+        const specsWrap = p.getElementsByTagName("specifications")[0];
+        const specs = specsWrap
+          ? Array.from(specsWrap.getElementsByTagName("spec")).map((s) => ({
+              label: childText(s, "label"),
+              valor: childText(s, "valor"),
+            }))
+          : [];
+        return {
+          name,
+          slug: slugRaw ? slugify(slugRaw) : slugify(name),
+          price: childText(p, "price"),
+          old_price: childText(p, "old_price") || null,
+          price_value: isNaN(priceValue as number) ? null : priceValue,
+          category_slug: childText(p, "category_slug"),
+          main_image: childText(p, "main_image") || null,
+          gallery: childList(p, "gallery", "image"),
+          description: childText(p, "description"),
+          specifications: specs,
+          sizes: childList(p, "sizes", "item"),
+          types: childList(p, "types", "item"),
+          woods: childList(p, "woods", "item"),
+          finishes: childList(p, "finishes", "item"),
+          featured: ["1", "true"].includes(childText(p, "featured").toLowerCase()),
+          most_viewed: ["1", "true"].includes(childText(p, "most_viewed").toLowerCase()),
+          active: childText(p, "active") === "" ? true : ["1", "true"].includes(childText(p, "active").toLowerCase()),
+          sort_order: Number(childText(p, "sort_order")) || 0,
+        };
+      }).filter((p) => p.name);
+
+      return { categories: cats, products: prods };
+    }
+
+    // ---- Format B: Google Shopping RSS / WebToffee feed ----
+    const items = doc.getElementsByTagName("item");
+    if (items.length) {
+      const catMap = new Map<string, { name: string; slug: string; image_url: string | null; sort_order: number }>();
+      const prods: any[] = [];
+
+      Array.from(items).forEach((it) => {
+        const title = firstText(it, "title");
+        if (!title) return;
+        const link = firstText(it, "link");
+        const slug = slugify(slugFromUrl(link) || title);
+
+        // category = leaf of product_type "PORTAS > Pivotante"
+        const rawType = firstText(it, "product_type");
+        const leaf = rawType.split(">").pop()?.trim() ?? "";
+        let categorySlug = "";
+        if (leaf) {
+          categorySlug = slugify(leaf);
+          if (!catMap.has(categorySlug)) {
+            catMap.set(categorySlug, { name: leaf, slug: categorySlug, image_url: null, sort_order: 0 });
+          }
+        }
+
+        const priceRaw = firstText(it, "price") || firstText(it, "sale_price");
+        const salePriceRaw = firstText(it, "sale_price");
+        const price = parseBrPrice(priceRaw);
+        const oldPrice = salePriceRaw && priceRaw !== salePriceRaw ? parseBrPrice(priceRaw) : { text: "", value: null };
+
+        const mainImg = firstText(it, "image_link") || null;
+        const gallery = allText(it, "additional_image_link").filter((u) => u && u !== mainImg);
+
+        const availability = firstText(it, "availability").toLowerCase();
+        const active = availability === "" || availability.includes("stock");
+
+        prods.push({
+          name: title,
+          slug,
+          price: price.text || priceRaw,
+          old_price: oldPrice.text || null,
+          price_value: price.value,
+          category_slug: categorySlug,
+          main_image: mainImg,
+          gallery,
+          description: firstText(it, "description"),
+          specifications: [],
+          sizes: [],
+          types: [],
+          woods: [],
+          finishes: [],
+          featured: false,
+          most_viewed: false,
+          active,
+          sort_order: 0,
+        });
+      });
+
+      return { categories: Array.from(catMap.values()), products: prods };
+    }
+
+    return { categories: [], products: [] };
+  };
+
       };
     }).filter((p) => p.name);
 
