@@ -6,7 +6,7 @@ import {
   MessageCircle, Star, ChevronRight,
 } from "lucide-react";
 import {
-  fetchCategories, fetchProducts, fetchBanners, fetchSettings,
+  fetchCategories, fetchProducts, fetchBanners, fetchSettings, proxyImg,
   type Product,
 } from "@/lib/site-data";
 
