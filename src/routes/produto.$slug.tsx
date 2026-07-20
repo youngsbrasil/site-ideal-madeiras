@@ -13,7 +13,7 @@ import {
   Minus,
   Plus,
 } from "lucide-react";
-import { getProduct, products, WHATSAPP_NUMBER } from "@/lib/products";
+import { getProduct, products, WHATSAPP_NUMBER, type Product } from "@/lib/products";
 
 export const Route = createFileRoute("/produto/$slug")({
   loader: ({ params }) => {
@@ -73,7 +73,7 @@ function ProductError() {
 }
 
 function ProductPage() {
-  const { product } = Route.useLoaderData();
+  const { product } = Route.useLoaderData() as { product: Product };
   const [imgAtiva, setImgAtiva] = useState(product.galeria[0]);
   const [qtd, setQtd] = useState(1);
 
