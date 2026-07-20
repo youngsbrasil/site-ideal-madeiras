@@ -52,6 +52,8 @@ function BuscaPage() {
     queryKey: ["search", q, categoria],
     queryFn: () => fetchResults(q, categoria),
   });
+  const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
+  const whatsapp = settings?.site.whatsapp || "5511942000000";
   const { data: cat } = useQuery({
     queryKey: ["category-by-slug", categoria],
     queryFn: async () => {
