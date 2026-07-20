@@ -47,17 +47,20 @@ export function SiteHeader() {
               <img src={proxyImg(LOGO)} alt="Lojas Ideal Madeiras" className="h-14 w-auto" />
             </Link>
 
-            <form className="min-w-0">
+            <form className="min-w-0" onSubmit={onSubmit}>
               <div className="flex items-stretch rounded-full bg-white overflow-hidden h-11">
                 <input
                   type="text"
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
                   placeholder="Buscar produtos"
                   className="flex-1 min-w-0 px-5 text-sm text-neutral-800 outline-none"
                 />
                 <div className="hidden md:flex items-center border-l border-neutral-200 px-3">
                   <select
                     className="bg-transparent text-xs font-semibold text-neutral-700 outline-none pr-1 max-w-[140px] truncate"
-                    defaultValue=""
+                    value={categoria}
+                    onChange={(e) => setCategoria(e.target.value)}
                     aria-label="Categoria"
                   >
                     <option value="">SELECIONE A CATEGORIA</option>
@@ -75,6 +78,7 @@ export function SiteHeader() {
                 </button>
               </div>
             </form>
+
 
             <div className="flex items-center gap-5 md:gap-6">
               <Link to="/auth" className="hidden sm:flex items-center gap-2 text-xs font-bold tracking-wide hover:text-[#f59318]">
