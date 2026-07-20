@@ -101,8 +101,13 @@ function Home() {
         <nav className="bg-neutral-900 text-white">
           <div className="mx-auto max-w-7xl px-4">
             <ul className="flex flex-wrap items-center gap-x-6 gap-y-2 py-3 text-sm font-medium">
-              {["Início", "Portas", "Janelas", "Fechaduras", "Puxadores", "Pisos", "Acessórios", "Ofertas", "Contato"].map((i) => (
-                <li key={i}><a href="#" className="hover:text-[#f8b7cc] transition-colors">{i}</a></li>
+              <li><Link to="/" className="hover:text-[#f8b7cc] transition-colors">Início</Link></li>
+              {categorias.map((c) => (
+                <li key={c.id}>
+                  <Link to="/categoria/$slug" params={{ slug: c.slug }} className="hover:text-[#f8b7cc] transition-colors">
+                    {c.name.charAt(0) + c.name.slice(1).toLowerCase()}
+                  </Link>
+                </li>
               ))}
               <li className="ml-auto flex items-center gap-2 text-[#f8b7cc]">
                 <MessageCircle size={16} /> Compre pelo WhatsApp
