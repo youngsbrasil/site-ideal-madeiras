@@ -111,6 +111,23 @@ export async function fetchProductBySlug(slug: string): Promise<Product | null> 
   return normalizeProduct(data);
 }
 
+export async function fetchShoppableScenes(activeOnly = true): Promise<ShoppableScene[]> {
+  let q = supabase.from("shoppable_scenes").select("*").order("sort_order");
+  if (activeOnly) q = q.eq("active", true);
+  const { data: scenes, error } = await q;
+  if (error) throw error;
+  if (!scenes || scenes.length === 0) return [];
+  const ids = scenes.map((s: any) => s.id);
+  const { data: pins, error: pErr } = await supabase.from("shoppable_pins").select("*").in("scene_id", ids);
+  if (pErr) throw pErr;
+  return (scenes as any[]).map((s) => ({
+    ...s,
+    pins: ((pins ?? []) as any[]).filter((p) => p.scene_id === s.id).map((p) => ({
+      ...p, x: Number(p.x), y: Number(p.y),
+    })),
+  })) as ShoppableScene[];
+}
+
 export async function fetchBanners(): Promise<Banner[]> {
   const { data, error } = await supabase.from("banners").select("*").eq("active", true).order("sort_order");
   if (error) throw error;
