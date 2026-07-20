@@ -143,7 +143,7 @@ function Home() {
         <section className="mx-auto max-w-7xl px-4 py-10">
           <SectionTitle title="CATEGORIAS" subtitle="Portas, Janelas, Esquadrias, Pisos e muito mais..." />
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mt-6">
-            {categorias.map((c) => (
+            {categorias.filter((c) => !c.parent_id).map((c) => (
               <Link key={c.id} to="/categoria/$slug" params={{ slug: c.slug }} className="group text-center block">
                 <div className="aspect-square rounded-full overflow-hidden bg-neutral-100 border border-neutral-200 group-hover:border-[#A7144C] transition-all">
                   {c.image_url && <SupabaseImage src={c.image_url} alt={c.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />}
