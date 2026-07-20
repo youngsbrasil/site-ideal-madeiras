@@ -57,7 +57,7 @@ export const Route = createFileRoute("/categoria/$slug")({
 });
 
 function CategoryPage() {
-  const { category, products } = Route.useLoaderData();
+  const { category, products } = Route.useLoaderData() as { category: Category; products: Product[] };
   const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
   const { data: categorias = [] } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
   const whatsapp = (settings?.site.whatsapp || "5511942000000").replace(/\D/g, "");
