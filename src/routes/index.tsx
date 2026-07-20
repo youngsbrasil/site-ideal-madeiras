@@ -476,7 +476,7 @@ function ProductCard({ p, compact, showOferta, categorias: catsProp }: { p: Prod
         </div>
         <div className={`p-3 ${compact ? "text-center" : ""}`}>
           <h3 className={`font-medium text-neutral-800 ${compact ? "text-[11px]" : "text-xs"} line-clamp-2 min-h-[2.25rem]`}>{p.name}</h3>
-          {p.category_name && <div className="text-[10px] text-neutral-500 uppercase tracking-wide mt-1">{p.category_name}</div>}
+          
           <div className={`mt-1 font-bold ${compact ? "text-xs" : "text-sm"}`} style={{ color: ORANGE }}>{p.price}</div>
         </div>
       </Link>
