@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as BuscaRouteImport } from './routes/busca'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as SplatRouteImport } from './routes/$'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ProdutoSlugRouteImport } from './routes/produto.$slug'
@@ -40,6 +41,11 @@ const BuscaRoute = BuscaRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SplatRoute = SplatRouteImport.update({
+  id: '/$',
+  path: '/$',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
@@ -118,6 +124,7 @@ const ApiPublicFeedGoogleCsvRoute = ApiPublicFeedGoogleCsvRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
   '/auth': typeof AuthRoute
   '/busca': typeof BuscaRoute
   '/checkout': typeof CheckoutRoute
@@ -136,6 +143,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/$': typeof SplatRoute
   '/auth': typeof AuthRoute
   '/busca': typeof BuscaRoute
   '/checkout': typeof CheckoutRoute
@@ -155,6 +163,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/$': typeof SplatRoute
   '/auth': typeof AuthRoute
   '/busca': typeof BuscaRoute
   '/checkout': typeof CheckoutRoute
@@ -175,6 +184,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/$'
     | '/auth'
     | '/busca'
     | '/checkout'
@@ -193,6 +203,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/$'
     | '/auth'
     | '/busca'
     | '/checkout'
@@ -211,6 +222,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/$'
     | '/auth'
     | '/busca'
     | '/checkout'
@@ -231,6 +243,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  SplatRoute: typeof SplatRoute
   AuthRoute: typeof AuthRoute
   BuscaRoute: typeof BuscaRoute
   CheckoutRoute: typeof CheckoutRoute
@@ -262,6 +275,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/$': {
+      id: '/$'
+      path: '/$'
+      fullPath: '/$'
+      preLoaderRoute: typeof SplatRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -400,6 +420,7 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  SplatRoute: SplatRoute,
   AuthRoute: AuthRoute,
   BuscaRoute: BuscaRoute,
   CheckoutRoute: CheckoutRoute,
