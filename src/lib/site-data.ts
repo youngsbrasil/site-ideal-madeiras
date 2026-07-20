@@ -24,6 +24,11 @@ export type Product = {
   most_viewed: boolean;
   active: boolean;
   sort_order: number;
+  sizes: string[];
+  types: string[];
+  woods: string[];
+  finishes: string[];
+  price_value: number | null;
 };
 
 export type Banner = {
