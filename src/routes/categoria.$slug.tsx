@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { fetchCategories, fetchSettings, type Product, type Category } from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
+import { ProductHoverCard } from "@/components/ProductHoverCard";
 
 export const Route = createFileRoute("/categoria/$slug")({
   loader: async ({ params }) => {
