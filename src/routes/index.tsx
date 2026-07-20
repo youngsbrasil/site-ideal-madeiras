@@ -106,7 +106,7 @@ function Home() {
   const destaques = produtos.filter((p) => p.featured);
   const maisVistos = produtos.filter((p) => p.most_viewed);
   const oferta = produtos.find((p) => p.old_price);
-  const heroBanner = banners[0];
+  
   const whatsapp = settings?.site.whatsapp || "5511942000000";
   const topbarText = settings?.topbar.texto || "FRETE GRÁTIS PARA TODOS OS PEDIDOS ACIMA DE R$ 150";
   const telefone = settings?.site.telefone || "(11) 4200-0000";
