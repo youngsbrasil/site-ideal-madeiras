@@ -112,11 +112,14 @@ function ProductsAdmin() {
 
   return (
     <div className="p-8">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
         <h1 className="text-2xl font-bold">Produtos</h1>
-        <Button onClick={() => setEditing({ ...empty })}>
-          <Plus className="w-4 h-4 mr-2" /> Novo produto
-        </Button>
+        <div className="flex items-center gap-2 flex-wrap">
+          <ProductImportExport products={products} categories={categories} />
+          <Button onClick={() => setEditing({ ...empty })}>
+            <Plus className="w-4 h-4 mr-2" /> Novo produto
+          </Button>
+        </div>
       </div>
 
       <Card className="p-4 mb-4">
