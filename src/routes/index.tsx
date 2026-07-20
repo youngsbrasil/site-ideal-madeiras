@@ -458,10 +458,18 @@ function SectionTitle({ title, subtitle, center }: { title: string; subtitle?: s
 
 function ProductCard({ p, compact, showOferta, categorias: catsProp }: { p: Product; compact?: boolean; showOferta?: boolean; categorias?: any[] }) {
   const { data: categoriasQ = [] } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories, enabled: !catsProp });
+  const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
   const categorias = catsProp ?? categoriasQ;
   const to = productPath(p, categorias) as any;
+  const categoria = categorias.find((c: any) => c.id === p.category_id);
+  const catNome = categoria?.name ?? "";
+  const whatsapp = (settings?.site.whatsapp || "5511942000000").replace(/\D/g, "");
+  const waMsg = encodeURIComponent(`Olá! Tenho interesse no produto: ${p.name} (${p.price}). Poderia me passar mais informações?`);
+  const waUrl = `https://wa.me/${whatsapp}?text=${waMsg}`;
+  const descricao = p.description || "Fale com um de nossos vendedores e receba um orçamento personalizado com condições especiais.";
+
   return (
-    <div className="group border border-neutral-200 rounded overflow-hidden bg-white hover:shadow-lg transition-all flex flex-col">
+    <div className="group relative border border-neutral-200 rounded bg-white hover:shadow-xl hover:border-[color:var(--o)] hover:z-20 transition-all flex flex-col" style={{ ["--o" as any]: ORANGE }}>
       <Link to={to} className="block">
         <div className="relative aspect-square bg-neutral-50 overflow-hidden">
           {showOferta && p.old_price && (
@@ -470,16 +478,28 @@ function ProductCard({ p, compact, showOferta, categorias: catsProp }: { p: Prod
           {p.main_image && (
             <SupabaseImage src={p.main_image} alt={p.name} loading="lazy" className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300" />
           )}
-          <span aria-label="Adicionar à Lista de Desejos" className="absolute top-2 right-2 w-8 h-8 rounded-full bg-white/90 grid place-items-center text-neutral-600 hover:text-[color:var(--o)] shadow" style={{ ["--o" as any]: ORANGE }}>
-            <Heart size={14} />
-          </span>
         </div>
         <div className={`p-3 ${compact ? "text-center" : ""}`}>
           <h3 className={`font-medium text-neutral-800 ${compact ? "text-[11px]" : "text-xs"} line-clamp-2 min-h-[2.25rem]`}>{p.name}</h3>
-          
+          {catNome && <div className="mt-1 text-[10px] uppercase tracking-widest text-neutral-500">{catNome}</div>}
           <div className={`mt-1 font-bold ${compact ? "text-xs" : "text-sm"}`} style={{ color: ORANGE }}>{p.price}</div>
         </div>
       </Link>
+
+      <div className="pointer-events-none opacity-0 group-hover:opacity-100 group-hover:pointer-events-auto transition-opacity duration-200 absolute left-0 right-0 top-full bg-white border border-t-0 border-[color:var(--o)] shadow-xl p-4 z-30" style={{ ["--o" as any]: ORANGE }}>
+        <p className="text-xs text-neutral-600 line-clamp-4">{descricao}</p>
+        <div className="mt-3 flex flex-col gap-2">
+          <Link to="/checkout" search={{ slug: p.slug, qty: 1 }} className="w-full text-center text-white text-[11px] font-bold px-3 py-2 rounded-full uppercase tracking-wide hover:opacity-90" style={{ background: ORANGE }}>
+            Solicitar Orçamento
+          </Link>
+          <a href={waUrl} target="_blank" rel="noreferrer" className="w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1eb659] text-white text-[11px] font-bold px-3 py-2 rounded-full uppercase tracking-wide">
+            <MessageCircle size={13} /> Falar com Vendedor Agora
+          </a>
+          <button aria-label="Adicionar à Lista de Desejos" className="inline-flex items-center justify-center gap-1 text-[11px] text-neutral-600 hover:text-[color:var(--o)]">
+            <Heart size={13} /> Adicionar à lista de desejos
+          </button>
+        </div>
+      </div>
     </div>
   );
 }
