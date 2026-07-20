@@ -202,8 +202,8 @@ function Home() {
                 {oferta.old_price && <span className="text-neutral-400 line-through">{oferta.old_price}</span>}
                 <span className="text-3xl font-bold text-[#A7144C]">{oferta.price}</span>
               </div>
-              <Link to="/produto/$slug" params={{ slug: oferta.slug }} className="mt-6 inline-block bg-[#A7144C] hover:bg-[#8b1140] text-white px-8 py-3 rounded-full font-semibold text-sm tracking-wide transition-colors">
-                COMPRAR AGORA
+              <Link to="/checkout" search={{ slug: oferta.slug, qty: 1 }} className="mt-6 inline-block bg-[#A7144C] hover:bg-[#8b1140] text-white px-8 py-3 rounded-full font-semibold text-sm tracking-wide transition-colors">
+                SOLICITAR ORÇAMENTO
               </Link>
             </div>
           </div>

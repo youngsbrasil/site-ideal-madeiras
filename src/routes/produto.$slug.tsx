@@ -135,7 +135,7 @@ function ProductPage() {
                 <span className="w-8 text-center text-sm font-semibold">{qtd}</span>
                 <button onClick={() => setQtd(qtd + 1)} className="w-10 h-10 grid place-items-center text-neutral-600 hover:text-[#A7144C]" aria-label="Aumentar"><Plus size={14} /></button>
               </div>
-              <a href={whatsappUrl} target="_blank" rel="noreferrer" className="flex-1 text-center bg-neutral-900 hover:bg-black text-white px-6 py-3 rounded-full font-semibold text-sm">COMPRAR AGORA</a>
+              <Link to="/checkout" search={{ slug: product.slug, qty: qtd }} className="flex-1 text-center bg-[#A7144C] hover:bg-[#8b1140] text-white px-6 py-3 rounded-full font-semibold text-sm">SOLICITAR ORÇAMENTO</Link>
             </div>
 
             <a href={whatsappUrl} target="_blank" rel="noreferrer" className="mt-3 w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1eb659] text-white px-6 py-3 rounded-full font-semibold text-sm">
