@@ -128,48 +128,83 @@ function Home() {
         </div>
       </div>
 
-      {/* Header */}
-      <header className="border-b border-neutral-200">
-        <div className="mx-auto max-w-7xl px-4 py-5 flex flex-wrap items-center gap-4">
-          <a href="/" className="shrink-0">
-            <img src={proxyImg(`${IMG}/2024/09/logo-ideal-madeiras.png`)} alt="Lojas Ideal Madeiras" className="h-14 w-auto" />
-          </a>
-          <form className="flex-1 min-w-[240px] order-3 md:order-2">
-            <div className="flex items-stretch rounded-full border border-neutral-300 overflow-hidden focus-within:border-[#A7144C]">
-              <input type="text" placeholder="O que você está procurando?" className="flex-1 px-5 py-3 text-sm outline-none" />
-              <button type="submit" className="bg-[#A7144C] text-white px-5 flex items-center gap-2 text-sm font-medium hover:bg-[#8b1140]">
-                <Search size={16} /> Buscar
-              </button>
-            </div>
-          </form>
-          <div className="flex items-center gap-6 order-2 md:order-3 ml-auto">
-            <Link to="/auth" className="flex items-center gap-2 text-sm hover:text-[#A7144C]">
-              <User size={20} />
-              <span className="hidden sm:block leading-tight">
-                <span className="block text-[11px] text-neutral-500">Minha</span>Conta
-              </span>
+      {/* Header sticky */}
+      <header className="sticky top-0 z-50 shadow-sm">
+        <div className="bg-[#0b1a34] text-white">
+          <div className="mx-auto max-w-7xl px-4 py-3 grid grid-cols-[auto_1fr_auto] items-center gap-4">
+            <Link to="/" className="shrink-0">
+              <img
+                src={proxyImg(`${IMG}/2024/09/logo-ideal-madeiras.png`)}
+                alt="Lojas Ideal Madeiras"
+                className="h-14 w-auto"
+              />
             </Link>
-            <a href="#" className="flex items-center gap-2 text-sm hover:text-[#A7144C]"><Heart size={20} /><span className="hidden sm:inline">Desejos</span></a>
-            <a href="#" className="flex items-center gap-2 text-sm hover:text-[#A7144C] relative">
-              <ShoppingCart size={20} /><span className="hidden sm:inline">Carrinho</span>
-              <span className="absolute -top-1 -right-2 bg-[#A7144C] text-white text-[10px] rounded-full w-4 h-4 grid place-items-center">0</span>
-            </a>
+
+            <form className="min-w-0">
+              <div className="flex items-stretch rounded-full bg-white overflow-hidden h-11">
+                <input
+                  type="text"
+                  placeholder="Buscar produtos"
+                  className="flex-1 min-w-0 px-5 text-sm text-neutral-800 outline-none"
+                />
+                <div className="hidden md:flex items-center border-l border-neutral-200 px-3">
+                  <select
+                    className="bg-transparent text-xs font-semibold text-neutral-700 outline-none pr-1 max-w-[140px] truncate"
+                    defaultValue=""
+                    aria-label="Categoria"
+                  >
+                    <option value="">SELECIONE A CATEGORIA</option>
+                    {categorias.map((c) => (
+                      <option key={c.id} value={c.slug}>{c.name}</option>
+                    ))}
+                  </select>
+                </div>
+                <button
+                  type="submit"
+                  aria-label="Buscar"
+                  className="bg-[#f59318] hover:bg-[#e08210] text-white px-5 flex items-center justify-center transition-colors"
+                >
+                  <Search size={18} />
+                </button>
+              </div>
+            </form>
+
+            <div className="flex items-center gap-5 md:gap-6">
+              <Link
+                to="/auth"
+                className="hidden sm:flex items-center gap-2 text-xs font-bold tracking-wide hover:text-[#f59318]"
+              >
+                <User size={20} />
+                <span>ENTRAR / REGISTRAR</span>
+              </Link>
+              <a href="#" aria-label="Lista de desejos" className="hover:text-[#f59318]">
+                <Heart size={22} />
+              </a>
+              <a href="#" aria-label="Carrinho" className="relative flex items-center gap-2 hover:text-[#f59318]">
+                <span className="relative">
+                  <ShoppingCart size={22} />
+                  <span className="absolute -top-2 -right-2 bg-[#f59318] text-white text-[10px] font-bold rounded-full w-4 h-4 grid place-items-center">0</span>
+                </span>
+                <span className="hidden md:inline text-sm font-semibold">R$ 0,00</span>
+              </a>
+            </div>
           </div>
         </div>
-        <nav className="bg-neutral-900 text-white">
+
+        <nav className="bg-white border-b border-neutral-200">
           <div className="mx-auto max-w-7xl px-4">
-            <ul className="flex flex-wrap items-center gap-x-6 gap-y-2 py-3 text-sm font-medium">
-              <li><Link to="/" className="hover:text-[#f8b7cc] transition-colors">Início</Link></li>
+            <ul className="flex flex-wrap items-center justify-center gap-x-8 gap-y-2 py-3 text-[13px] font-bold tracking-wide uppercase text-neutral-800">
               {categorias.map((c) => (
                 <li key={c.id}>
-                  <Link to="/categoria/$slug" params={{ slug: c.slug }} className="hover:text-[#f8b7cc] transition-colors">
-                    {c.name.charAt(0) + c.name.slice(1).toLowerCase()}
+                  <Link
+                    to="/categoria/$slug"
+                    params={{ slug: c.slug }}
+                    className="hover:text-[#f59318] transition-colors"
+                  >
+                    {c.name}
                   </Link>
                 </li>
               ))}
-              <li className="ml-auto flex items-center gap-2 text-[#f8b7cc]">
-                <MessageCircle size={16} /> Compre pelo WhatsApp
-              </li>
             </ul>
           </div>
         </nav>
