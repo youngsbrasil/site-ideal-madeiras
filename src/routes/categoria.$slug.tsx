@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { Heart, ChevronRight, MessageCircle, SlidersHorizontal, X } from "lucide-react";
+import { Heart, ChevronRight, MessageCircle, SlidersHorizontal, X, LayoutGrid, Grid3x3, Grid2x2, ChevronLeft, ChevronRight as ChevRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchCategories, fetchSettings, type Product, type Category } from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
