@@ -124,6 +124,38 @@ function CategoryPage() {
   const activeCount =
     Object.values(selected).reduce((a, b) => a + b.length, 0) + (priceMax != null ? 1 : 0);
 
+  type SortKey = "default" | "popularity" | "rating" | "newest" | "price_asc" | "price_desc";
+  const SORT_LABELS: Record<SortKey, string> = {
+    default: "Ordenação padrão",
+    popularity: "Ordenar por popularidade",
+    rating: "Ordenar por média de classificação",
+    newest: "Ordenar por mais recente",
+    price_asc: "Ordenar por preço: menor para maior",
+    price_desc: "Ordenar por preço: maior para menor",
+  };
+  const [sort, setSort] = useState<SortKey>("default");
+  const [perPage, setPerPage] = useState<number>(12);
+  const [cols, setCols] = useState<2 | 3 | 4>(3);
+  const [page, setPage] = useState(1);
+
+  const sorted = useMemo(() => {
+    const arr = [...filtered];
+    switch (sort) {
+      case "price_asc": arr.sort((a, b) => (a.price_value ?? 0) - (b.price_value ?? 0)); break;
+      case "price_desc": arr.sort((a, b) => (b.price_value ?? 0) - (a.price_value ?? 0)); break;
+      case "newest": arr.sort((a, b) => (b.most_viewed ? 1 : 0) - (a.most_viewed ? 1 : 0)); break;
+      case "popularity": arr.sort((a, b) => (b.featured ? 1 : 0) - (a.featured ? 1 : 0)); break;
+      default: break;
+    }
+    return arr;
+  }, [filtered, sort]);
+
+  const totalPages = Math.max(1, Math.ceil(sorted.length / perPage));
+  const currentPage = Math.min(page, totalPages);
+  const paged = sorted.slice((currentPage - 1) * perPage, currentPage * perPage);
+
+  const gridCols = cols === 2 ? "md:grid-cols-2" : cols === 3 ? "md:grid-cols-3" : "md:grid-cols-4";
+
   return (
     <div className="min-h-screen bg-white text-neutral-900">
       <SiteHeader />
