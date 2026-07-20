@@ -91,6 +91,7 @@ function Home() {
   const { data: produtos = [] } = useQuery({ queryKey: ["products"], queryFn: fetchProducts });
   const { data: banners = [] } = useQuery({ queryKey: ["banners"], queryFn: fetchBanners });
   const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
+  const { data: shoppable = [] } = useQuery({ queryKey: ["shoppable-scenes"], queryFn: () => fetchShoppableScenes(true) });
 
   const destaques = produtos.filter((p) => p.featured).slice(0, 5);
   const grade = produtos.filter((p) => !p.featured).slice(0, 12);
