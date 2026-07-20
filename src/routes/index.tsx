@@ -6,7 +6,7 @@ import {
   MessageCircle, Star, ChevronRight,
 } from "lucide-react";
 import {
-  fetchCategories, fetchProducts, fetchBanners, fetchSettings,
+  fetchCategories, fetchProducts, fetchBanners, fetchSettings, proxyImg,
   type Product,
 } from "@/lib/site-data";
 
@@ -74,7 +74,7 @@ function Home() {
       <header className="border-b border-neutral-200">
         <div className="mx-auto max-w-7xl px-4 py-5 flex flex-wrap items-center gap-4">
           <a href="/" className="shrink-0">
-            <img src={`${IMG}/2024/09/logo-ideal-madeiras.png`} alt="Lojas Ideal Madeiras" className="h-14 w-auto" />
+            <img src={proxyImg(`${IMG}/2024/09/logo-ideal-madeiras.png`)} alt="Lojas Ideal Madeiras" className="h-14 w-auto" />
           </a>
           <form className="flex-1 min-w-[240px] order-3 md:order-2">
             <div className="flex items-stretch rounded-full border border-neutral-300 overflow-hidden focus-within:border-[#A7144C]">
@@ -121,7 +121,7 @@ function Home() {
       {heroBanner && (
         <section className="mx-auto max-w-7xl px-4 py-6">
           <a href={heroBanner.link_url ?? "#"} className="block overflow-hidden rounded-lg">
-            <img src={heroBanner.image_url} alt={heroBanner.title ?? ""} className="w-full h-auto" />
+            <img src={proxyImg(heroBanner.image_url)} alt={heroBanner.title ?? ""} className="w-full h-auto" />
           </a>
         </section>
       )}
@@ -149,7 +149,7 @@ function Home() {
             {categorias.map((c) => (
               <Link key={c.id} to="/categoria/$slug" params={{ slug: c.slug }} className="group text-center block">
                 <div className="aspect-square rounded-full overflow-hidden bg-neutral-100 border border-neutral-200 group-hover:border-[#A7144C] transition-all">
-                  {c.image_url && <img src={c.image_url} alt={c.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />}
+                  {c.image_url && <img src={proxyImg(c.image_url)} alt={c.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" />}
                 </div>
                 <div className="mt-3 font-semibold text-sm tracking-wide">{c.name}</div>
                 <div className="text-xs text-neutral-500">{c.product_count} produtos</div>
@@ -173,7 +173,7 @@ function Home() {
       <section className="mx-auto max-w-7xl px-4 py-10 grid md:grid-cols-2 gap-5">
         {ambientes.map((a) => (
           <a key={a.nome} href="#" className="relative block overflow-hidden rounded-lg group">
-            <img src={a.img} alt={a.nome} className="w-full h-72 object-cover group-hover:scale-105 transition-transform duration-500" />
+            <img src={proxyImg(a.img)} alt={a.nome} className="w-full h-72 object-cover group-hover:scale-105 transition-transform duration-500" />
             <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
             <div className="absolute bottom-6 left-6 text-white">
               <div className="text-xs uppercase tracking-widest opacity-90">Inspire-se</div>
@@ -192,7 +192,7 @@ function Home() {
           <div className="grid md:grid-cols-2 gap-8 items-center bg-neutral-50 rounded-xl p-6 md:p-10 border border-neutral-200">
             <div className="relative">
               <span className="absolute top-2 left-2 z-10 bg-[#A7144C] text-white text-xs font-bold px-3 py-1 rounded-full">OFERTA INCRÍVEL</span>
-              {oferta.main_image && <img src={oferta.main_image} alt={oferta.name} className="w-full max-w-md mx-auto" />}
+              {oferta.main_image && <img src={proxyImg(oferta.main_image)} alt={oferta.name} className="w-full max-w-md mx-auto" />}
             </div>
             <div>
               <p className="text-sm text-[#A7144C] font-semibold uppercase tracking-widest">Este produto está numa Oferta Incrível</p>
@@ -256,7 +256,7 @@ function Home() {
       <footer className="bg-neutral-900 text-neutral-300">
         <div className="mx-auto max-w-7xl px-4 py-12 grid md:grid-cols-4 gap-8">
           <div>
-            <img src={`${IMG}/2024/11/logo-ideal-madeiras-mobile.png`} alt="Lojas Ideal Madeiras" className="h-16 w-auto brightness-0 invert mb-4" />
+            <img src={proxyImg(`${IMG}/2024/11/logo-ideal-madeiras-mobile.png`)} alt="Lojas Ideal Madeiras" className="h-16 w-auto brightness-0 invert mb-4" />
             <p className="text-sm leading-relaxed">Loja de Portas, Janelas, Ferragens e Fechaduras em São Paulo. Qualidade e o melhor atendimento do mercado.</p>
             <div className="flex gap-3 mt-4">
               <a href="#" className="w-9 h-9 grid place-items-center rounded-full border border-neutral-700 hover:bg-[#A7144C] hover:border-[#A7144C]"><Facebook size={16} /></a>
@@ -330,7 +330,7 @@ function ProductCard({ p, compact }: { p: Product; compact?: boolean }) {
     >
       <div className="relative aspect-square bg-neutral-50 overflow-hidden">
         {p.main_image && (
-          <img src={p.main_image} alt={p.name} loading="lazy" className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300" />
+          <img src={proxyImg(p.main_image)} alt={p.name} loading="lazy" className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300" />
         )}
         <span aria-label="Adicionar à Lista de Desejos" className="absolute top-2 right-2 w-9 h-9 rounded-full bg-white/90 grid place-items-center text-neutral-600 hover:text-[#A7144C] shadow">
           <Heart size={16} />

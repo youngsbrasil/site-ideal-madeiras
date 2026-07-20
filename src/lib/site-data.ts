@@ -108,3 +108,21 @@ export function slugify(s: string) {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/(^-|-$)/g, "");
 }
+
+/**
+ * Proxy remote images through images.weserv.nl to bypass hotlink protection / rate limits
+ * on the original idealmadeiras.com.br host. Leaves local, data:, blob:, and Supabase URLs alone.
+ */
+export function proxyImg(url: string | null | undefined): string {
+  if (!url) return "";
+  if (/^(data:|blob:|\/)/.test(url)) return url;
+  try {
+    const u = new URL(url);
+    if (u.hostname.endsWith("supabase.co") || u.hostname.includes("localhost")) return url;
+    // weserv expects url without protocol
+    const stripped = url.replace(/^https?:\/\//, "");
+    return `https://images.weserv.nl/?url=${encodeURIComponent(stripped)}`;
+  } catch {
+    return url;
+  }
+}
