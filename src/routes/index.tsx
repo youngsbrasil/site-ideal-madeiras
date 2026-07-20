@@ -175,14 +175,8 @@ function Home() {
         </nav>
       </header>
 
-      {/* Hero banner */}
-      {heroBanner && (
-        <section className="mx-auto max-w-7xl px-4 py-6">
-          <a href={heroBanner.link_url ?? "#"} className="block overflow-hidden rounded-lg">
-            <SupabaseImage src={heroBanner.image_url} alt={heroBanner.title ?? ""} className="w-full h-auto" />
-          </a>
-        </section>
-      )}
+      {/* Hero banner carousel */}
+      <HeroCarousel banners={banners} />
 
       {/* Benefits */}
       <section className="mx-auto max-w-7xl px-4 pb-8 grid grid-cols-2 md:grid-cols-4 gap-3">
