@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import {
   Search, User, Heart, ShoppingCart, Phone, Mail, MapPin,
   Facebook, Instagram, Truck, CreditCard, ShieldCheck,
-  MessageCircle, Star, ChevronRight, ChevronLeft,
+  MessageCircle, Star, ChevronRight, ChevronLeft, Image as ImageIcon,
 } from "lucide-react";
 import {
   fetchCategories, fetchProducts, fetchBanners, fetchSettings, proxyImg,
