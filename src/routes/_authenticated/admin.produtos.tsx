@@ -76,6 +76,11 @@ function ProductsAdmin() {
         most_viewed: form.most_viewed,
         active: form.active,
         sort_order: form.sort_order ?? 0,
+        sizes: form.sizes,
+        types: form.types,
+        woods: form.woods,
+        finishes: form.finishes,
+        price_value: form.price_value ?? null,
       };
       if (form.id) {
         const { error } = await supabase.from("products").update(payload).eq("id", form.id);
