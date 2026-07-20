@@ -202,8 +202,8 @@ function Home() {
                 {oferta.old_price && <span className="text-neutral-400 line-through">{oferta.old_price}</span>}
                 <span className="text-3xl font-bold text-[#A7144C]">{oferta.price}</span>
               </div>
-              <Link to="/produto/$slug" params={{ slug: oferta.slug }} className="mt-6 inline-block bg-[#A7144C] hover:bg-[#8b1140] text-white px-8 py-3 rounded-full font-semibold text-sm tracking-wide transition-colors">
-                COMPRAR AGORA
+              <Link to="/checkout" search={{ slug: oferta.slug, qty: 1 }} className="mt-6 inline-block bg-[#A7144C] hover:bg-[#8b1140] text-white px-8 py-3 rounded-full font-semibold text-sm tracking-wide transition-colors">
+                SOLICITAR ORÇAMENTO
               </Link>
             </div>
           </div>
@@ -324,29 +324,29 @@ function SectionTitle({ title, subtitle, center }: { title: string; subtitle?: s
 
 function ProductCard({ p, compact }: { p: Product; compact?: boolean }) {
   return (
-    <Link
-      to="/produto/$slug"
-      params={{ slug: p.slug }}
-      className="group border border-neutral-200 rounded-lg overflow-hidden bg-white hover:shadow-lg hover:border-[#A7144C]/40 transition-all block"
-    >
-      <div className="relative aspect-square bg-neutral-50 overflow-hidden">
-        {p.main_image && (
-          <SupabaseImage src={p.main_image} alt={p.name} loading="lazy" className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300" />
-        )}
-        <span aria-label="Adicionar à Lista de Desejos" className="absolute top-2 right-2 w-9 h-9 rounded-full bg-white/90 grid place-items-center text-neutral-600 hover:text-[#A7144C] shadow">
-          <Heart size={16} />
-        </span>
-        <div className="absolute inset-x-0 bottom-0 translate-y-full group-hover:translate-y-0 transition-transform">
-          <span className="w-full block text-center bg-[#A7144C] text-white text-xs font-semibold py-2.5 hover:bg-[#8b1140]">VER PRODUTO</span>
+    <div className="group border border-neutral-200 rounded-lg overflow-hidden bg-white hover:shadow-lg hover:border-[#A7144C]/40 transition-all flex flex-col">
+      <Link to="/produto/$slug" params={{ slug: p.slug }} className="block">
+        <div className="relative aspect-square bg-neutral-50 overflow-hidden">
+          {p.main_image && (
+            <SupabaseImage src={p.main_image} alt={p.name} loading="lazy" className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300" />
+          )}
+          <span aria-label="Adicionar à Lista de Desejos" className="absolute top-2 right-2 w-9 h-9 rounded-full bg-white/90 grid place-items-center text-neutral-600 hover:text-[#A7144C] shadow">
+            <Heart size={16} />
+          </span>
         </div>
-      </div>
-      <div className={`p-4 ${compact ? "text-center" : ""}`}>
-        <h3 className={`font-medium text-neutral-800 ${compact ? "text-xs" : "text-sm"} line-clamp-2 min-h-[2.5rem]`}>{p.name}</h3>
-        <div className="mt-2 flex text-yellow-400">
-          {[...Array(5)].map((_, i) => <Star key={i} size={12} fill="currentColor" />)}
+        <div className={`p-4 ${compact ? "text-center" : ""}`}>
+          <h3 className={`font-medium text-neutral-800 ${compact ? "text-xs" : "text-sm"} line-clamp-2 min-h-[2.5rem]`}>{p.name}</h3>
+          <div className="mt-2 flex text-yellow-400 justify-start">
+            {[...Array(5)].map((_, i) => <Star key={i} size={12} fill="currentColor" />)}
+          </div>
+          <div className={`mt-2 font-bold text-[#A7144C] ${compact ? "text-sm" : "text-lg"}`}>{p.price}</div>
         </div>
-        <div className={`mt-2 font-bold text-[#A7144C] ${compact ? "text-sm" : "text-lg"}`}>{p.price}</div>
+      </Link>
+      <div className="px-4 pb-4 mt-auto">
+        <Link to="/checkout" search={{ slug: p.slug, qty: 1 }} className="block w-full text-center bg-[#A7144C] hover:bg-[#8b1140] text-white text-xs font-semibold py-2.5 rounded-full">
+          SOLICITAR ORÇAMENTO
+        </Link>
       </div>
-    </Link>
+    </div>
   );
 }

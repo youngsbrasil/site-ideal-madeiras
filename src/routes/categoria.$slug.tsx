@@ -317,28 +317,33 @@ function CategoryPage() {
             <>
               <div className={`grid grid-cols-2 ${gridCols} gap-5`}>
                 {paged.map((p) => (
-                  <Link
+                  <div
                     key={p.id}
-                    to="/produto/$slug"
-                    params={{ slug: p.slug }}
-                    className="group border border-neutral-200 rounded-lg overflow-hidden bg-white hover:shadow-lg hover:border-[#A7144C]/40 transition-all block"
+                    className="group border border-neutral-200 rounded-lg overflow-hidden bg-white hover:shadow-lg hover:border-[#A7144C]/40 transition-all flex flex-col"
                   >
-                    <div className="relative aspect-square bg-neutral-50 overflow-hidden">
-                      {p.main_image && (
-                        <SupabaseImage src={p.main_image} alt={p.name} loading="lazy" className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300" />
-                      )}
-                      <span className="absolute top-2 right-2 w-9 h-9 rounded-full bg-white/90 grid place-items-center text-neutral-600 shadow">
-                        <Heart size={16} />
-                      </span>
-                    </div>
-                    <div className="p-4">
-                      <h3 className="text-sm font-medium line-clamp-2 min-h-[2.5rem]">{p.name}</h3>
-                      <div className="mt-2 flex items-baseline gap-2">
-                        {p.old_price && <span className="text-xs text-neutral-400 line-through">{p.old_price}</span>}
-                        <span className="font-bold text-[#A7144C]">{p.price}</span>
+                    <Link to="/produto/$slug" params={{ slug: p.slug }} className="block">
+                      <div className="relative aspect-square bg-neutral-50 overflow-hidden">
+                        {p.main_image && (
+                          <SupabaseImage src={p.main_image} alt={p.name} loading="lazy" className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform duration-300" />
+                        )}
+                        <span className="absolute top-2 right-2 w-9 h-9 rounded-full bg-white/90 grid place-items-center text-neutral-600 shadow">
+                          <Heart size={16} />
+                        </span>
                       </div>
+                      <div className="p-4">
+                        <h3 className="text-sm font-medium line-clamp-2 min-h-[2.5rem]">{p.name}</h3>
+                        <div className="mt-2 flex items-baseline gap-2">
+                          {p.old_price && <span className="text-xs text-neutral-400 line-through">{p.old_price}</span>}
+                          <span className="font-bold text-[#A7144C]">{p.price}</span>
+                        </div>
+                      </div>
+                    </Link>
+                    <div className="px-4 pb-4 mt-auto">
+                      <Link to="/checkout" search={{ slug: p.slug, qty: 1 }} className="block w-full text-center bg-[#A7144C] hover:bg-[#8b1140] text-white text-xs font-semibold py-2.5 rounded-full">
+                        SOLICITAR ORÇAMENTO
+                      </Link>
                     </div>
-                  </Link>
+                  </div>
                 ))}
               </div>
 
