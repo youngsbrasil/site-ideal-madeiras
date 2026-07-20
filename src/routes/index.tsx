@@ -1,15 +1,72 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 import {
   Search, User, Heart, ShoppingCart, Phone, Mail, MapPin,
   Facebook, Instagram, Truck, CreditCard, ShieldCheck,
-  MessageCircle, Star, ChevronRight,
+  MessageCircle, Star, ChevronRight, ChevronLeft,
 } from "lucide-react";
 import {
   fetchCategories, fetchProducts, fetchBanners, fetchSettings, proxyImg,
-  type Product,
+  type Product, type Banner,
 } from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
+
+function HeroCarousel({ banners }: { banners: Banner[] }) {
+  const [idx, setIdx] = useState(0);
+  const total = banners.length;
+
+  useEffect(() => {
+    if (total <= 1) return;
+    const id = setInterval(() => setIdx((i) => (i + 1) % total), 5000);
+    return () => clearInterval(id);
+  }, [total]);
+
+  if (total === 0) return null;
+  const go = (n: number) => setIdx((n + total) % total);
+  const current = banners[idx];
+
+  return (
+    <section className="mx-auto max-w-7xl px-4 py-6">
+      <div className="relative overflow-hidden rounded-lg group">
+        <a href={current.link_url ?? "#"} className="block">
+          <SupabaseImage src={current.image_url} alt={current.title ?? ""} className="w-full h-auto" />
+        </a>
+        {total > 1 && (
+          <>
+            <button
+              type="button"
+              aria-label="Anterior"
+              onClick={() => go(idx - 1)}
+              className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-neutral-800 rounded-full p-2 shadow opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <ChevronLeft size={22} />
+            </button>
+            <button
+              type="button"
+              aria-label="Próximo"
+              onClick={() => go(idx + 1)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-neutral-800 rounded-full p-2 shadow opacity-0 group-hover:opacity-100 transition-opacity"
+            >
+              <ChevronRight size={22} />
+            </button>
+            <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-2">
+              {banners.map((_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  aria-label={`Ir para banner ${i + 1}`}
+                  onClick={() => setIdx(i)}
+                  className={`h-2.5 rounded-full transition-all ${i === idx ? "w-6 bg-white" : "w-2.5 bg-white/60 hover:bg-white/90"}`}
+                />
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+    </section>
+  );
+}
 
 const IMG = "https://idealmadeiras.com.br/wp-content/uploads";
 
@@ -49,7 +106,7 @@ function Home() {
   const destaques = produtos.filter((p) => p.featured);
   const maisVistos = produtos.filter((p) => p.most_viewed);
   const oferta = produtos.find((p) => p.old_price);
-  const heroBanner = banners[0];
+  
   const whatsapp = settings?.site.whatsapp || "5511942000000";
   const topbarText = settings?.topbar.texto || "FRETE GRÁTIS PARA TODOS OS PEDIDOS ACIMA DE R$ 150";
   const telefone = settings?.site.telefone || "(11) 4200-0000";
@@ -118,14 +175,8 @@ function Home() {
         </nav>
       </header>
 
-      {/* Hero banner */}
-      {heroBanner && (
-        <section className="mx-auto max-w-7xl px-4 py-6">
-          <a href={heroBanner.link_url ?? "#"} className="block overflow-hidden rounded-lg">
-            <SupabaseImage src={heroBanner.image_url} alt={heroBanner.title ?? ""} className="w-full h-auto" />
-          </a>
-        </section>
-      )}
+      {/* Hero banner carousel */}
+      <HeroCarousel banners={banners} />
 
       {/* Benefits */}
       <section className="mx-auto max-w-7xl px-4 pb-8 grid grid-cols-2 md:grid-cols-4 gap-3">
