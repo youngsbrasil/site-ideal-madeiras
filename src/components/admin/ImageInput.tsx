@@ -2,7 +2,8 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Upload, Link as LinkIcon } from "lucide-react";
+import { Upload } from "lucide-react";
+import { SupabaseImage } from "@/components/SupabaseImage";
 
 export function ImageInput({
   value,
@@ -19,8 +20,12 @@ export function ImageInput({
     setUploading(true);
     try {
       const ext = file.name.split(".").pop();
-      const path = `${crypto.randomUUID()}.${ext}`;
-      const { error } = await supabase.storage.from("media").upload(path, file, { upsert: false });
+      const path = `uploads/${crypto.randomUUID()}.${ext}`;
+      const { error } = await supabase.storage.from("media").upload(path, file, {
+        cacheControl: "3600",
+        contentType: file.type,
+        upsert: false,
+      });
       if (error) throw error;
       const { data } = supabase.storage.from("media").getPublicUrl(path);
       onChange(data.publicUrl);
@@ -58,7 +63,7 @@ export function ImageInput({
         </label>
       </div>
       {value && (
-        <img src={value} alt="" className="w-32 h-32 object-cover rounded border" />
+        <SupabaseImage src={value} alt="" className="w-32 h-32 object-cover rounded border" />
       )}
     </div>
   );

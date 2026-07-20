@@ -9,6 +9,7 @@ import {
   fetchProductBySlug, fetchProducts, fetchSettings, fetchCategories, proxyImg,
   type Product,
 } from "@/lib/site-data";
+import { SupabaseImage } from "@/components/SupabaseImage";
 
 export const Route = createFileRoute("/produto/$slug")({
   loader: async ({ params }) => {
@@ -100,14 +101,14 @@ function ProductPage() {
         <div className="grid md:grid-cols-2 gap-10">
           <div>
             <div className="border border-neutral-200 rounded-lg bg-neutral-50 aspect-square overflow-hidden">
-              {imgAtiva && <img src={proxyImg(imgAtiva)} alt={product.name} className="w-full h-full object-contain p-6" />}
+              {imgAtiva && <SupabaseImage src={imgAtiva} alt={product.name} className="w-full h-full object-contain p-6" />}
             </div>
             {galeria.length > 1 && (
               <div className="mt-4 grid grid-cols-4 gap-3">
                 {galeria.map((g, i) => (
                   <button key={i} onClick={() => setImgAtiva(g)}
                     className={`border rounded-md overflow-hidden bg-neutral-50 aspect-square transition ${imgAtiva === g ? "border-[#A7144C] ring-2 ring-[#A7144C]/30" : "border-neutral-200 hover:border-[#A7144C]/50"}`}>
-                    <img src={proxyImg(g)} alt={`${product.name} - imagem ${i + 1}`} className="w-full h-full object-contain p-2" />
+                    <SupabaseImage src={g} alt={`${product.name} - imagem ${i + 1}`} className="w-full h-full object-contain p-2" />
                   </button>
                 ))}
               </div>
@@ -189,7 +190,7 @@ function ProductPage() {
                 <Link key={p.id} to="/produto/$slug" params={{ slug: p.slug }}
                   className="group border border-neutral-200 rounded-lg overflow-hidden bg-white hover:shadow-lg hover:border-[#A7144C]/40 transition-all">
                   <div className="aspect-square bg-neutral-50 overflow-hidden">
-                    {p.main_image && <img src={proxyImg(p.main_image)} alt={p.name} loading="lazy" className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform" />}
+                    {p.main_image && <SupabaseImage src={p.main_image} alt={p.name} loading="lazy" className="w-full h-full object-contain p-3 group-hover:scale-105 transition-transform" />}
                   </div>
                   <div className="p-4">
                     <h3 className="text-sm font-medium line-clamp-2 min-h-[2.5rem]">{p.name}</h3>
