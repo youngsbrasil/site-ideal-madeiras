@@ -53,6 +53,8 @@ const empty: FormState = {
   price_value: null,
 };
 
+const parseList = (s: string) => s.split(",").map((v) => v.trim()).filter(Boolean);
+
 function ProductsAdmin() {
   const qc = useQueryClient();
   const { data: products = [], isLoading } = useQuery({ queryKey: ["admin-products"], queryFn: fetchAllProductsAdmin });
