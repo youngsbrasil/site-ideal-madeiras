@@ -536,6 +536,36 @@ export type Database = {
         }
         Relationships: []
       }
+      search_log: {
+        Row: {
+          clicked_product_id: string | null
+          created_at: string
+          id: string
+          results_count: number
+          term: string
+          term_normalized: string
+          user_id: string | null
+        }
+        Insert: {
+          clicked_product_id?: string | null
+          created_at?: string
+          id?: string
+          results_count?: number
+          term: string
+          term_normalized: string
+          user_id?: string | null
+        }
+        Update: {
+          clicked_product_id?: string | null
+          created_at?: string
+          id?: string
+          results_count?: number
+          term?: string
+          term_normalized?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       shoppable_pins: {
         Row: {
           created_at: string
