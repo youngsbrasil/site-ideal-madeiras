@@ -213,29 +213,19 @@ function Home() {
         </div>
       </section>
 
-      {/* O Mais Popular + ambiente */}
+      {/* O Mais Popular + ambiente (com pins interativos quando houver cenas) */}
       {maisPopular && (
-        <section className="mx-auto max-w-7xl px-4 py-6">
-          <div className="grid md:grid-cols-[2fr_1fr] gap-4 items-stretch">
-            <div className="relative rounded-lg overflow-hidden bg-neutral-100">
-              <img src={proxyImg(`${IMG}/2024/11/SALA-DE-ESTAR-795x600.webp`)} alt="Ambiente" className="w-full h-full object-cover" />
-            </div>
-            <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-5 flex flex-col">
-              <div className="text-xs font-bold tracking-widest text-neutral-500">O MAIS POPULAR</div>
-              <p className="text-[11px] text-neutral-500 mt-1">Este item é o mais popular em nosso Catálogo</p>
-              <div className="my-4 aspect-square bg-white rounded overflow-hidden grid place-items-center">
-                {maisPopular.main_image && <SupabaseImage src={maisPopular.main_image} alt={maisPopular.name} className="w-full h-full object-contain p-4" />}
-              </div>
-              <div className="text-sm font-semibold text-center">{maisPopular.name}</div>
-              <div className="text-center mt-2 font-bold" style={{ color: ORANGE }}>{maisPopular.price}</div>
-              <Link to={productPath(maisPopular, categorias) as any} className="mt-3 block text-center border border-neutral-800 text-neutral-800 hover:bg-neutral-800 hover:text-white text-xs font-semibold py-2 rounded transition-colors">
-                QUICK VIEW
-              </Link>
-              <button className="mt-2 text-xs text-neutral-500 hover:text-neutral-800 inline-flex items-center justify-center gap-1">
-                <Heart size={12} /> Adicionar à Lista de Desejos
-              </button>
-            </div>
-          </div>
+        <section className="mx-auto max-w-7xl px-4 py-6 space-y-6">
+          {(shoppable.length > 0 ? shoppable : [null]).map((scene, i) => (
+            <ShoppablePopularBlock
+              key={scene?.id ?? `default-${i}`}
+              scene={scene}
+              defaultProduct={maisPopular}
+              products={produtos}
+              categorias={categorias}
+              fallbackImage={`${IMG}/2024/11/SALA-DE-ESTAR-795x600.webp`}
+            />
+          ))}
         </section>
       )}
 
