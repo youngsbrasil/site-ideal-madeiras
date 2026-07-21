@@ -155,7 +155,7 @@ function ProductsAdmin() {
     mutationFn: async (patch: Record<string, any>) => {
       const ids = Array.from(selected);
       if (ids.length === 0) return;
-      const { error } = await supabase.from("products").update(patch).in("id", ids);
+      const { error } = await supabase.from("products").update(patch as any).in("id", ids);
       if (error) throw error;
     },
     onSuccess: () => {
