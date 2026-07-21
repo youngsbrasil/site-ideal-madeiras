@@ -1,9 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { z } from "zod";
-import { MessageCircle, ShoppingBag, Trash2, Minus, Plus, ChevronRight } from "lucide-react";
-import { fetchProductBySlug, fetchSettings } from "@/lib/site-data";
+import { MessageCircle, ShoppingBag, Trash2, Minus, Plus, ChevronRight, Ticket, X, Check } from "lucide-react";
+import {
+  fetchProductBySlug, fetchSettings, fetchCouponByCode, validateCoupon, parsePriceBRL,
+  type Coupon,
+} from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
 import {
