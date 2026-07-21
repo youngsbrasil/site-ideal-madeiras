@@ -27,7 +27,7 @@ export const Route = createFileRoute("/$")({
     const p = loaderData.product;
     const title = productMetaTitle(p);
     const desc = productMetaDescription(p);
-    const url = p.canonical || absoluteUrl(productPath(p));
+    const url = p.canonical || absoluteUrl(productPath(p, loaderData.categories));
     const img = p.og_image || p.main_image || undefined;
     const crumbs = breadcrumbJsonLd([
       { name: SITE_NAME, url: absoluteUrl("/") },
