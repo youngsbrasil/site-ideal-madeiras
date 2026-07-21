@@ -264,6 +264,47 @@ function CategoriesAdmin() {
                   <Input type="number" value={editing.sort_order ?? 0} onChange={(e) => setEditing({ ...editing, sort_order: parseInt(e.target.value) || 0 })} />
                 </div>
               </div>
+
+              <div className="pt-3 border-t">
+                <Label className="text-base">SEO</Label>
+                <div className="space-y-3 mt-2">
+                  <div>
+                    <Label>Meta title</Label>
+                    <Input
+                      placeholder={`${editing.name || "Categoria"} | Ideal Madeiras`}
+                      value={editing.meta_title ?? ""}
+                      onChange={(e) => setEditing({ ...editing, meta_title: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <Label>Meta description</Label>
+                    <Input
+                      maxLength={200}
+                      value={editing.meta_description ?? ""}
+                      onChange={(e) => setEditing({ ...editing, meta_description: e.target.value })}
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <Label>Canonical</Label>
+                      <Input value={editing.canonical ?? ""} onChange={(e) => setEditing({ ...editing, canonical: e.target.value })} />
+                    </div>
+                    <div>
+                      <Label>OG Image</Label>
+                      <Input value={editing.og_image ?? ""} onChange={(e) => setEditing({ ...editing, og_image: e.target.value })} />
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      id="noindex"
+                      checked={editing.noindex ?? false}
+                      onChange={(e) => setEditing({ ...editing, noindex: e.target.checked })}
+                    />
+                    <Label htmlFor="noindex">Noindex</Label>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
           <DialogFooter>
