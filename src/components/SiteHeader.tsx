@@ -1,8 +1,9 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { Search, User, Heart, ShoppingCart, Phone, Facebook, Instagram } from "lucide-react";
-import { fetchCategories, fetchSettings, proxyImg } from "@/lib/site-data";
+import { useEffect, useRef, useState } from "react";
+import { Search, User, Heart, ShoppingCart, Phone, Facebook, Instagram, Tag, Package as PackageIcon } from "lucide-react";
+import { fetchCategories, fetchSettings, proxyImg, productPath } from "@/lib/site-data";
+import { fetchSuggestions, type Suggestion } from "@/lib/search";
 
 const LOGO = "https://idealmadeiras.com.br/wp-content/uploads/2024/09/logo-ideal-madeiras.png";
 
@@ -12,17 +13,52 @@ export function SiteHeader() {
   const navigate = useNavigate();
   const [q, setQ] = useState("");
   const [categoria, setCategoria] = useState("");
+  const [open, setOpen] = useState(false);
+  const [debounced, setDebounced] = useState("");
+  const boxRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const t = setTimeout(() => setDebounced(q), 200);
+    return () => clearTimeout(t);
+  }, [q]);
+
+  const { data: suggestions = [] } = useQuery({
+    queryKey: ["suggestions", debounced],
+    queryFn: () => fetchSuggestions(debounced, 8),
+    enabled: debounced.trim().length >= 2,
+    staleTime: 30_000,
+  });
+
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (!boxRef.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, []);
 
   const topbarText = settings?.topbar.texto || "FRETE GRÁTIS PARA TODOS OS PEDIDOS ACIMA DE R$ 150";
   const telefone = settings?.site.telefone || "(11) 4200-0000";
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    setOpen(false);
     if (categoria && !q.trim()) {
       navigate({ to: "/categoria/$slug", params: { slug: categoria } });
       return;
     }
     navigate({ to: "/busca", search: { q: q.trim(), categoria } });
+  };
+
+  const pickSuggestion = (s: Suggestion) => {
+    setOpen(false);
+    setQ("");
+    if (s.kind === "category") {
+      navigate({ to: "/categoria/$slug", params: { slug: s.slug } });
+    } else {
+      const path = productPath({ slug: s.slug } as any, categorias);
+      navigate({ to: path as any });
+    }
   };
 
   return (
@@ -47,14 +83,16 @@ export function SiteHeader() {
               <img src={proxyImg(LOGO)} alt="Lojas Ideal Madeiras" className="h-14 w-auto" />
             </Link>
 
-            <form className="min-w-0" onSubmit={onSubmit}>
+            <form className="min-w-0 relative" onSubmit={onSubmit} ref={boxRef}>
               <div className="flex items-stretch rounded-full bg-white overflow-hidden h-11">
                 <input
                   type="text"
                   value={q}
-                  onChange={(e) => setQ(e.target.value)}
+                  onChange={(e) => { setQ(e.target.value); setOpen(true); }}
+                  onFocus={() => setOpen(true)}
                   placeholder="Buscar produtos"
                   className="flex-1 min-w-0 px-5 text-sm text-neutral-800 outline-none"
+                  autoComplete="off"
                 />
                 <div className="hidden md:flex items-center border-l border-neutral-200 px-3">
                   <select
@@ -77,8 +115,56 @@ export function SiteHeader() {
                   <Search size={18} />
                 </button>
               </div>
-            </form>
 
+              {open && debounced.trim().length >= 2 && (
+                <div className="absolute left-0 right-0 top-full mt-1 bg-white text-neutral-800 rounded-lg shadow-2xl border border-neutral-200 overflow-hidden z-50 max-h-[70vh] overflow-y-auto">
+                  {suggestions.length === 0 ? (
+                    <div className="p-4 text-sm text-neutral-500">
+                      Nenhuma sugestão. Pressione Enter para buscar por “{debounced}”.
+                    </div>
+                  ) : (
+                    <ul className="divide-y divide-neutral-100">
+                      {suggestions.map((s) => (
+                        <li key={`${s.kind}-${s.id}`}>
+                          <button
+                            type="button"
+                            onClick={() => pickSuggestion(s)}
+                            className="w-full flex items-center gap-3 px-3 py-2 text-left hover:bg-neutral-50"
+                          >
+                            {s.kind === "product" ? (
+                              <img
+                                src={s.image ? proxyImg(s.image) : "/placeholder.svg"}
+                                alt=""
+                                className="w-10 h-10 object-cover rounded bg-neutral-100 shrink-0"
+                              />
+                            ) : (
+                              <span className="w-10 h-10 grid place-items-center bg-[#f59318]/10 text-[#f59318] rounded shrink-0">
+                                <Tag size={16} />
+                              </span>
+                            )}
+                            <span className="flex-1 min-w-0">
+                              <span className="block text-sm font-medium truncate">{s.name}</span>
+                              <span className="block text-[11px] text-neutral-500 flex items-center gap-1">
+                                {s.kind === "product" ? <><PackageIcon size={10} /> Produto {s.price ? `· ${s.price}` : ""}</> : "Categoria"}
+                              </span>
+                            </span>
+                          </button>
+                        </li>
+                      ))}
+                      <li>
+                        <button
+                          type="submit"
+                          onClick={onSubmit}
+                          className="w-full text-center text-xs font-semibold px-3 py-2 bg-neutral-50 text-[#A7144C] hover:bg-neutral-100"
+                        >
+                          Ver todos os resultados para “{debounced}”
+                        </button>
+                      </li>
+                    </ul>
+                  )}
+                </div>
+              )}
+            </form>
 
             <div className="flex items-center gap-5 md:gap-6">
               <Link to="/auth" className="hidden sm:flex items-center gap-2 text-xs font-bold tracking-wide hover:text-[#f59318]">
