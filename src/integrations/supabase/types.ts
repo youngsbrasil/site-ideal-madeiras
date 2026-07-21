@@ -156,9 +156,100 @@ export type Database = {
           },
         ]
       }
+      product_images: {
+        Row: {
+          alt: string
+          created_at: string
+          id: string
+          ordem: number
+          product_id: string
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          alt: string
+          created_at?: string
+          id?: string
+          ordem?: number
+          product_id: string
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          alt?: string
+          created_at?: string
+          id?: string
+          ordem?: number
+          product_id?: string
+          updated_at?: string
+          url?: string
+        }
+        Relationships: []
+      }
+      product_related: {
+        Row: {
+          created_at: string
+          id: string
+          ordem: number
+          product_id: string
+          related_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          ordem?: number
+          product_id: string
+          related_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          ordem?: number
+          product_id?: string
+          related_id?: string
+        }
+        Relationships: []
+      }
+      product_variations: {
+        Row: {
+          atributo: string
+          created_at: string
+          disponivel: boolean
+          id: string
+          ordem: number
+          product_id: string
+          sku: string | null
+          updated_at: string
+          valor: string
+        }
+        Insert: {
+          atributo: string
+          created_at?: string
+          disponivel?: boolean
+          id?: string
+          ordem?: number
+          product_id: string
+          sku?: string | null
+          updated_at?: string
+          valor: string
+        }
+        Update: {
+          atributo?: string
+          created_at?: string
+          disponivel?: boolean
+          id?: string
+          ordem?: number
+          product_id?: string
+          sku?: string | null
+          updated_at?: string
+          valor?: string
+        }
+        Relationships: []
+      }
       products: {
         Row: {
           active: boolean
+          availability: string | null
           canonical: string | null
           category_id: string | null
           created_at: string
@@ -187,6 +278,7 @@ export type Database = {
         }
         Insert: {
           active?: boolean
+          availability?: string | null
           canonical?: string | null
           category_id?: string | null
           created_at?: string
@@ -215,6 +307,7 @@ export type Database = {
         }
         Update: {
           active?: boolean
+          availability?: string | null
           canonical?: string | null
           category_id?: string | null
           created_at?: string
