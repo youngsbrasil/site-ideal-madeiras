@@ -180,20 +180,6 @@ function Home() {
         </section>
       )}
 
-      {/* Cena interativa com pins (shoppable) */}
-      {shoppable.length > 0 && (
-        <section className="mx-auto max-w-7xl px-4 py-8">
-          <div className="text-center mb-6">
-            <h3 className="text-lg md:text-xl font-bold">INSPIRE-SE COM NOSSOS AMBIENTES</h3>
-            <p className="text-xs text-neutral-500">Passe o mouse nos pontos destacados para conhecer os produtos</p>
-          </div>
-          <div className="space-y-8">
-            {shoppable.map((s) => (
-              <ShoppableSceneView key={s.id} scene={s} products={produtos} categorias={categorias} />
-            ))}
-          </div>
-        </section>
-      )}
 
       {/* Google reviews strip */}
       <section className="mx-auto max-w-7xl px-4 py-8">
@@ -227,29 +213,19 @@ function Home() {
         </div>
       </section>
 
-      {/* O Mais Popular + ambiente */}
+      {/* O Mais Popular + ambiente (com pins interativos quando houver cenas) */}
       {maisPopular && (
-        <section className="mx-auto max-w-7xl px-4 py-6">
-          <div className="grid md:grid-cols-[2fr_1fr] gap-4 items-stretch">
-            <div className="relative rounded-lg overflow-hidden bg-neutral-100">
-              <img src={proxyImg(`${IMG}/2024/11/SALA-DE-ESTAR-795x600.webp`)} alt="Ambiente" className="w-full h-full object-cover" />
-            </div>
-            <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-5 flex flex-col">
-              <div className="text-xs font-bold tracking-widest text-neutral-500">O MAIS POPULAR</div>
-              <p className="text-[11px] text-neutral-500 mt-1">Este item é o mais popular em nosso Catálogo</p>
-              <div className="my-4 aspect-square bg-white rounded overflow-hidden grid place-items-center">
-                {maisPopular.main_image && <SupabaseImage src={maisPopular.main_image} alt={maisPopular.name} className="w-full h-full object-contain p-4" />}
-              </div>
-              <div className="text-sm font-semibold text-center">{maisPopular.name}</div>
-              <div className="text-center mt-2 font-bold" style={{ color: ORANGE }}>{maisPopular.price}</div>
-              <Link to={productPath(maisPopular, categorias) as any} className="mt-3 block text-center border border-neutral-800 text-neutral-800 hover:bg-neutral-800 hover:text-white text-xs font-semibold py-2 rounded transition-colors">
-                QUICK VIEW
-              </Link>
-              <button className="mt-2 text-xs text-neutral-500 hover:text-neutral-800 inline-flex items-center justify-center gap-1">
-                <Heart size={12} /> Adicionar à Lista de Desejos
-              </button>
-            </div>
-          </div>
+        <section className="mx-auto max-w-7xl px-4 py-6 space-y-6">
+          {(shoppable.length > 0 ? shoppable : [null]).map((scene, i) => (
+            <ShoppablePopularBlock
+              key={scene?.id ?? `default-${i}`}
+              scene={scene}
+              defaultProduct={maisPopular}
+              products={produtos}
+              categorias={categorias}
+              fallbackImage={`${IMG}/2024/11/SALA-DE-ESTAR-795x600.webp`}
+            />
+          ))}
         </section>
       )}
 
@@ -520,47 +496,72 @@ function ProductCard({ p, compact, showOferta, categorias: catsProp }: { p: Prod
   );
 }
 
-function ShoppableSceneView({ scene, products, categorias }: { scene: ShoppableScene; products: Product[]; categorias: any[] }) {
+function ShoppablePopularBlock({
+  scene,
+  defaultProduct,
+  products,
+  categorias,
+  fallbackImage,
+}: {
+  scene: ShoppableScene | null;
+  defaultProduct: Product;
+  products: Product[];
+  categorias: any[];
+  fallbackImage: string;
+}) {
   const productById = new Map(products.map((p) => [p.id, p]));
+  const [hoverProductId, setHoverProductId] = useState<string | null>(null);
+  const hovered = hoverProductId ? productById.get(hoverProductId) : null;
+  const shown: Product = hovered ?? defaultProduct;
+  const pins = scene?.pins ?? [];
+
   return (
-    <div className="relative w-full overflow-hidden rounded-xl border border-neutral-200 shadow-sm">
-      <SupabaseImage src={scene.image_url} alt={scene.title ?? ""} className="w-full h-auto block" />
-      {scene.pins.map((pin) => {
-        const p = pin.product_id ? productById.get(pin.product_id) : null;
-        return (
-          <div key={pin.id} className="absolute -translate-x-1/2 -translate-y-1/2 group/pin" style={{ left: `${pin.x}%`, top: `${pin.y}%` }}>
+    <div className="grid md:grid-cols-[2fr_1fr] gap-4 items-stretch">
+      <div className="relative rounded-lg overflow-hidden bg-neutral-100">
+        {scene?.image_url ? (
+          <SupabaseImage src={scene.image_url} alt={scene.title ?? "Ambiente"} className="w-full h-full object-cover block" />
+        ) : (
+          <img src={proxyImg(fallbackImage)} alt="Ambiente" className="w-full h-full object-cover" />
+        )}
+        {pins.map((pin) => (
+          <div
+            key={pin.id}
+            className="absolute -translate-x-1/2 -translate-y-1/2"
+            style={{ left: `${pin.x}%`, top: `${pin.y}%` }}
+            onMouseEnter={() => pin.product_id && setHoverProductId(pin.product_id)}
+            onMouseLeave={() => setHoverProductId((cur) => (cur === pin.product_id ? null : cur))}
+          >
             <button
-              aria-label={pin.label ?? p?.name ?? "Produto"}
+              aria-label={pin.label ?? "Produto"}
               className="relative w-6 h-6 rounded-full border-2 border-white shadow-lg grid place-items-center focus:outline-none"
               style={{ background: ORANGE }}
             >
               <span className="absolute inset-0 rounded-full animate-ping opacity-75" style={{ background: ORANGE }} />
               <span className="relative w-2 h-2 rounded-full bg-white" />
             </button>
-            {p && (
-              <div className="pointer-events-none opacity-0 group-hover/pin:opacity-100 group-hover/pin:pointer-events-auto transition-opacity duration-200 absolute left-1/2 -translate-x-1/2 top-full mt-3 w-64 bg-white rounded-lg shadow-2xl border border-neutral-200 p-3 z-20">
-                <div className="aspect-square bg-neutral-50 rounded overflow-hidden">
-                  {p.main_image && <SupabaseImage src={p.main_image} alt={p.name} className="w-full h-full object-contain p-2" />}
-                </div>
-                <h4 className="mt-2 text-sm font-semibold line-clamp-2 text-center">{p.name}</h4>
-                <div className="mt-1 text-center font-bold" style={{ color: ORANGE }}>{p.price}</div>
-                <Link
-                  to={productPath(p, categorias) as any}
-                  className="mt-3 block w-full text-center text-white text-[11px] font-bold px-3 py-2 rounded-full uppercase tracking-wide hover:opacity-90"
-                  style={{ background: ORANGE }}
-                >
-                  Faça seu orçamento aqui
-                </Link>
-              </div>
-            )}
-            {!p && pin.label && (
-              <div className="pointer-events-none opacity-0 group-hover/pin:opacity-100 transition-opacity duration-200 absolute left-1/2 -translate-x-1/2 top-full mt-2 whitespace-nowrap bg-neutral-900 text-white text-xs px-2 py-1 rounded">
-                {pin.label}
-              </div>
-            )}
           </div>
-        );
-      })}
+        ))}
+      </div>
+      <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-5 flex flex-col">
+        <div className="text-xs font-bold tracking-widest text-neutral-500">O MAIS POPULAR</div>
+        <p className="text-[11px] text-neutral-500 mt-1">
+          {hovered ? "Item destacado neste ambiente" : "Este item é o mais popular em nosso Catálogo"}
+        </p>
+        <div className="my-4 aspect-square bg-white rounded overflow-hidden grid place-items-center">
+          {shown.main_image && <SupabaseImage src={shown.main_image} alt={shown.name} className="w-full h-full object-contain p-4" />}
+        </div>
+        <div className="text-sm font-semibold text-center">{shown.name}</div>
+        <div className="text-center mt-2 font-bold" style={{ color: ORANGE }}>{shown.price}</div>
+        <Link
+          to={productPath(shown, categorias) as any}
+          className="mt-3 block text-center border border-neutral-800 text-neutral-800 hover:bg-neutral-800 hover:text-white text-xs font-semibold py-2 rounded transition-colors"
+        >
+          QUICK VIEW
+        </Link>
+        <button className="mt-2 text-xs text-neutral-500 hover:text-neutral-800 inline-flex items-center justify-center gap-1">
+          <Heart size={12} /> Adicionar à Lista de Desejos
+        </button>
+      </div>
     </div>
   );
 }
