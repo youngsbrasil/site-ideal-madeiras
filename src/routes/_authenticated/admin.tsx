@@ -1,6 +1,6 @@
 import { createFileRoute, Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { LayoutDashboard, Package, Tags, Image as ImageIcon, Settings, LogOut, ExternalLink, MapPin, Rss, Search, Ticket } from "lucide-react";
+import { LayoutDashboard, Package, Tags, Image as ImageIcon, Settings, LogOut, ExternalLink, MapPin, Rss, Search, Ticket, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -14,6 +14,7 @@ const nav = [
   { to: "/admin/banners", label: "Banners", icon: ImageIcon },
   { to: "/admin/cupons", label: "Cupons", icon: Ticket },
   { to: "/admin/shoppable", label: "Cenas c/ Pins", icon: MapPin },
+  { to: "/admin/avaliacoes", label: "Avaliações", icon: Star },
   { to: "/admin/feeds", label: "Feeds", icon: Rss },
   { to: "/admin/seo", label: "SEO & Redirects", icon: Search },
   { to: "/admin/configuracoes", label: "Configurações", icon: Settings },
