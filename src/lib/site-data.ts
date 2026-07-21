@@ -38,8 +38,66 @@ export type Product = SeoFields & {
   woods: string[];
   finishes: string[];
   price_value: number | null;
+  availability?: string | null;
   created_at?: string;
 };
+
+export type ProductVariation = {
+  id: string;
+  product_id: string;
+  atributo: string;
+  valor: string;
+  sku: string | null;
+  disponivel: boolean;
+  ordem: number;
+};
+
+export type ProductImage = {
+  id: string;
+  product_id: string;
+  url: string;
+  alt: string;
+  ordem: number;
+};
+
+export type ProductRelated = {
+  id: string;
+  product_id: string;
+  related_id: string;
+  ordem: number;
+};
+
+export function formatPriceDisplay(p: { price?: string | null; price_value?: number | null; availability?: string | null }): string {
+  if (p.availability === "sob_consulta") return "Sob consulta";
+  if (p.availability === "esgotado") return "Esgotado";
+  if (typeof p.price_value === "number" && !isNaN(p.price_value) && p.price_value > 0) {
+    return p.price_value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  }
+  const s = (p.price ?? "").trim();
+  if (!s) return "Sob consulta";
+  // if it looks like currency (contains R$ or digits) show as-is, otherwise treat as no price
+  if (/r\$|\d/i.test(s)) return s;
+  return "Sob consulta";
+}
+
+export async function fetchProductVariations(productId: string): Promise<ProductVariation[]> {
+  const { data, error } = await supabase.from("product_variations" as any).select("*").eq("product_id", productId).order("ordem");
+  if (error) throw error;
+  return (data ?? []) as unknown as ProductVariation[];
+}
+
+export async function fetchProductImages(productId: string): Promise<ProductImage[]> {
+  const { data, error } = await supabase.from("product_images" as any).select("*").eq("product_id", productId).order("ordem");
+  if (error) throw error;
+  return (data ?? []) as unknown as ProductImage[];
+}
+
+export async function fetchProductRelated(productId: string): Promise<ProductRelated[]> {
+  const { data, error } = await supabase.from("product_related" as any).select("*").eq("product_id", productId).order("ordem");
+  if (error) throw error;
+  return (data ?? []) as unknown as ProductRelated[];
+}
+
 
 export type Banner = {
   id: string;
