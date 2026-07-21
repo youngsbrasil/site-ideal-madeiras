@@ -437,6 +437,105 @@ export type Database = {
         }
         Relationships: []
       }
+      review_widgets: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          layout: string
+          max_items: number
+          min_rating: number
+          scope: string
+          scope_ref: string | null
+          show_average: boolean
+          show_cta_badge: boolean
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          layout?: string
+          max_items?: number
+          min_rating?: number
+          scope: string
+          scope_ref?: string | null
+          show_average?: boolean
+          show_cta_badge?: boolean
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          layout?: string
+          max_items?: number
+          min_rating?: number
+          scope?: string
+          scope_ref?: string | null
+          show_average?: boolean
+          show_cta_badge?: boolean
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          author_avatar_url: string | null
+          author_name: string
+          content: string | null
+          created_at: string
+          external_id: string | null
+          featured: boolean
+          hidden: boolean
+          id: string
+          language: string | null
+          rating: number
+          reply: string | null
+          review_date: string | null
+          sort_order: number
+          source: string
+          synced_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          author_avatar_url?: string | null
+          author_name: string
+          content?: string | null
+          created_at?: string
+          external_id?: string | null
+          featured?: boolean
+          hidden?: boolean
+          id?: string
+          language?: string | null
+          rating: number
+          reply?: string | null
+          review_date?: string | null
+          sort_order?: number
+          source?: string
+          synced_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          author_avatar_url?: string | null
+          author_name?: string
+          content?: string | null
+          created_at?: string
+          external_id?: string | null
+          featured?: boolean
+          hidden?: boolean
+          id?: string
+          language?: string | null
+          rating?: number
+          reply?: string | null
+          review_date?: string | null
+          sort_order?: number
+          source?: string
+          synced_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       shoppable_pins: {
         Row: {
           created_at: string
@@ -512,16 +611,22 @@ export type Database = {
       site_settings: {
         Row: {
           key: string
+          trustindex_api_key: string | null
+          trustindex_widget_id: string | null
           updated_at: string
           value: Json
         }
         Insert: {
           key: string
+          trustindex_api_key?: string | null
+          trustindex_widget_id?: string | null
           updated_at?: string
           value: Json
         }
         Update: {
           key?: string
+          trustindex_api_key?: string | null
+          trustindex_widget_id?: string | null
           updated_at?: string
           value?: Json
         }
