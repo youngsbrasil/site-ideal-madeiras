@@ -82,7 +82,7 @@ export const runWpImport = createServerFn({ method: "POST" })
           }));
           const BATCH = 50;
           for (let i = 0; i < backupRows.length; i += BATCH) {
-            const { error } = await supabase.from("products_backup").insert(backupRows.slice(i, i + BATCH));
+            const { error } = await supabase.from("products_backup").insert(backupRows.slice(i, i + BATCH) as any);
             if (error) throw new Error("snapshot: " + error.message);
           }
         }
