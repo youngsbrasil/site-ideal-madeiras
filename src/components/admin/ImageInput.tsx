@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Upload } from "lucide-react";
+import { Upload, ImageIcon } from "lucide-react";
 import { SupabaseImage } from "@/components/SupabaseImage";
+import { MediaLibraryPicker } from "@/components/admin/MediaLibraryPicker";
+import { uploadToLibrary, publicUrl } from "@/lib/media-library";
 
 export function ImageInput({
   value,
@@ -15,20 +16,13 @@ export function ImageInput({
   label?: string;
 }) {
   const [uploading, setUploading] = useState(false);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   async function handleFile(file: File) {
     setUploading(true);
     try {
-      const ext = file.name.split(".").pop();
-      const path = `uploads/${crypto.randomUUID()}.${ext}`;
-      const { error } = await supabase.storage.from("media").upload(path, file, {
-        cacheControl: "3600",
-        contentType: file.type,
-        upsert: false,
-      });
-      if (error) throw error;
-      const { data } = supabase.storage.from("media").getPublicUrl(path);
-      onChange(data.publicUrl);
+      const asset = await uploadToLibrary(file);
+      onChange(publicUrl(asset.full_path));
     } catch (err: any) {
       alert("Erro no upload: " + err.message);
     } finally {
@@ -39,14 +33,17 @@ export function ImageInput({
   return (
     <div className="space-y-2">
       {label && <label className="text-sm font-medium">{label}</label>}
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         <Input
           type="url"
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="Cole uma URL ou envie um arquivo"
-          className="flex-1"
+          placeholder="Cole uma URL ou escolha da biblioteca"
+          className="flex-1 min-w-[200px]"
         />
+        <Button type="button" variant="outline" onClick={() => setPickerOpen(true)}>
+          <ImageIcon className="w-4 h-4 mr-2" /> Biblioteca
+        </Button>
         <label className="cursor-pointer">
           <input
             type="file"
@@ -65,6 +62,11 @@ export function ImageInput({
       {value && (
         <SupabaseImage src={value} alt="" className="w-32 h-32 object-cover rounded border" />
       )}
+      <MediaLibraryPicker
+        open={pickerOpen}
+        onOpenChange={setPickerOpen}
+        onSelect={(asset) => onChange(publicUrl(asset.full_path))}
+      />
     </div>
   );
 }

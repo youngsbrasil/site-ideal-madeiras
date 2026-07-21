@@ -49,5 +49,13 @@ export function SupabaseImage({ src, alt, ...props }: ImgHTMLAttributes<HTMLImag
 
   if (!src) return null;
 
-  return <img src={resolvedSrc} alt={alt ?? ""} {...props} />;
+  return (
+    <img
+      src={resolvedSrc}
+      alt={alt ?? ""}
+      loading={props.loading ?? "lazy"}
+      decoding={props.decoding ?? "async"}
+      {...props}
+    />
+  );
 }
