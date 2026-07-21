@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { fetchCategories, fetchSettings, productPath, type Product, type Category } from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
+import { categoryMetaTitle, categoryMetaDescription, absoluteUrl, breadcrumbJsonLd, SITE_NAME } from "@/lib/seo";
 
 export const Route = createFileRoute("/categoria/$slug")({
   loader: async ({ params }) => {
@@ -39,7 +40,6 @@ export const Route = createFileRoute("/categoria/$slug")({
       return { meta: [{ title: "Categoria não encontrada - Ideal Madeiras" }, { name: "robots", content: "noindex" }] };
     }
     const c = loaderData.category;
-    const { categoryMetaTitle, categoryMetaDescription, absoluteUrl, breadcrumbJsonLd, SITE_NAME } = require("@/lib/seo") as typeof import("@/lib/seo");
     const title = categoryMetaTitle(c);
     const desc = categoryMetaDescription(c);
     const url = c.canonical || absoluteUrl(`/categoria/${params.slug}`);
