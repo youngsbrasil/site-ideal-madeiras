@@ -1,6 +1,14 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
-import { fetchProductBySlug, type Product } from "@/lib/site-data";
+import { fetchProductBySlug, productPath, type Product } from "@/lib/site-data";
 import { ProductView } from "@/components/ProductView";
+import {
+  productMetaTitle,
+  productMetaDescription,
+  absoluteUrl,
+  productJsonLd,
+  breadcrumbJsonLd,
+  SITE_NAME,
+} from "@/lib/seo";
 
 export const Route = createFileRoute("/$")({
   loader: async ({ params }) => {
@@ -17,17 +25,31 @@ export const Route = createFileRoute("/$")({
       return { meta: [{ title: "Produto não encontrado - Ideal Madeiras" }, { name: "robots", content: "noindex" }] };
     }
     const p = loaderData.product;
-    const title = `${p.name} - Lojas Ideal Madeiras`;
-    const desc = `${p.name} por ${p.price}. Compre com segurança na Lojas Ideal Madeiras.`;
+    const title = productMetaTitle(p);
+    const desc = productMetaDescription(p);
+    const url = p.canonical || absoluteUrl(productPath(p));
+    const img = p.og_image || p.main_image || undefined;
+    const crumbs = breadcrumbJsonLd([
+      { name: SITE_NAME, url: absoluteUrl("/") },
+      { name: p.name, url },
+    ]);
+    const productLd = productJsonLd(p, url);
     return {
       meta: [
         { title },
         { name: "description", content: desc },
+        ...(p.noindex ? [{ name: "robots", content: "noindex,nofollow" }] : []),
         { property: "og:title", content: title },
         { property: "og:description", content: desc },
         { property: "og:type", content: "product" },
-        ...(p.main_image ? [{ property: "og:image", content: p.main_image }] : []),
+        { property: "og:url", content: url },
+        ...(img ? [{ property: "og:image", content: img }] : []),
         { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [
+        { type: "application/ld+json", children: JSON.stringify(productLd) },
+        { type: "application/ld+json", children: JSON.stringify(crumbs) },
       ],
     };
   },
