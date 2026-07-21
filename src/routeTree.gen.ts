@@ -21,6 +21,7 @@ import { Route as ProdutoSlugRouteImport } from './routes/produto.$slug'
 import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedAdminUsuariosRouteImport } from './routes/_authenticated/admin.usuarios'
 import { Route as AuthenticatedAdminShoppableRouteImport } from './routes/_authenticated/admin.shoppable'
 import { Route as AuthenticatedAdminSeoRouteImport } from './routes/_authenticated/admin.seo'
 import { Route as AuthenticatedAdminProdutosRouteImport } from './routes/_authenticated/admin.produtos'
@@ -30,6 +31,7 @@ import { Route as AuthenticatedAdminConfiguracoesRouteImport } from './routes/_a
 import { Route as AuthenticatedAdminCategoriasRouteImport } from './routes/_authenticated/admin.categorias'
 import { Route as AuthenticatedAdminBannersRouteImport } from './routes/_authenticated/admin.banners'
 import { Route as AuthenticatedAdminAvaliacoesRouteImport } from './routes/_authenticated/admin.avaliacoes'
+import { Route as AuthenticatedAdminAtividadeRouteImport } from './routes/_authenticated/admin.atividade'
 import { Route as AuthenticatedAdminRelatoriosBuscasRouteImport } from './routes/_authenticated/admin.relatorios.buscas'
 import { Route as ApiPublicFeedMetaCsvRouteImport } from './routes/api/public/feed.meta.csv'
 import { Route as ApiPublicFeedGoogleXmlRouteImport } from './routes/api/public/feed.google.xml'
@@ -94,6 +96,12 @@ const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminUsuariosRoute =
+  AuthenticatedAdminUsuariosRouteImport.update({
+    id: '/usuarios',
+    path: '/usuarios',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminShoppableRoute =
   AuthenticatedAdminShoppableRouteImport.update({
     id: '/shoppable',
@@ -146,6 +154,12 @@ const AuthenticatedAdminAvaliacoesRoute =
     path: '/avaliacoes',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminAtividadeRoute =
+  AuthenticatedAdminAtividadeRouteImport.update({
+    id: '/atividade',
+    path: '/atividade',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminRelatoriosBuscasRoute =
   AuthenticatedAdminRelatoriosBuscasRouteImport.update({
     id: '/relatorios/buscas',
@@ -179,6 +193,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/produto/$slug': typeof ProdutoSlugRoute
+  '/admin/atividade': typeof AuthenticatedAdminAtividadeRoute
   '/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
   '/admin/banners': typeof AuthenticatedAdminBannersRoute
   '/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
@@ -188,6 +203,7 @@ export interface FileRoutesByFullPath {
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
   '/admin/seo': typeof AuthenticatedAdminSeoRoute
   '/admin/shoppable': typeof AuthenticatedAdminShoppableRoute
+  '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/admin/relatorios/buscas': typeof AuthenticatedAdminRelatoriosBuscasRoute
   '/api/public/feed/google/csv': typeof ApiPublicFeedGoogleCsvRoute
@@ -204,6 +220,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/produto/$slug': typeof ProdutoSlugRoute
+  '/admin/atividade': typeof AuthenticatedAdminAtividadeRoute
   '/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
   '/admin/banners': typeof AuthenticatedAdminBannersRoute
   '/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
@@ -213,6 +230,7 @@ export interface FileRoutesByTo {
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
   '/admin/seo': typeof AuthenticatedAdminSeoRoute
   '/admin/shoppable': typeof AuthenticatedAdminShoppableRoute
+  '/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/admin/relatorios/buscas': typeof AuthenticatedAdminRelatoriosBuscasRoute
   '/api/public/feed/google/csv': typeof ApiPublicFeedGoogleCsvRoute
@@ -232,6 +250,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/produto/$slug': typeof ProdutoSlugRoute
+  '/_authenticated/admin/atividade': typeof AuthenticatedAdminAtividadeRoute
   '/_authenticated/admin/avaliacoes': typeof AuthenticatedAdminAvaliacoesRoute
   '/_authenticated/admin/banners': typeof AuthenticatedAdminBannersRoute
   '/_authenticated/admin/categorias': typeof AuthenticatedAdminCategoriasRoute
@@ -241,6 +260,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/produtos': typeof AuthenticatedAdminProdutosRoute
   '/_authenticated/admin/seo': typeof AuthenticatedAdminSeoRoute
   '/_authenticated/admin/shoppable': typeof AuthenticatedAdminShoppableRoute
+  '/_authenticated/admin/usuarios': typeof AuthenticatedAdminUsuariosRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/admin/relatorios/buscas': typeof AuthenticatedAdminRelatoriosBuscasRoute
   '/api/public/feed/google/csv': typeof ApiPublicFeedGoogleCsvRoute
@@ -260,6 +280,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/categoria/$slug'
     | '/produto/$slug'
+    | '/admin/atividade'
     | '/admin/avaliacoes'
     | '/admin/banners'
     | '/admin/categorias'
@@ -269,6 +290,7 @@ export interface FileRouteTypes {
     | '/admin/produtos'
     | '/admin/seo'
     | '/admin/shoppable'
+    | '/admin/usuarios'
     | '/admin/'
     | '/admin/relatorios/buscas'
     | '/api/public/feed/google/csv'
@@ -285,6 +307,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/categoria/$slug'
     | '/produto/$slug'
+    | '/admin/atividade'
     | '/admin/avaliacoes'
     | '/admin/banners'
     | '/admin/categorias'
@@ -294,6 +317,7 @@ export interface FileRouteTypes {
     | '/admin/produtos'
     | '/admin/seo'
     | '/admin/shoppable'
+    | '/admin/usuarios'
     | '/admin'
     | '/admin/relatorios/buscas'
     | '/api/public/feed/google/csv'
@@ -312,6 +336,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/categoria/$slug'
     | '/produto/$slug'
+    | '/_authenticated/admin/atividade'
     | '/_authenticated/admin/avaliacoes'
     | '/_authenticated/admin/banners'
     | '/_authenticated/admin/categorias'
@@ -321,6 +346,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/produtos'
     | '/_authenticated/admin/seo'
     | '/_authenticated/admin/shoppable'
+    | '/_authenticated/admin/usuarios'
     | '/_authenticated/admin/'
     | '/_authenticated/admin/relatorios/buscas'
     | '/api/public/feed/google/csv'
@@ -430,6 +456,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/usuarios': {
+      id: '/_authenticated/admin/usuarios'
+      path: '/usuarios'
+      fullPath: '/admin/usuarios'
+      preLoaderRoute: typeof AuthenticatedAdminUsuariosRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/shoppable': {
       id: '/_authenticated/admin/shoppable'
       path: '/shoppable'
@@ -493,6 +526,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAvaliacoesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/atividade': {
+      id: '/_authenticated/admin/atividade'
+      path: '/atividade'
+      fullPath: '/admin/atividade'
+      preLoaderRoute: typeof AuthenticatedAdminAtividadeRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/relatorios/buscas': {
       id: '/_authenticated/admin/relatorios/buscas'
       path: '/relatorios/buscas'
@@ -525,6 +565,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminAtividadeRoute: typeof AuthenticatedAdminAtividadeRoute
   AuthenticatedAdminAvaliacoesRoute: typeof AuthenticatedAdminAvaliacoesRoute
   AuthenticatedAdminBannersRoute: typeof AuthenticatedAdminBannersRoute
   AuthenticatedAdminCategoriasRoute: typeof AuthenticatedAdminCategoriasRoute
@@ -534,11 +575,13 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminProdutosRoute: typeof AuthenticatedAdminProdutosRoute
   AuthenticatedAdminSeoRoute: typeof AuthenticatedAdminSeoRoute
   AuthenticatedAdminShoppableRoute: typeof AuthenticatedAdminShoppableRoute
+  AuthenticatedAdminUsuariosRoute: typeof AuthenticatedAdminUsuariosRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
   AuthenticatedAdminRelatoriosBuscasRoute: typeof AuthenticatedAdminRelatoriosBuscasRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminAtividadeRoute: AuthenticatedAdminAtividadeRoute,
   AuthenticatedAdminAvaliacoesRoute: AuthenticatedAdminAvaliacoesRoute,
   AuthenticatedAdminBannersRoute: AuthenticatedAdminBannersRoute,
   AuthenticatedAdminCategoriasRoute: AuthenticatedAdminCategoriasRoute,
@@ -548,6 +591,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminProdutosRoute: AuthenticatedAdminProdutosRoute,
   AuthenticatedAdminSeoRoute: AuthenticatedAdminSeoRoute,
   AuthenticatedAdminShoppableRoute: AuthenticatedAdminShoppableRoute,
+  AuthenticatedAdminUsuariosRoute: AuthenticatedAdminUsuariosRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
   AuthenticatedAdminRelatoriosBuscasRoute:
     AuthenticatedAdminRelatoriosBuscasRoute,
