@@ -50,25 +50,11 @@ export async function findRedirect(pathname: string): Promise<Row | null> {
   );
 }
 
-/** Fire-and-forget hit counter increment (non-blocking). */
+/** Fire-and-forget hit counter increment (non-blocking, non-atomic). */
 export function bumpHit(url_origem: string): void {
   const url = process.env.SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) return;
-  // service role update bypasses RLS
-  fetch(`${url}/rest/v1/rpc/`, {}).catch(() => {}); // noop keep-alive
-  try {
-    const admin = createClient(url, key, { auth: { persistSession: false } });
-    admin
-      .from("redirects")
-      // @ts-expect-error – increment via raw expression is unsupported by builder; do a select+update fallback
-      .update({ hits: undefined })
-      .eq("url_origem", url_origem)
-      .then(() => {});
-  } catch {
-    /* ignore */
-  }
-  // simple non-atomic counter increment
   try {
     const admin = createClient(url, key, { auth: { persistSession: false } });
     admin
@@ -76,9 +62,13 @@ export function bumpHit(url_origem: string): void {
       .select("id,hits")
       .eq("url_origem", url_origem)
       .maybeSingle()
-      .then(({ data }) => {
+      .then(({ data }: any) => {
         if (!data) return;
-        admin.from("redirects").update({ hits: (data.hits ?? 0) + 1 }).eq("id", data.id).then(() => {});
+        admin
+          .from("redirects")
+          .update({ hits: (data.hits ?? 0) + 1 })
+          .eq("id", data.id)
+          .then(() => {});
       });
   } catch {
     /* ignore */
