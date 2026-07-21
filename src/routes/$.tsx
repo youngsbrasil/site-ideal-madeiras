@@ -1,5 +1,5 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
-import { fetchProductBySlug, productPath, type Product } from "@/lib/site-data";
+import { fetchCategories, fetchProductBySlug, productPath, type Product, type Category } from "@/lib/site-data";
 import { ProductView } from "@/components/ProductView";
 import {
   productMetaTitle,
@@ -16,9 +16,9 @@ export const Route = createFileRoute("/$")({
     const segments = splat.split("/").map((s) => decodeURIComponent(s)).filter(Boolean);
     const slug = segments[segments.length - 1];
     if (!slug) throw notFound();
-    const product = await fetchProductBySlug(slug);
+    const [product, categories] = await Promise.all([fetchProductBySlug(slug), fetchCategories()]);
     if (!product) throw notFound();
-    return { product };
+    return { product, categories };
   },
   head: ({ loaderData }) => {
     if (!loaderData) {
