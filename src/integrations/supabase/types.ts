@@ -249,6 +249,63 @@ export type Database = {
           },
         ]
       }
+      media_assets: {
+        Row: {
+          alt: string | null
+          bucket: string
+          created_at: string
+          folder: string | null
+          full_path: string
+          height: number | null
+          id: string
+          medium_path: string | null
+          mime_type: string
+          original_name: string
+          size_bytes: number | null
+          tags: string[] | null
+          thumb_path: string | null
+          updated_at: string
+          uploaded_by: string | null
+          width: number | null
+        }
+        Insert: {
+          alt?: string | null
+          bucket?: string
+          created_at?: string
+          folder?: string | null
+          full_path: string
+          height?: number | null
+          id?: string
+          medium_path?: string | null
+          mime_type: string
+          original_name: string
+          size_bytes?: number | null
+          tags?: string[] | null
+          thumb_path?: string | null
+          updated_at?: string
+          uploaded_by?: string | null
+          width?: number | null
+        }
+        Update: {
+          alt?: string | null
+          bucket?: string
+          created_at?: string
+          folder?: string | null
+          full_path?: string
+          height?: number | null
+          id?: string
+          medium_path?: string | null
+          mime_type?: string
+          original_name?: string
+          size_bytes?: number | null
+          tags?: string[] | null
+          thumb_path?: string | null
+          updated_at?: string
+          uploaded_by?: string | null
+          width?: number | null
+        }
+        Relationships: []
+      }
       product_images: {
         Row: {
           alt: string
