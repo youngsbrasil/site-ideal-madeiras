@@ -40,6 +40,10 @@ function CheckoutPage() {
   const navigate = useNavigate();
   const items = useCart();
 
+  const [couponInput, setCouponInput] = useState("");
+  const [couponError, setCouponError] = useState<string | null>(null);
+  const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
+
   const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
   const { data: previewProduct } = useQuery({
     queryKey: ["product", slug],
@@ -49,10 +53,45 @@ function CheckoutPage() {
 
   const whatsapp = (settings?.site.whatsapp || "5511942000000").replace(/\D/g, "");
 
+  const subtotal = useMemo(
+    () => items.reduce((s, i) => s + parsePriceBRL(i.price) * i.qty, 0),
+    [items]
+  );
+
+  const validation = useMemo(
+    () => (appliedCoupon ? validateCoupon(appliedCoupon, subtotal) : null),
+    [appliedCoupon, subtotal]
+  );
+  const desconto = validation?.ok ? validation.desconto : 0;
+  const total = validation?.ok ? validation.total : subtotal;
+  const brl = (n: number) => n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+
+  const applyCoupon = async () => {
+    setCouponError(null);
+    try {
+      const c = await fetchCouponByCode(couponInput);
+      const v = validateCoupon(c, subtotal);
+      if (!v.ok) {
+        setCouponError(v.error);
+        setAppliedCoupon(null);
+        return;
+      }
+      setAppliedCoupon(c);
+    } catch (e: any) {
+      setCouponError(e.message || "Erro ao validar cupom.");
+    }
+  };
+
   const cartQuoteUrl = useMemo(() => {
     if (items.length === 0) return "";
-    return `https://wa.me/${whatsapp}?text=${encodeURIComponent(buildQuoteMessage(items))}`;
-  }, [items, whatsapp]);
+    const msg = buildQuoteMessage(items, validation?.ok ? {
+      coupon: { codigo: validation.coupon.codigo, descricao: validation.coupon.descricao },
+      subtotalLabel: brl(subtotal),
+      descontoLabel: brl(desconto),
+      totalLabel: brl(total),
+    } : undefined);
+    return `https://wa.me/${whatsapp}?text=${encodeURIComponent(msg)}`;
+  }, [items, whatsapp, validation, subtotal, desconto, total]);
 
   const previewQuoteUrl = previewProduct
     ? `https://wa.me/${whatsapp}?text=${encodeURIComponent(
