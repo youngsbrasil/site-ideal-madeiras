@@ -52,10 +52,15 @@ export type Database = {
       }
       categories: {
         Row: {
+          canonical: string | null
           created_at: string
           id: string
           image_url: string | null
+          meta_description: string | null
+          meta_title: string | null
           name: string
+          noindex: boolean | null
+          og_image: string | null
           parent_id: string | null
           product_count: number
           slug: string
@@ -63,10 +68,15 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          canonical?: string | null
           created_at?: string
           id?: string
           image_url?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
           name: string
+          noindex?: boolean | null
+          og_image?: string | null
           parent_id?: string | null
           product_count?: number
           slug: string
@@ -74,10 +84,15 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          canonical?: string | null
           created_at?: string
           id?: string
           image_url?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
           name?: string
+          noindex?: boolean | null
+          og_image?: string | null
           parent_id?: string | null
           product_count?: number
           slug?: string
@@ -144,6 +159,7 @@ export type Database = {
       products: {
         Row: {
           active: boolean
+          canonical: string | null
           category_id: string | null
           created_at: string
           description: string | null
@@ -152,8 +168,12 @@ export type Database = {
           gallery: Json
           id: string
           main_image: string | null
+          meta_description: string | null
+          meta_title: string | null
           most_viewed: boolean
           name: string
+          noindex: boolean | null
+          og_image: string | null
           old_price: string | null
           price: string
           price_value: number | null
@@ -167,6 +187,7 @@ export type Database = {
         }
         Insert: {
           active?: boolean
+          canonical?: string | null
           category_id?: string | null
           created_at?: string
           description?: string | null
@@ -175,8 +196,12 @@ export type Database = {
           gallery?: Json
           id?: string
           main_image?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
           most_viewed?: boolean
           name: string
+          noindex?: boolean | null
+          og_image?: string | null
           old_price?: string | null
           price: string
           price_value?: number | null
@@ -190,6 +215,7 @@ export type Database = {
         }
         Update: {
           active?: boolean
+          canonical?: string | null
           category_id?: string | null
           created_at?: string
           description?: string | null
@@ -198,8 +224,12 @@ export type Database = {
           gallery?: Json
           id?: string
           main_image?: string | null
+          meta_description?: string | null
+          meta_title?: string | null
           most_viewed?: boolean
           name?: string
+          noindex?: boolean | null
+          og_image?: string | null
           old_price?: string | null
           price?: string
           price_value?: number | null
@@ -220,6 +250,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      redirects: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          hits: number
+          id: string
+          tipo: number
+          updated_at: string
+          url_destino: string
+          url_origem: string
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          hits?: number
+          id?: string
+          tipo?: number
+          updated_at?: string
+          url_destino: string
+          url_origem: string
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          hits?: number
+          id?: string
+          tipo?: number
+          updated_at?: string
+          url_destino?: string
+          url_origem?: string
+        }
+        Relationships: []
       }
       shoppable_pins: {
         Row: {

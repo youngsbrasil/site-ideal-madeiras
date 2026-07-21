@@ -1,6 +1,14 @@
 import { supabase } from "@/integrations/supabase/client";
 
-export type Category = {
+export type SeoFields = {
+  meta_title?: string | null;
+  meta_description?: string | null;
+  canonical?: string | null;
+  og_image?: string | null;
+  noindex?: boolean | null;
+};
+
+export type Category = SeoFields & {
   id: string;
   name: string;
   slug: string;
@@ -10,7 +18,7 @@ export type Category = {
   parent_id?: string | null;
 };
 
-export type Product = {
+export type Product = SeoFields & {
   id: string;
   slug: string;
   name: string;
@@ -42,6 +50,21 @@ export type Banner = {
   sort_order: number;
   active: boolean;
 };
+
+export type Redirect = {
+  id: string;
+  url_origem: string;
+  url_destino: string;
+  tipo: number;
+  ativo: boolean;
+  hits: number;
+};
+
+export async function fetchRedirects(): Promise<Redirect[]> {
+  const { data, error } = await supabase.from("redirects" as any).select("*").order("url_origem");
+  if (error) throw error;
+  return (data ?? []) as unknown as Redirect[];
+}
 
 export type ShoppablePin = {
   id: string;

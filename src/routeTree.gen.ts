@@ -9,6 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as CheckoutRouteImport } from './routes/checkout'
 import { Route as BuscaRouteImport } from './routes/busca'
 import { Route as AuthRouteImport } from './routes/auth'
@@ -20,6 +22,7 @@ import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminShoppableRouteImport } from './routes/_authenticated/admin.shoppable'
+import { Route as AuthenticatedAdminSeoRouteImport } from './routes/_authenticated/admin.seo'
 import { Route as AuthenticatedAdminProdutosRouteImport } from './routes/_authenticated/admin.produtos'
 import { Route as AuthenticatedAdminFeedsRouteImport } from './routes/_authenticated/admin.feeds'
 import { Route as AuthenticatedAdminConfiguracoesRouteImport } from './routes/_authenticated/admin.configuracoes'
@@ -29,6 +32,16 @@ import { Route as ApiPublicFeedMetaCsvRouteImport } from './routes/api/public/fe
 import { Route as ApiPublicFeedGoogleXmlRouteImport } from './routes/api/public/feed.google.xml'
 import { Route as ApiPublicFeedGoogleCsvRouteImport } from './routes/api/public/feed.google.csv'
 
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CheckoutRoute = CheckoutRouteImport.update({
   id: '/checkout',
   path: '/checkout',
@@ -84,6 +97,11 @@ const AuthenticatedAdminShoppableRoute =
     path: '/shoppable',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminSeoRoute = AuthenticatedAdminSeoRouteImport.update({
+  id: '/seo',
+  path: '/seo',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminProdutosRoute =
   AuthenticatedAdminProdutosRouteImport.update({
     id: '/produtos',
@@ -135,6 +153,8 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/busca': typeof BuscaRoute
   '/checkout': typeof CheckoutRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/produto/$slug': typeof ProdutoSlugRoute
@@ -143,6 +163,7 @@ export interface FileRoutesByFullPath {
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/admin/feeds': typeof AuthenticatedAdminFeedsRoute
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
+  '/admin/seo': typeof AuthenticatedAdminSeoRoute
   '/admin/shoppable': typeof AuthenticatedAdminShoppableRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/feed/google/csv': typeof ApiPublicFeedGoogleCsvRoute
@@ -155,6 +176,8 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/busca': typeof BuscaRoute
   '/checkout': typeof CheckoutRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/produto/$slug': typeof ProdutoSlugRoute
   '/admin/banners': typeof AuthenticatedAdminBannersRoute
@@ -162,6 +185,7 @@ export interface FileRoutesByTo {
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/admin/feeds': typeof AuthenticatedAdminFeedsRoute
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
+  '/admin/seo': typeof AuthenticatedAdminSeoRoute
   '/admin/shoppable': typeof AuthenticatedAdminShoppableRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/feed/google/csv': typeof ApiPublicFeedGoogleCsvRoute
@@ -176,6 +200,8 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/busca': typeof BuscaRoute
   '/checkout': typeof CheckoutRoute
+  '/robots.txt': typeof RobotsDottxtRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/categoria/$slug': typeof CategoriaSlugRoute
   '/produto/$slug': typeof ProdutoSlugRoute
@@ -184,6 +210,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/_authenticated/admin/feeds': typeof AuthenticatedAdminFeedsRoute
   '/_authenticated/admin/produtos': typeof AuthenticatedAdminProdutosRoute
+  '/_authenticated/admin/seo': typeof AuthenticatedAdminSeoRoute
   '/_authenticated/admin/shoppable': typeof AuthenticatedAdminShoppableRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/feed/google/csv': typeof ApiPublicFeedGoogleCsvRoute
@@ -198,6 +225,8 @@ export interface FileRouteTypes {
     | '/auth'
     | '/busca'
     | '/checkout'
+    | '/robots.txt'
+    | '/sitemap.xml'
     | '/admin'
     | '/categoria/$slug'
     | '/produto/$slug'
@@ -206,6 +235,7 @@ export interface FileRouteTypes {
     | '/admin/configuracoes'
     | '/admin/feeds'
     | '/admin/produtos'
+    | '/admin/seo'
     | '/admin/shoppable'
     | '/admin/'
     | '/api/public/feed/google/csv'
@@ -218,6 +248,8 @@ export interface FileRouteTypes {
     | '/auth'
     | '/busca'
     | '/checkout'
+    | '/robots.txt'
+    | '/sitemap.xml'
     | '/categoria/$slug'
     | '/produto/$slug'
     | '/admin/banners'
@@ -225,6 +257,7 @@ export interface FileRouteTypes {
     | '/admin/configuracoes'
     | '/admin/feeds'
     | '/admin/produtos'
+    | '/admin/seo'
     | '/admin/shoppable'
     | '/admin'
     | '/api/public/feed/google/csv'
@@ -238,6 +271,8 @@ export interface FileRouteTypes {
     | '/auth'
     | '/busca'
     | '/checkout'
+    | '/robots.txt'
+    | '/sitemap.xml'
     | '/_authenticated/admin'
     | '/categoria/$slug'
     | '/produto/$slug'
@@ -246,6 +281,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/configuracoes'
     | '/_authenticated/admin/feeds'
     | '/_authenticated/admin/produtos'
+    | '/_authenticated/admin/seo'
     | '/_authenticated/admin/shoppable'
     | '/_authenticated/admin/'
     | '/api/public/feed/google/csv'
@@ -260,6 +296,8 @@ export interface RootRouteChildren {
   AuthRoute: typeof AuthRoute
   BuscaRoute: typeof BuscaRoute
   CheckoutRoute: typeof CheckoutRoute
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   CategoriaSlugRoute: typeof CategoriaSlugRoute
   ProdutoSlugRoute: typeof ProdutoSlugRoute
   ApiPublicFeedGoogleCsvRoute: typeof ApiPublicFeedGoogleCsvRoute
@@ -269,6 +307,20 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/checkout': {
       id: '/checkout'
       path: '/checkout'
@@ -346,6 +398,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminShoppableRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/seo': {
+      id: '/_authenticated/admin/seo'
+      path: '/seo'
+      fullPath: '/admin/seo'
+      preLoaderRoute: typeof AuthenticatedAdminSeoRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/produtos': {
       id: '/_authenticated/admin/produtos'
       path: '/produtos'
@@ -411,6 +470,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminConfiguracoesRoute: typeof AuthenticatedAdminConfiguracoesRoute
   AuthenticatedAdminFeedsRoute: typeof AuthenticatedAdminFeedsRoute
   AuthenticatedAdminProdutosRoute: typeof AuthenticatedAdminProdutosRoute
+  AuthenticatedAdminSeoRoute: typeof AuthenticatedAdminSeoRoute
   AuthenticatedAdminShoppableRoute: typeof AuthenticatedAdminShoppableRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
@@ -421,6 +481,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminConfiguracoesRoute: AuthenticatedAdminConfiguracoesRoute,
   AuthenticatedAdminFeedsRoute: AuthenticatedAdminFeedsRoute,
   AuthenticatedAdminProdutosRoute: AuthenticatedAdminProdutosRoute,
+  AuthenticatedAdminSeoRoute: AuthenticatedAdminSeoRoute,
   AuthenticatedAdminShoppableRoute: AuthenticatedAdminShoppableRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
@@ -446,6 +507,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthRoute: AuthRoute,
   BuscaRoute: BuscaRoute,
   CheckoutRoute: CheckoutRoute,
+  RobotsDottxtRoute: RobotsDottxtRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   CategoriaSlugRoute: CategoriaSlugRoute,
   ProdutoSlugRoute: ProdutoSlugRoute,
   ApiPublicFeedGoogleCsvRoute: ApiPublicFeedGoogleCsvRoute,
@@ -455,13 +518,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
