@@ -15,7 +15,7 @@ export async function logActivity(
       action,
       entity_type: entityType,
       entity_id: entityId ?? null,
-      details: details ?? null,
+      details: (details ?? null) as never,
     });
   } catch (e) {
     console.warn("activity log failed", e);
