@@ -107,7 +107,77 @@ export type Banner = {
   link_url: string | null;
   sort_order: number;
   active: boolean;
+  start_at?: string | null;
+  end_at?: string | null;
 };
+
+export type Coupon = {
+  id: string;
+  codigo: string;
+  tipo: "percentual" | "valor_fixo";
+  valor: number;
+  validade_inicio: string | null;
+  validade_fim: string | null;
+  uso_maximo: number | null;
+  usos_atuais: number;
+  ativo: boolean;
+  categorias_aplicaveis: string[];
+  valor_minimo_pedido: number | null;
+  descricao: string | null;
+  destacar_no_site: boolean;
+};
+
+export async function fetchFeaturedCoupons(): Promise<Coupon[]> {
+  const { data, error } = await supabase
+    .from("coupons" as any)
+    .select("*")
+    .eq("ativo", true)
+    .eq("destacar_no_site", true)
+    .order("created_at", { ascending: false });
+  if (error) throw error;
+  return (data ?? []) as unknown as Coupon[];
+}
+
+export async function fetchCouponByCode(code: string): Promise<Coupon | null> {
+  const trimmed = code.trim();
+  if (!trimmed) return null;
+  const { data, error } = await supabase
+    .from("coupons" as any)
+    .select("*")
+    .ilike("codigo", trimmed)
+    .maybeSingle();
+  if (error) throw error;
+  return (data as unknown as Coupon) || null;
+}
+
+export function parsePriceBRL(input: string | null | undefined): number {
+  if (!input) return 0;
+  const cleaned = input.replace(/[^\d,.-]/g, "").replace(/\.(?=\d{3}(\D|$))/g, "").replace(",", ".");
+  const n = parseFloat(cleaned);
+  return isFinite(n) ? n : 0;
+}
+
+export type CouponValidation =
+  | { ok: true; coupon: Coupon; desconto: number; total: number }
+  | { ok: false; error: string };
+
+export function validateCoupon(coupon: Coupon | null, subtotal: number): CouponValidation {
+  if (!coupon) return { ok: false, error: "Cupom não encontrado." };
+  if (!coupon.ativo) return { ok: false, error: "Cupom inativo." };
+  const now = Date.now();
+  if (coupon.validade_inicio && new Date(coupon.validade_inicio).getTime() > now)
+    return { ok: false, error: "Cupom ainda não iniciou." };
+  if (coupon.validade_fim && new Date(coupon.validade_fim).getTime() < now)
+    return { ok: false, error: "Cupom expirado." };
+  if (coupon.uso_maximo != null && coupon.usos_atuais >= coupon.uso_maximo)
+    return { ok: false, error: "Cupom esgotou os usos disponíveis." };
+  if (coupon.valor_minimo_pedido != null && subtotal < coupon.valor_minimo_pedido)
+    return { ok: false, error: `Pedido mínimo de ${coupon.valor_minimo_pedido.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}.` };
+  const desconto = coupon.tipo === "percentual"
+    ? subtotal * (coupon.valor / 100)
+    : Math.min(coupon.valor, subtotal);
+  return { ok: true, coupon, desconto, total: Math.max(0, subtotal - desconto) };
+}
 
 export type Redirect = {
   id: string;
@@ -210,10 +280,18 @@ export async function fetchShoppableScenes(activeOnly = true): Promise<Shoppable
 }
 
 export async function fetchBanners(): Promise<Banner[]> {
-  const { data, error } = await supabase.from("banners").select("*").eq("active", true).order("sort_order");
+  const nowIso = new Date().toISOString();
+  const { data, error } = await supabase
+    .from("banners")
+    .select("*")
+    .eq("active", true)
+    .or(`start_at.is.null,start_at.lte.${nowIso}`)
+    .or(`end_at.is.null,end_at.gte.${nowIso}`)
+    .order("sort_order");
   if (error) throw error;
   return (data ?? []) as Banner[];
 }
+
 
 export async function fetchSettings(): Promise<{ site: SiteSettings; topbar: TopbarSettings }> {
   const { data, error } = await supabase.from("site_settings").select("*");

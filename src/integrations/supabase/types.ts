@@ -18,10 +18,12 @@ export type Database = {
         Row: {
           active: boolean
           created_at: string
+          end_at: string | null
           id: string
           image_url: string
           link_url: string | null
           sort_order: number
+          start_at: string | null
           subtitle: string | null
           title: string | null
           updated_at: string
@@ -29,10 +31,12 @@ export type Database = {
         Insert: {
           active?: boolean
           created_at?: string
+          end_at?: string | null
           id?: string
           image_url: string
           link_url?: string | null
           sort_order?: number
+          start_at?: string | null
           subtitle?: string | null
           title?: string | null
           updated_at?: string
@@ -40,10 +44,12 @@ export type Database = {
         Update: {
           active?: boolean
           created_at?: string
+          end_at?: string | null
           id?: string
           image_url?: string
           link_url?: string | null
           sort_order?: number
+          start_at?: string | null
           subtitle?: string | null
           title?: string | null
           updated_at?: string
@@ -108,6 +114,60 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      coupons: {
+        Row: {
+          ativo: boolean
+          categorias_aplicaveis: string[]
+          codigo: string
+          created_at: string
+          descricao: string | null
+          destacar_no_site: boolean
+          id: string
+          tipo: string
+          updated_at: string
+          uso_maximo: number | null
+          usos_atuais: number
+          validade_fim: string | null
+          validade_inicio: string | null
+          valor: number
+          valor_minimo_pedido: number | null
+        }
+        Insert: {
+          ativo?: boolean
+          categorias_aplicaveis?: string[]
+          codigo: string
+          created_at?: string
+          descricao?: string | null
+          destacar_no_site?: boolean
+          id?: string
+          tipo: string
+          updated_at?: string
+          uso_maximo?: number | null
+          usos_atuais?: number
+          validade_fim?: string | null
+          validade_inicio?: string | null
+          valor: number
+          valor_minimo_pedido?: number | null
+        }
+        Update: {
+          ativo?: boolean
+          categorias_aplicaveis?: string[]
+          codigo?: string
+          created_at?: string
+          descricao?: string | null
+          destacar_no_site?: boolean
+          id?: string
+          tipo?: string
+          updated_at?: string
+          uso_maximo?: number | null
+          usos_atuais?: number
+          validade_fim?: string | null
+          validade_inicio?: string | null
+          valor?: number
+          valor_minimo_pedido?: number | null
+        }
+        Relationships: []
       }
       hotspots: {
         Row: {

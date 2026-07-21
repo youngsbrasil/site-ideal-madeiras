@@ -64,9 +64,21 @@ export function useCart() {
   return items;
 }
 
-export function buildQuoteMessage(items: CartItem[]) {
+export function buildQuoteMessage(
+  items: CartItem[],
+  opts?: { coupon?: { codigo: string; descricao?: string | null }; subtotalLabel?: string; descontoLabel?: string; totalLabel?: string }
+) {
   const lines = items.map(
     (i, idx) => `${idx + 1}. ${i.name} — ${i.qty}x — ${i.price}`
   );
-  return `Olá! Gostaria de um orçamento para os seguintes produtos:\n\n${lines.join("\n")}`;
+  let msg = `Olá! Gostaria de um orçamento para os seguintes produtos:\n\n${lines.join("\n")}`;
+  if (opts?.subtotalLabel) msg += `\n\nSubtotal: ${opts.subtotalLabel}`;
+  if (opts?.coupon) {
+    msg += `\nCupom: ${opts.coupon.codigo}`;
+    if (opts.coupon.descricao) msg += ` (${opts.coupon.descricao})`;
+    if (opts?.descontoLabel) msg += `\nDesconto: -${opts.descontoLabel}`;
+    if (opts?.totalLabel) msg += `\nTotal com cupom: ${opts.totalLabel}`;
+    msg += `\n\n(Vendedor confirma a aplicação do cupom.)`;
+  }
+  return msg;
 }
