@@ -1,10 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { fetchCategories, productPath, type Product, type Category } from "@/lib/site-data";
+import { fetchDidYouMean, logSearch } from "@/lib/search";
 
 type BuscaSearch = { q: string; categoria: string };
 
@@ -61,6 +62,18 @@ function BuscaPage() {
   });
   const { data: allCategories = [] } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
 
+  const { data: didYouMean } = useQuery({
+    queryKey: ["dym", q],
+    queryFn: () => fetchDidYouMean(q),
+    enabled: !!q && !isLoading && products.length === 0,
+  });
+
+  useEffect(() => {
+    if (isLoading) return;
+    if (!q.trim()) return;
+    logSearch(q, products.length);
+  }, [q, isLoading, products.length]);
+
   const heading = useMemo(() => {
     const parts: string[] = [];
     if (q) parts.push(`"${q}"`);
@@ -78,6 +91,15 @@ function BuscaPage() {
         ) : products.length === 0 ? (
           <div className="bg-white rounded-lg p-10 text-center border">
             <p className="text-neutral-600">Nenhum produto encontrado.</p>
+            {didYouMean && (
+              <p className="mt-3 text-sm">
+                Você quis dizer{" "}
+                <Link to="/busca" search={{ q: didYouMean, categoria }} className="text-[#A7144C] font-semibold underline">
+                  “{didYouMean}”
+                </Link>
+                ?
+              </p>
+            )}
             <Link to="/" className="inline-block mt-4 bg-[#A7144C] text-white px-6 py-3 rounded-full font-semibold">Voltar</Link>
           </div>
         ) : (
