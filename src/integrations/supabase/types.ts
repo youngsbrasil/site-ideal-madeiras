@@ -249,6 +249,51 @@ export type Database = {
           },
         ]
       }
+      import_log: {
+        Row: {
+          created_at: string
+          created_count: number
+          error: string | null
+          id: string
+          mode: string
+          removed_count: number
+          snapshot_id: string | null
+          source: string
+          status: string
+          updated_count: number
+          user_email: string | null
+          user_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_count?: number
+          error?: string | null
+          id?: string
+          mode: string
+          removed_count?: number
+          snapshot_id?: string | null
+          source: string
+          status?: string
+          updated_count?: number
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_count?: number
+          error?: string | null
+          id?: string
+          mode?: string
+          removed_count?: number
+          snapshot_id?: string | null
+          source?: string
+          status?: string
+          updated_count?: number
+          user_email?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       media_assets: {
         Row: {
           alt: string | null
@@ -493,6 +538,36 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      products_backup: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          data: Json
+          id: string
+          product_id: string
+          reason: string | null
+          snapshot_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          data: Json
+          id?: string
+          product_id: string
+          reason?: string | null
+          snapshot_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          data?: Json
+          id?: string
+          product_id?: string
+          reason?: string | null
+          snapshot_id?: string
+        }
+        Relationships: []
       }
       redirects: {
         Row: {
