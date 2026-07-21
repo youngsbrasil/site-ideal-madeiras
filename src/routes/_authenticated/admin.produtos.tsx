@@ -53,6 +53,11 @@ const empty: FormState = {
   woods: [],
   finishes: [],
   price_value: null,
+  meta_title: "",
+  meta_description: "",
+  canonical: "",
+  og_image: "",
+  noindex: false,
 };
 
 const parseList = (s: string) => s.split(",").map((v) => v.trim()).filter(Boolean);
@@ -85,6 +90,11 @@ function ProductsAdmin() {
         woods: form.woods,
         finishes: form.finishes,
         price_value: form.price_value ?? null,
+        meta_title: form.meta_title || null,
+        meta_description: form.meta_description || null,
+        canonical: form.canonical || null,
+        og_image: form.og_image || null,
+        noindex: form.noindex ?? false,
       };
       if (form.id) {
         const { error } = await supabase.from("products").update(payload).eq("id", form.id);
@@ -384,6 +394,56 @@ function ProductForm({
         <div className="flex items-center gap-2">
           <Switch checked={value.most_viewed ?? false} onCheckedChange={(v) => set({ most_viewed: v })} />
           <Label>Mais visto</Label>
+        </div>
+      </div>
+
+      {/* SEO */}
+      <div className="pt-4 border-t">
+        <Label className="text-base">SEO</Label>
+        <p className="text-xs text-muted-foreground mb-3">
+          Opcional. Vazio usa <code>{"{nome} | Ideal Madeiras"}</code> como título.
+        </p>
+        <div className="space-y-3">
+          <div>
+            <Label>Meta title</Label>
+            <Input
+              placeholder={`${value.name || "Nome do produto"} | Ideal Madeiras`}
+              value={value.meta_title ?? ""}
+              onChange={(e) => set({ meta_title: e.target.value })}
+            />
+          </div>
+          <div>
+            <Label>Meta description</Label>
+            <Textarea
+              rows={2}
+              maxLength={200}
+              placeholder="Descrição curta que aparece no Google (até 160 caracteres)."
+              value={value.meta_description ?? ""}
+              onChange={(e) => set({ meta_description: e.target.value })}
+            />
+          </div>
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label>Canonical (URL)</Label>
+              <Input
+                placeholder="https://..."
+                value={value.canonical ?? ""}
+                onChange={(e) => set({ canonical: e.target.value })}
+              />
+            </div>
+            <div>
+              <Label>OG Image (URL)</Label>
+              <Input
+                placeholder="https://..."
+                value={value.og_image ?? ""}
+                onChange={(e) => set({ og_image: e.target.value })}
+              />
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <Switch checked={value.noindex ?? false} onCheckedChange={(v) => set({ noindex: v })} />
+            <Label>Noindex (esconder dos buscadores)</Label>
+          </div>
         </div>
       </div>
     </div>

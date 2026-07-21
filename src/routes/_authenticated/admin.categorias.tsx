@@ -38,6 +38,11 @@ function CategoriesAdmin() {
         product_count: f.product_count ?? 0,
         sort_order: f.sort_order ?? 0,
         parent_id: f.parent_id || null,
+        meta_title: f.meta_title || null,
+        meta_description: f.meta_description || null,
+        canonical: f.canonical || null,
+        og_image: f.og_image || null,
+        noindex: f.noindex ?? false,
       };
       if (f.id) {
         const { error } = await supabase.from("categories").update(payload).eq("id", f.id);

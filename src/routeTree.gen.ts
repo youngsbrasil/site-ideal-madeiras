@@ -22,6 +22,7 @@ import { Route as CategoriaSlugRouteImport } from './routes/categoria.$slug'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminShoppableRouteImport } from './routes/_authenticated/admin.shoppable'
+import { Route as AuthenticatedAdminSeoRouteImport } from './routes/_authenticated/admin.seo'
 import { Route as AuthenticatedAdminProdutosRouteImport } from './routes/_authenticated/admin.produtos'
 import { Route as AuthenticatedAdminFeedsRouteImport } from './routes/_authenticated/admin.feeds'
 import { Route as AuthenticatedAdminConfiguracoesRouteImport } from './routes/_authenticated/admin.configuracoes'
@@ -96,6 +97,11 @@ const AuthenticatedAdminShoppableRoute =
     path: '/shoppable',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminSeoRoute = AuthenticatedAdminSeoRouteImport.update({
+  id: '/seo',
+  path: '/seo',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminProdutosRoute =
   AuthenticatedAdminProdutosRouteImport.update({
     id: '/produtos',
@@ -157,6 +163,7 @@ export interface FileRoutesByFullPath {
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/admin/feeds': typeof AuthenticatedAdminFeedsRoute
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
+  '/admin/seo': typeof AuthenticatedAdminSeoRoute
   '/admin/shoppable': typeof AuthenticatedAdminShoppableRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/feed/google/csv': typeof ApiPublicFeedGoogleCsvRoute
@@ -178,6 +185,7 @@ export interface FileRoutesByTo {
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/admin/feeds': typeof AuthenticatedAdminFeedsRoute
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
+  '/admin/seo': typeof AuthenticatedAdminSeoRoute
   '/admin/shoppable': typeof AuthenticatedAdminShoppableRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/api/public/feed/google/csv': typeof ApiPublicFeedGoogleCsvRoute
@@ -202,6 +210,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/_authenticated/admin/feeds': typeof AuthenticatedAdminFeedsRoute
   '/_authenticated/admin/produtos': typeof AuthenticatedAdminProdutosRoute
+  '/_authenticated/admin/seo': typeof AuthenticatedAdminSeoRoute
   '/_authenticated/admin/shoppable': typeof AuthenticatedAdminShoppableRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/api/public/feed/google/csv': typeof ApiPublicFeedGoogleCsvRoute
@@ -226,6 +235,7 @@ export interface FileRouteTypes {
     | '/admin/configuracoes'
     | '/admin/feeds'
     | '/admin/produtos'
+    | '/admin/seo'
     | '/admin/shoppable'
     | '/admin/'
     | '/api/public/feed/google/csv'
@@ -247,6 +257,7 @@ export interface FileRouteTypes {
     | '/admin/configuracoes'
     | '/admin/feeds'
     | '/admin/produtos'
+    | '/admin/seo'
     | '/admin/shoppable'
     | '/admin'
     | '/api/public/feed/google/csv'
@@ -270,6 +281,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/configuracoes'
     | '/_authenticated/admin/feeds'
     | '/_authenticated/admin/produtos'
+    | '/_authenticated/admin/seo'
     | '/_authenticated/admin/shoppable'
     | '/_authenticated/admin/'
     | '/api/public/feed/google/csv'
@@ -386,6 +398,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminShoppableRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/seo': {
+      id: '/_authenticated/admin/seo'
+      path: '/seo'
+      fullPath: '/admin/seo'
+      preLoaderRoute: typeof AuthenticatedAdminSeoRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/produtos': {
       id: '/_authenticated/admin/produtos'
       path: '/produtos'
@@ -451,6 +470,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminConfiguracoesRoute: typeof AuthenticatedAdminConfiguracoesRoute
   AuthenticatedAdminFeedsRoute: typeof AuthenticatedAdminFeedsRoute
   AuthenticatedAdminProdutosRoute: typeof AuthenticatedAdminProdutosRoute
+  AuthenticatedAdminSeoRoute: typeof AuthenticatedAdminSeoRoute
   AuthenticatedAdminShoppableRoute: typeof AuthenticatedAdminShoppableRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
 }
@@ -461,6 +481,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminConfiguracoesRoute: AuthenticatedAdminConfiguracoesRoute,
   AuthenticatedAdminFeedsRoute: AuthenticatedAdminFeedsRoute,
   AuthenticatedAdminProdutosRoute: AuthenticatedAdminProdutosRoute,
+  AuthenticatedAdminSeoRoute: AuthenticatedAdminSeoRoute,
   AuthenticatedAdminShoppableRoute: AuthenticatedAdminShoppableRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
 }
