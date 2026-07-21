@@ -25,6 +25,7 @@ import { Route as AuthenticatedAdminUsuariosRouteImport } from './routes/_authen
 import { Route as AuthenticatedAdminShoppableRouteImport } from './routes/_authenticated/admin.shoppable'
 import { Route as AuthenticatedAdminSeoRouteImport } from './routes/_authenticated/admin.seo'
 import { Route as AuthenticatedAdminProdutosRouteImport } from './routes/_authenticated/admin.produtos'
+import { Route as AuthenticatedAdminMidiaRouteImport } from './routes/_authenticated/admin.midia'
 import { Route as AuthenticatedAdminFeedsRouteImport } from './routes/_authenticated/admin.feeds'
 import { Route as AuthenticatedAdminCuponsRouteImport } from './routes/_authenticated/admin.cupons'
 import { Route as AuthenticatedAdminConfiguracoesRouteImport } from './routes/_authenticated/admin.configuracoes'
@@ -119,6 +120,11 @@ const AuthenticatedAdminProdutosRoute =
     path: '/produtos',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminMidiaRoute = AuthenticatedAdminMidiaRouteImport.update({
+  id: '/midia',
+  path: '/midia',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminFeedsRoute = AuthenticatedAdminFeedsRouteImport.update({
   id: '/feeds',
   path: '/feeds',
@@ -200,6 +206,7 @@ export interface FileRoutesByFullPath {
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/admin/cupons': typeof AuthenticatedAdminCuponsRoute
   '/admin/feeds': typeof AuthenticatedAdminFeedsRoute
+  '/admin/midia': typeof AuthenticatedAdminMidiaRoute
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
   '/admin/seo': typeof AuthenticatedAdminSeoRoute
   '/admin/shoppable': typeof AuthenticatedAdminShoppableRoute
@@ -227,6 +234,7 @@ export interface FileRoutesByTo {
   '/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/admin/cupons': typeof AuthenticatedAdminCuponsRoute
   '/admin/feeds': typeof AuthenticatedAdminFeedsRoute
+  '/admin/midia': typeof AuthenticatedAdminMidiaRoute
   '/admin/produtos': typeof AuthenticatedAdminProdutosRoute
   '/admin/seo': typeof AuthenticatedAdminSeoRoute
   '/admin/shoppable': typeof AuthenticatedAdminShoppableRoute
@@ -257,6 +265,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/configuracoes': typeof AuthenticatedAdminConfiguracoesRoute
   '/_authenticated/admin/cupons': typeof AuthenticatedAdminCuponsRoute
   '/_authenticated/admin/feeds': typeof AuthenticatedAdminFeedsRoute
+  '/_authenticated/admin/midia': typeof AuthenticatedAdminMidiaRoute
   '/_authenticated/admin/produtos': typeof AuthenticatedAdminProdutosRoute
   '/_authenticated/admin/seo': typeof AuthenticatedAdminSeoRoute
   '/_authenticated/admin/shoppable': typeof AuthenticatedAdminShoppableRoute
@@ -287,6 +296,7 @@ export interface FileRouteTypes {
     | '/admin/configuracoes'
     | '/admin/cupons'
     | '/admin/feeds'
+    | '/admin/midia'
     | '/admin/produtos'
     | '/admin/seo'
     | '/admin/shoppable'
@@ -314,6 +324,7 @@ export interface FileRouteTypes {
     | '/admin/configuracoes'
     | '/admin/cupons'
     | '/admin/feeds'
+    | '/admin/midia'
     | '/admin/produtos'
     | '/admin/seo'
     | '/admin/shoppable'
@@ -343,6 +354,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/configuracoes'
     | '/_authenticated/admin/cupons'
     | '/_authenticated/admin/feeds'
+    | '/_authenticated/admin/midia'
     | '/_authenticated/admin/produtos'
     | '/_authenticated/admin/seo'
     | '/_authenticated/admin/shoppable'
@@ -484,6 +496,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminProdutosRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/midia': {
+      id: '/_authenticated/admin/midia'
+      path: '/midia'
+      fullPath: '/admin/midia'
+      preLoaderRoute: typeof AuthenticatedAdminMidiaRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/feeds': {
       id: '/_authenticated/admin/feeds'
       path: '/feeds'
@@ -572,6 +591,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminConfiguracoesRoute: typeof AuthenticatedAdminConfiguracoesRoute
   AuthenticatedAdminCuponsRoute: typeof AuthenticatedAdminCuponsRoute
   AuthenticatedAdminFeedsRoute: typeof AuthenticatedAdminFeedsRoute
+  AuthenticatedAdminMidiaRoute: typeof AuthenticatedAdminMidiaRoute
   AuthenticatedAdminProdutosRoute: typeof AuthenticatedAdminProdutosRoute
   AuthenticatedAdminSeoRoute: typeof AuthenticatedAdminSeoRoute
   AuthenticatedAdminShoppableRoute: typeof AuthenticatedAdminShoppableRoute
@@ -588,6 +608,7 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminConfiguracoesRoute: AuthenticatedAdminConfiguracoesRoute,
   AuthenticatedAdminCuponsRoute: AuthenticatedAdminCuponsRoute,
   AuthenticatedAdminFeedsRoute: AuthenticatedAdminFeedsRoute,
+  AuthenticatedAdminMidiaRoute: AuthenticatedAdminMidiaRoute,
   AuthenticatedAdminProdutosRoute: AuthenticatedAdminProdutosRoute,
   AuthenticatedAdminSeoRoute: AuthenticatedAdminSeoRoute,
   AuthenticatedAdminShoppableRoute: AuthenticatedAdminShoppableRoute,
