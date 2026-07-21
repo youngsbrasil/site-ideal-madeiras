@@ -34,21 +34,33 @@ export const Route = createFileRoute("/categoria/$slug")({
     })) as Product[];
     return { category: cat as Category, products };
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, params }) => {
     if (!loaderData) {
       return { meta: [{ title: "Categoria não encontrada - Ideal Madeiras" }, { name: "robots", content: "noindex" }] };
     }
     const c = loaderData.category;
-    const title = `${c.name} - Lojas Ideal Madeiras`;
-    const desc = `Confira nossa seleção de ${c.name.toLowerCase()} na Lojas Ideal Madeiras.`;
+    const { categoryMetaTitle, categoryMetaDescription, absoluteUrl, breadcrumbJsonLd, SITE_NAME } = require("@/lib/seo") as typeof import("@/lib/seo");
+    const title = categoryMetaTitle(c);
+    const desc = categoryMetaDescription(c);
+    const url = c.canonical || absoluteUrl(`/categoria/${params.slug}`);
+    const img = c.og_image || c.image_url;
+    const crumbs = breadcrumbJsonLd([
+      { name: SITE_NAME, url: absoluteUrl("/") },
+      { name: c.name, url },
+    ]);
     return {
       meta: [
         { title },
         { name: "description", content: desc },
+        ...(c.noindex ? [{ name: "robots", content: "noindex,nofollow" }] : []),
         { property: "og:title", content: title },
         { property: "og:description", content: desc },
-        ...(c.image_url ? [{ property: "og:image", content: c.image_url }] : []),
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: url },
+        ...(img ? [{ property: "og:image", content: img }] : []),
       ],
+      links: [{ rel: "canonical", href: url }],
+      scripts: [{ type: "application/ld+json", children: JSON.stringify(crumbs) }],
     };
   },
   component: CategoryPage,
