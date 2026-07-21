@@ -12,6 +12,7 @@ import {
 } from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
+import { CouponStrip } from "@/components/CouponStrip";
 
 const ORANGE = "#f59318";
 const NAVY = "#0b1a34";
@@ -109,6 +110,7 @@ function Home() {
   return (
     <div className="min-h-screen bg-white text-neutral-900">
       <SiteHeader />
+      <CouponStrip />
 
       {/* Hero */}
       <HeroCarousel banners={banners} />
