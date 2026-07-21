@@ -23,7 +23,7 @@ async function fetchAllBanners(): Promise<Banner[]> {
   return (data ?? []) as Banner[];
 }
 
-const empty: Partial<Banner> = { title: "", subtitle: "", image_url: "", link_url: "", sort_order: 0, active: true };
+const empty: Partial<Banner> = { title: "", subtitle: "", image_url: "", link_url: "", sort_order: 0, active: true, start_at: null, end_at: null };
 
 function BannersAdmin() {
   const qc = useQueryClient();
@@ -37,6 +37,8 @@ function BannersAdmin() {
         title: f.title || null, subtitle: f.subtitle || null,
         image_url: f.image_url.trim(), link_url: f.link_url || null,
         sort_order: f.sort_order ?? 0, active: f.active ?? true,
+        start_at: f.start_at || null,
+        end_at: f.end_at || null,
       };
       if (f.id) {
         const { error } = await supabase.from("banners").update(payload).eq("id", f.id);
@@ -99,6 +101,17 @@ function BannersAdmin() {
                 <div><Label>Ordem</Label><Input type="number" value={editing.sort_order ?? 0} onChange={(e) => setEditing({ ...editing, sort_order: parseInt(e.target.value) || 0 })} /></div>
                 <div className="flex items-center gap-2 pt-6"><Switch checked={editing.active ?? true} onCheckedChange={(v) => setEditing({ ...editing, active: v })} /><Label>Ativo</Label></div>
               </div>
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <Label>Início (agendamento)</Label>
+                  <Input type="datetime-local" value={toLocalInput(editing.start_at)} onChange={(e) => setEditing({ ...editing, start_at: fromLocalInput(e.target.value) })} />
+                </div>
+                <div>
+                  <Label>Fim (agendamento)</Label>
+                  <Input type="datetime-local" value={toLocalInput(editing.end_at)} onChange={(e) => setEditing({ ...editing, end_at: fromLocalInput(e.target.value) })} />
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground">Deixe em branco para exibir sempre enquanto o banner estiver Ativo.</p>
             </div>
           )}
           <DialogFooter>

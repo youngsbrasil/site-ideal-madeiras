@@ -12,6 +12,7 @@ const nav = [
   { to: "/admin/produtos", label: "Produtos", icon: Package },
   { to: "/admin/categorias", label: "Categorias", icon: Tags },
   { to: "/admin/banners", label: "Banners", icon: ImageIcon },
+  { to: "/admin/cupons", label: "Cupons", icon: Ticket },
   { to: "/admin/shoppable", label: "Cenas c/ Pins", icon: MapPin },
   { to: "/admin/feeds", label: "Feeds", icon: Rss },
   { to: "/admin/seo", label: "SEO & Redirects", icon: Search },
