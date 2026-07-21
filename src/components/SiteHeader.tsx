@@ -15,7 +15,7 @@ export function SiteHeader() {
   const [categoria, setCategoria] = useState("");
   const [open, setOpen] = useState(false);
   const [debounced, setDebounced] = useState("");
-  const boxRef = useRef<HTMLDivElement | null>(null);
+  const boxRef = useRef<HTMLFormElement | null>(null);
 
   useEffect(() => {
     const t = setTimeout(() => setDebounced(q), 200);

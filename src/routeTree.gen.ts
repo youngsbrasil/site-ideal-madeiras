@@ -30,6 +30,7 @@ import { Route as AuthenticatedAdminConfiguracoesRouteImport } from './routes/_a
 import { Route as AuthenticatedAdminCategoriasRouteImport } from './routes/_authenticated/admin.categorias'
 import { Route as AuthenticatedAdminBannersRouteImport } from './routes/_authenticated/admin.banners'
 import { Route as AuthenticatedAdminAvaliacoesRouteImport } from './routes/_authenticated/admin.avaliacoes'
+import { Route as AuthenticatedAdminRelatoriosBuscasRouteImport } from './routes/_authenticated/admin.relatorios.buscas'
 import { Route as ApiPublicFeedMetaCsvRouteImport } from './routes/api/public/feed.meta.csv'
 import { Route as ApiPublicFeedGoogleXmlRouteImport } from './routes/api/public/feed.google.xml'
 import { Route as ApiPublicFeedGoogleCsvRouteImport } from './routes/api/public/feed.google.csv'
@@ -145,6 +146,12 @@ const AuthenticatedAdminAvaliacoesRoute =
     path: '/avaliacoes',
     getParentRoute: () => AuthenticatedAdminRoute,
   } as any)
+const AuthenticatedAdminRelatoriosBuscasRoute =
+  AuthenticatedAdminRelatoriosBuscasRouteImport.update({
+    id: '/relatorios/buscas',
+    path: '/relatorios/buscas',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const ApiPublicFeedMetaCsvRoute = ApiPublicFeedMetaCsvRouteImport.update({
   id: '/api/public/feed/meta/csv',
   path: '/api/public/feed/meta/csv',
@@ -182,6 +189,7 @@ export interface FileRoutesByFullPath {
   '/admin/seo': typeof AuthenticatedAdminSeoRoute
   '/admin/shoppable': typeof AuthenticatedAdminShoppableRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/admin/relatorios/buscas': typeof AuthenticatedAdminRelatoriosBuscasRoute
   '/api/public/feed/google/csv': typeof ApiPublicFeedGoogleCsvRoute
   '/api/public/feed/google/xml': typeof ApiPublicFeedGoogleXmlRoute
   '/api/public/feed/meta/csv': typeof ApiPublicFeedMetaCsvRoute
@@ -206,6 +214,7 @@ export interface FileRoutesByTo {
   '/admin/seo': typeof AuthenticatedAdminSeoRoute
   '/admin/shoppable': typeof AuthenticatedAdminShoppableRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/admin/relatorios/buscas': typeof AuthenticatedAdminRelatoriosBuscasRoute
   '/api/public/feed/google/csv': typeof ApiPublicFeedGoogleCsvRoute
   '/api/public/feed/google/xml': typeof ApiPublicFeedGoogleXmlRoute
   '/api/public/feed/meta/csv': typeof ApiPublicFeedMetaCsvRoute
@@ -233,6 +242,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/seo': typeof AuthenticatedAdminSeoRoute
   '/_authenticated/admin/shoppable': typeof AuthenticatedAdminShoppableRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/_authenticated/admin/relatorios/buscas': typeof AuthenticatedAdminRelatoriosBuscasRoute
   '/api/public/feed/google/csv': typeof ApiPublicFeedGoogleCsvRoute
   '/api/public/feed/google/xml': typeof ApiPublicFeedGoogleXmlRoute
   '/api/public/feed/meta/csv': typeof ApiPublicFeedMetaCsvRoute
@@ -260,6 +270,7 @@ export interface FileRouteTypes {
     | '/admin/seo'
     | '/admin/shoppable'
     | '/admin/'
+    | '/admin/relatorios/buscas'
     | '/api/public/feed/google/csv'
     | '/api/public/feed/google/xml'
     | '/api/public/feed/meta/csv'
@@ -284,6 +295,7 @@ export interface FileRouteTypes {
     | '/admin/seo'
     | '/admin/shoppable'
     | '/admin'
+    | '/admin/relatorios/buscas'
     | '/api/public/feed/google/csv'
     | '/api/public/feed/google/xml'
     | '/api/public/feed/meta/csv'
@@ -310,6 +322,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/seo'
     | '/_authenticated/admin/shoppable'
     | '/_authenticated/admin/'
+    | '/_authenticated/admin/relatorios/buscas'
     | '/api/public/feed/google/csv'
     | '/api/public/feed/google/xml'
     | '/api/public/feed/meta/csv'
@@ -480,6 +493,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAvaliacoesRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/relatorios/buscas': {
+      id: '/_authenticated/admin/relatorios/buscas'
+      path: '/relatorios/buscas'
+      fullPath: '/admin/relatorios/buscas'
+      preLoaderRoute: typeof AuthenticatedAdminRelatoriosBuscasRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/api/public/feed/meta/csv': {
       id: '/api/public/feed/meta/csv'
       path: '/api/public/feed/meta/csv'
@@ -515,6 +535,7 @@ interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminSeoRoute: typeof AuthenticatedAdminSeoRoute
   AuthenticatedAdminShoppableRoute: typeof AuthenticatedAdminShoppableRoute
   AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+  AuthenticatedAdminRelatoriosBuscasRoute: typeof AuthenticatedAdminRelatoriosBuscasRoute
 }
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
@@ -528,6 +549,8 @@ const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminSeoRoute: AuthenticatedAdminSeoRoute,
   AuthenticatedAdminShoppableRoute: AuthenticatedAdminShoppableRoute,
   AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+  AuthenticatedAdminRelatoriosBuscasRoute:
+    AuthenticatedAdminRelatoriosBuscasRoute,
 }
 
 const AuthenticatedAdminRouteWithChildren =
