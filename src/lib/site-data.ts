@@ -280,10 +280,18 @@ export async function fetchShoppableScenes(activeOnly = true): Promise<Shoppable
 }
 
 export async function fetchBanners(): Promise<Banner[]> {
-  const { data, error } = await supabase.from("banners").select("*").eq("active", true).order("sort_order");
+  const nowIso = new Date().toISOString();
+  const { data, error } = await supabase
+    .from("banners")
+    .select("*")
+    .eq("active", true)
+    .or(`start_at.is.null,start_at.lte.${nowIso}`)
+    .or(`end_at.is.null,end_at.gte.${nowIso}`)
+    .order("sort_order");
   if (error) throw error;
   return (data ?? []) as Banner[];
 }
+
 
 export async function fetchSettings(): Promise<{ site: SiteSettings; topbar: TopbarSettings }> {
   const { data, error } = await supabase.from("site_settings").select("*");
