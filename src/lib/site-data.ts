@@ -218,8 +218,69 @@ export type SiteSettings = {
   email?: string;
   telefone?: string;
   endereco?: string;
+  trustindex_widget_id?: string;
 };
 export type TopbarSettings = { texto?: string };
+
+export type Review = {
+  id: string;
+  source: string;
+  external_id: string | null;
+  author_name: string;
+  author_avatar_url: string | null;
+  rating: number;
+  content: string | null;
+  review_date: string | null;
+  language: string | null;
+  featured: boolean;
+  hidden: boolean;
+  sort_order: number;
+  reply: string | null;
+  synced_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type ReviewWidget = {
+  id: string;
+  scope: "home" | "category" | "product" | "global";
+  scope_ref: string | null;
+  layout: "carousel" | "grid" | "compact" | "badge";
+  max_items: number;
+  min_rating: number;
+  show_average: boolean;
+  show_cta_badge: boolean;
+  active: boolean;
+};
+
+export async function fetchPublicReviews(opts?: { featuredOnly?: boolean; minRating?: number; limit?: number }): Promise<Review[]> {
+  let q = supabase.from("reviews" as any).select("*").eq("hidden", false);
+  if (opts?.featuredOnly) q = q.eq("featured", true);
+  if (opts?.minRating != null) q = q.gte("rating", opts.minRating);
+  q = q.order("featured", { ascending: false }).order("sort_order").order("review_date", { ascending: false });
+  if (opts?.limit) q = q.limit(opts.limit);
+  const { data, error } = await q;
+  if (error) throw error;
+  return (data ?? []) as unknown as Review[];
+}
+
+export async function fetchReviewsStats(): Promise<{ average: number; total: number }> {
+  const { data, error } = await supabase.from("reviews" as any).select("rating").eq("hidden", false);
+  if (error) throw error;
+  const arr = (data ?? []) as unknown as { rating: number }[];
+  if (arr.length === 0) return { average: 0, total: 0 };
+  const avg = arr.reduce((s, r) => s + Number(r.rating), 0) / arr.length;
+  return { average: Math.round(avg * 10) / 10, total: arr.length };
+}
+
+export async function fetchReviewWidget(scope: ReviewWidget["scope"], scopeRef?: string | null): Promise<ReviewWidget | null> {
+  let q = supabase.from("review_widgets" as any).select("*").eq("scope", scope).eq("active", true);
+  q = scopeRef ? q.eq("scope_ref", scopeRef) : q.is("scope_ref", null);
+  const { data, error } = await q.maybeSingle();
+  if (error) throw error;
+  return (data ?? null) as unknown as ReviewWidget | null;
+}
+
 
 export async function fetchCategories(): Promise<Category[]> {
   const { data, error } = await supabase.from("categories").select("*").order("sort_order");
