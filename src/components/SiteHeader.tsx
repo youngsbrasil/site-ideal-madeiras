@@ -167,10 +167,6 @@ export function SiteHeader() {
             </form>
 
             <div className="flex items-center gap-5 md:gap-6">
-              <Link to="/auth" className="hidden sm:flex items-center gap-2 text-xs font-bold tracking-wide hover:text-[#f59318]">
-                <User size={20} />
-                <span>ENTRAR / REGISTRAR</span>
-              </Link>
               <a href="#" aria-label="Lista de desejos" className="hover:text-[#f59318]">
                 <Heart size={22} />
               </a>

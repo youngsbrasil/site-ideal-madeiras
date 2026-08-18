@@ -806,21 +806,18 @@ export type Database = {
       site_settings: {
         Row: {
           key: string
-          trustindex_api_key: string | null
           trustindex_widget_id: string | null
           updated_at: string
           value: Json
         }
         Insert: {
           key: string
-          trustindex_api_key?: string | null
           trustindex_widget_id?: string | null
           updated_at?: string
           value: Json
         }
         Update: {
           key?: string
-          trustindex_api_key?: string | null
           trustindex_widget_id?: string | null
           updated_at?: string
           value?: Json
