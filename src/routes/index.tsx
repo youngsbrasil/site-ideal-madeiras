@@ -43,7 +43,7 @@ function HeroCarousel({ banners }: { banners: Banner[] }) {
         </a>
         {total > 1 && (
           <>
-            <button type="button" aria-label="Anterior" onClick={() => go(idx - 1)}
+            <button type="button" aria-label="Anterior" onClick={(e) => { e.preventDefault(); e.stopPropagation(); go(idx - 1); }}
               className="absolute left-3 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-neutral-800 rounded-full p-2 shadow opacity-0 group-hover:opacity-100 transition-opacity">
               <ChevronLeft size={22} />
             </button>
