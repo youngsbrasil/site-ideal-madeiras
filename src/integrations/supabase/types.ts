@@ -461,6 +461,7 @@ export type Database = {
           noindex: boolean | null
           og_image: string | null
           old_price: string | null
+          old_price_value: number | null
           price: string
           price_value: number | null
           sizes: string[]
@@ -490,6 +491,7 @@ export type Database = {
           noindex?: boolean | null
           og_image?: string | null
           old_price?: string | null
+          old_price_value?: number | null
           price: string
           price_value?: number | null
           sizes?: string[]
@@ -519,6 +521,7 @@ export type Database = {
           noindex?: boolean | null
           og_image?: string | null
           old_price?: string | null
+          old_price_value?: number | null
           price?: string
           price_value?: number | null
           sizes?: string[]
