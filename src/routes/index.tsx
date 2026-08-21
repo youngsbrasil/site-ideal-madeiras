@@ -124,7 +124,7 @@ function Home() {
           {[
             { icon: MessageCircle, t: "COMPRE PELO WHATSAPP", s: "Clique aqui e fale agora mesmo", href: whatsappHref },
             { icon: Truck, t: "ENTREGA SUPER RÁPIDA", s: "Rápido e garantido" },
-            { icon: CreditCard, t: "10x PARCELAMENTO DIRETO", s: "Sem juros no cartão" },
+            { icon: CreditCard, t: "ATÉ 12x SEM JUROS", s: "No cartão de crédito" },
             { icon: ShieldCheck, t: "COMPRA 100% SEGURA", s: "Ambiente de alto nível" },
           ].map(({ icon: Icon, t, s, href }) => (
             <a key={t} href={href ?? "#"} className="flex items-center gap-3 bg-white rounded-full pl-3 pr-5 py-3 shadow-sm hover:shadow-md transition-shadow">
@@ -549,37 +549,5 @@ function ReviewsSection({ depoimentos }: { depoimentos: { nome: string; texto: s
     queryFn: () => fetchPublicReviews({ limit: 1 }),
   });
   if (reviews.length > 0) return <ReviewsWidget scope="home" />;
-  // Fallback estático quando ainda não há reviews cadastrados
-  return (
-    <section className="mx-auto max-w-7xl px-4 py-8">
-      <div className="grid md:grid-cols-4 gap-4 items-stretch bg-neutral-50 rounded-lg border border-neutral-200 p-4">
-        <div className="text-center md:border-r md:border-neutral-200 md:pr-4 flex flex-col justify-center">
-          <div className="text-lg font-bold">Excelente</div>
-          <div className="flex justify-center text-yellow-400 my-1">
-            {[...Array(5)].map((_, i) => <Star key={i} size={18} fill="currentColor" />)}
-          </div>
-          <div className="text-xs text-neutral-500">Com base em <b>84 avaliações</b></div>
-          <div className="mt-2 text-[11px] text-neutral-400">Google</div>
-        </div>
-        {depoimentos.map((d) => (
-          <div key={d.nome} className="bg-white rounded-md p-3 border border-neutral-200">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="w-7 h-7 rounded-full grid place-items-center text-white text-xs font-bold" style={{ background: "#4285F4" }}>
-                {d.nome.charAt(0)}
-              </span>
-              <div>
-                <div className="text-xs font-semibold">{d.nome}</div>
-                <div className="text-[10px] text-neutral-400">1 ano atrás</div>
-              </div>
-              <span className="ml-auto text-[10px] font-bold text-neutral-400">G</span>
-            </div>
-            <div className="flex text-yellow-400 mb-1">
-              {[...Array(5)].map((_, i) => <Star key={i} size={11} fill="currentColor" />)}
-            </div>
-            <p className="text-[11px] text-neutral-700 leading-relaxed line-clamp-4">{d.texto}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
+  return null;
 }

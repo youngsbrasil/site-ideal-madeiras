@@ -66,7 +66,6 @@ export function ProductView({ product }: { product: Product }) {
             <h1 className="text-2xl md:text-3xl font-bold mt-1">{product.name}</h1>
             <div className="mt-3 flex items-center gap-2">
               <div className="flex text-yellow-400">{[...Array(5)].map((_, i) => <Star key={i} size={16} fill="currentColor" />)}</div>
-              <span className="text-xs text-neutral-500">(28 avaliações)</span>
             </div>
 
             <div className="mt-5 flex items-baseline gap-3">
@@ -94,7 +93,7 @@ export function ProductView({ product }: { product: Product }) {
             </div>
 
             <ul className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-              <li className="flex items-center gap-2 border border-neutral-200 rounded-md p-3"><Truck size={18} className="text-[#A7144C]" /><span>Frete grátis acima de R$ 150</span></li>
+              <li className="flex items-center gap-2 border border-neutral-200 rounded-md p-3"><Truck size={18} className="text-[#A7144C]" /><span>Consulte condições de frete</span></li>
               <li className="flex items-center gap-2 border border-neutral-200 rounded-md p-3"><CreditCard size={18} className="text-[#A7144C]" /><span>Parcelamento em até 12x</span></li>
               <li className="flex items-center gap-2 border border-neutral-200 rounded-md p-3"><ShieldCheck size={18} className="text-[#A7144C]" /><span>Compra 100% segura</span></li>
             </ul>
