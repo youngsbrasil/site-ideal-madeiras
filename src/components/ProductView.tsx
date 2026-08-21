@@ -23,8 +23,8 @@ export function ProductView({ product }: { product: Product }) {
 
   const categoria = categorias.find((c) => c.id === product.category_id);
   const categoriaNome = categoria?.name ?? "";
-  const whatsapp = (settings?.site.whatsapp || "5511942000000").replace(/\D/g, "");
-  const telefone = settings?.site.telefone || "(11) 4200-0000";
+  const whatsapp = (settings?.site.whatsapp || "").replace(/\D/g, "");
+  const telefone = settings?.site.telefone || "";
   const mensagem = encodeURIComponent(`Olá! Tenho interesse no produto: ${product.name} (${product.price}). Poderia me passar mais informações?`);
   const whatsappUrl = `https://wa.me/${whatsapp}?text=${mensagem}`;
 

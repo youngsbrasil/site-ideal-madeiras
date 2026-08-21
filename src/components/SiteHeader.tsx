@@ -46,8 +46,8 @@ export function SiteHeader() {
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
 
-  const telefone = settings?.site.telefone || "(11) 4200-0000";
-  const whatsapp = (settings?.site.whatsapp || "5511942000000").replace(/\D/g, "");
+  const telefone = settings?.site.telefone || "";
+  const whatsapp = (settings?.site.whatsapp || "").replace(/\D/g, "");
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -89,11 +89,13 @@ export function SiteHeader() {
               </a>
             </div>
             <div className="hidden md:flex items-center gap-4">
-              <a href={`tel:${telefone.replace(/\D/g, "")}`} className="hover:underline flex items-center gap-1">
-                <Phone size={12} /> {telefone}
-              </a>
-              <a href="#" className="hover:underline flex items-center gap-1"><Facebook size={14} /></a>
-              <a href="#" className="hover:underline flex items-center gap-1"><Instagram size={14} /></a>
+              {telefone && (
+                <a href={`tel:${telefone.replace(/\D/g, "")}`} className="hover:underline flex items-center gap-1">
+                  <Phone size={12} /> {telefone}
+                </a>
+              )}
+              {settings?.site.facebook && <a href={settings.site.facebook} target="_blank" rel="noreferrer" className="hover:underline flex items-center gap-1"><Facebook size={14} /></a>}
+              {settings?.site.instagram && <a href={settings.site.instagram} target="_blank" rel="noreferrer" className="hover:underline flex items-center gap-1"><Instagram size={14} /></a>}
             </div>
           </div>
           {announcements.length > 1 && (
@@ -116,11 +118,15 @@ export function SiteHeader() {
       ) : (
         <div className="bg-[#A7144C] text-white text-xs">
           <div className="mx-auto max-w-7xl px-4 py-2 flex flex-wrap items-center justify-between gap-2">
-            <span className="tracking-wide">LOJAS IDEAL MADEIRAS — QUALIDADE E TRADIÇÃO</span>
+            <span className="tracking-wide">{settings?.site.nome || "LOJAS IDEAL MADEIRAS — QUALIDADE E TRADIÇÃO"}</span>
             <div className="hidden md:flex items-center gap-4">
-              <a href={`tel:${telefone.replace(/\D/g, "")}`} className="hover:underline flex items-center gap-1"><Phone size={12} /> {telefone}</a>
-              <a href="#" className="hover:underline flex items-center gap-1"><Facebook size={14} /></a>
-              <a href="#" className="hover:underline flex items-center gap-1"><Instagram size={14} /></a>
+              {telefone && (
+                <a href={`tel:${telefone.replace(/\D/g, "")}`} className="hover:underline flex items-center gap-1">
+                  <Phone size={12} /> {telefone}
+                </a>
+              )}
+              {settings?.site.facebook && <a href={settings.site.facebook} target="_blank" rel="noreferrer" className="hover:underline flex items-center gap-1"><Facebook size={14} /></a>}
+              {settings?.site.instagram && <a href={settings.site.instagram} target="_blank" rel="noreferrer" className="hover:underline flex items-center gap-1"><Instagram size={14} /></a>}
             </div>
           </div>
         </div>

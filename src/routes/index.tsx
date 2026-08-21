@@ -116,10 +116,10 @@ function Home() {
   const indicados = produtos.slice(5, 10);
   const campeoes = produtos.filter((p) => p.most_viewed).slice(0, 5);
 
-  const whatsapp = settings?.site.whatsapp || "5511942000000";
-  const telefone = settings?.site.telefone || "(11) 4200-0000";
-  const email = settings?.site.email || "contato@idealmadeiras.com.br";
-  const whatsappHref = `https://wa.me/${whatsapp.replace(/\D/g, "")}`;
+    const whatsapp = settings?.site.whatsapp || "";
+    const telefone = settings?.site.telefone || "";
+    const email = settings?.site.email || "";
+  const whatsappHref = whatsapp ? `https://wa.me/${whatsapp.replace(/\D/g, "")}` : "#";
   const depoimentos = settings?.site.depoimentos ?? fallbackDepoimentos;
 
   return (
@@ -370,14 +370,14 @@ function Home() {
           </div>
           <div className="space-y-4 text-xs">
             {[
-              { l: "LOJA 1", e: "Rua do Gasômetro, 350 - Brás - SP", t: "(11) 99400-0507" },
-              { l: "LOJA 2", e: "Rua do Gasômetro, 284 - Brás - SP", t: "(11) 3326-3197" },
-              { l: "LOJA 3", e: "Rua do Gasômetro, 306 - Brás - SP", t: "(11) 98801-3370" },
-            ].map((l, idx) => (
-              <div key={l.l}>
-                <div className="text-white font-bold">{idx === 0 ? (settings?.site.nome_loja_1 || l.l) : idx === 1 ? (settings?.site.nome_loja_2 || l.l) : (settings?.site.nome_loja_3 || l.l)}</div>
-                <div className="flex items-start gap-1 mt-1"><MapPin size={11} className="mt-0.5" style={{ color: ORANGE }} /><span>{idx === 0 ? (settings?.site.endereco_loja_1 || l.e) : idx === 1 ? (settings?.site.endereco_loja_2 || l.e) : (settings?.site.endereco_loja_3 || l.e)}</span></div>
-                <div className="flex items-center gap-1 mt-1"><MessageCircle size={11} style={{ color: ORANGE }} /><span>{idx === 0 ? (settings?.site.telefone_loja_1 || l.t) : idx === 1 ? (settings?.site.telefone_loja_2 || l.t) : (settings?.site.telefone_loja_3 || l.t)}</span></div>
+              { n: settings?.site.nome_loja_1, e: settings?.site.endereco_loja_1, t: settings?.site.telefone_loja_1 },
+              { n: settings?.site.nome_loja_2, e: settings?.site.endereco_loja_2, t: settings?.site.telefone_loja_2 },
+              { n: settings?.site.nome_loja_3, e: settings?.site.endereco_loja_3, t: settings?.site.telefone_loja_3 },
+            ].filter(l => l.n || l.e || l.t).map((l, idx) => (
+              <div key={idx}>
+                <div className="text-white font-bold">{l.n}</div>
+                {l.e && <div className="flex items-start gap-1 mt-1"><MapPin size={11} className="mt-0.5" style={{ color: ORANGE }} /><span>{l.e}</span></div>}
+                {l.t && <div className="flex items-center gap-1 mt-1"><MessageCircle size={11} style={{ color: ORANGE }} /><span>{l.t}</span></div>}
               </div>
             ))}
           </div>
@@ -386,8 +386,8 @@ function Home() {
           <div className="mx-auto max-w-7xl px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] text-neutral-400">
             <div>Formas de Pagamento aceitas</div>
             <div className="flex gap-3 opacity-70">
-              <a href="#" aria-label="Facebook" className="hover:text-white"><Facebook size={14} /></a>
-              <a href="#" aria-label="Instagram" className="hover:text-white"><Instagram size={14} /></a>
+              {settings?.site.facebook && <a href={settings.site.facebook} target="_blank" rel="noreferrer" aria-label="Facebook" className="hover:text-white"><Facebook size={14} /></a>}
+              {settings?.site.instagram && <a href={settings.site.instagram} target="_blank" rel="noreferrer" aria-label="Instagram" className="hover:text-white"><Instagram size={14} /></a>}
             </div>
           </div>
           <div className="mx-auto max-w-7xl px-4 pb-4 text-center text-[10px] text-neutral-500">
@@ -444,7 +444,7 @@ function ProductCard({ p, compact, showOferta, categorias: catsProp }: { p: Prod
   const to = productPath(p, categorias) as any;
   const categoria = categorias.find((c: any) => c.id === p.category_id);
   const catNome = categoria?.name ?? "";
-  const whatsapp = (settings?.site.whatsapp || "5511942000000").replace(/\D/g, "");
+  const whatsapp = (settings?.site.whatsapp || "").replace(/\D/g, "");
   const waMsg = encodeURIComponent(`Olá! Tenho interesse no produto: ${p.name} (${p.price}). Poderia me passar mais informações?`);
   const waUrl = `https://wa.me/${whatsapp}?text=${waMsg}`;
   const descricao = p.description || "Fale com um de nossos vendedores e receba um orçamento personalizado com condições especiais.";
