@@ -354,6 +354,26 @@ export async function fetchBanners(): Promise<Banner[]> {
 }
 
 
+export type Announcement = {
+  id: string;
+  texto: string;
+  link_url: string | null;
+  cor_fundo: string | null;
+  cor_texto: string | null;
+  ativo: boolean;
+  ordem: number;
+};
+
+export async function fetchAnnouncements(): Promise<Announcement[]> {
+  const { data, error } = await supabase
+    .from("announcements" as any)
+    .select("*")
+    .eq("ativo", true)
+    .order("ordem");
+  if (error) throw error;
+  return (data ?? []) as unknown as Announcement[];
+}
+
 export async function fetchSettings(): Promise<{ site: SiteSettings; topbar: TopbarSettings }> {
   const { data, error } = await supabase.from("site_settings").select("*");
   if (error) throw error;
