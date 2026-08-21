@@ -46,8 +46,8 @@ export function SiteHeader() {
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
 
-  const telefone = settings?.site.telefone || "(11) 4200-0000";
-  const whatsapp = (settings?.site.whatsapp || "5511942000000").replace(/\D/g, "");
+  const telefone = settings?.site.telefone || "";
+  const whatsapp = (settings?.site.whatsapp || "").replace(/\D/g, "");
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
