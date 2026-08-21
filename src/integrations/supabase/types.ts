@@ -47,6 +47,63 @@ export type Database = {
         }
         Relationships: []
       }
+      announcements: {
+        Row: {
+          active: boolean
+          bg_color: string | null
+          countdown_ends_at: string | null
+          created_at: string
+          dismissible: boolean
+          emoji: string | null
+          ends_at: string | null
+          id: string
+          link_label: string | null
+          link_url: string | null
+          message: string
+          priority: number
+          scope: string
+          starts_at: string | null
+          text_color: string | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          bg_color?: string | null
+          countdown_ends_at?: string | null
+          created_at?: string
+          dismissible?: boolean
+          emoji?: string | null
+          ends_at?: string | null
+          id?: string
+          link_label?: string | null
+          link_url?: string | null
+          message: string
+          priority?: number
+          scope?: string
+          starts_at?: string | null
+          text_color?: string | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          bg_color?: string | null
+          countdown_ends_at?: string | null
+          created_at?: string
+          dismissible?: boolean
+          emoji?: string | null
+          ends_at?: string | null
+          id?: string
+          link_label?: string | null
+          link_url?: string | null
+          message?: string
+          priority?: number
+          scope?: string
+          starts_at?: string | null
+          text_color?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       banners: {
         Row: {
           active: boolean
