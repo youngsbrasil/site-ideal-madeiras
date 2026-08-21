@@ -30,7 +30,15 @@ export function SiteHeader() {
     const t = setTimeout(() => setDebounced(q), 200);
     return () => clearTimeout(t);
   }, [q]);
-...
+
+  useEffect(() => {
+    const onClick = (e: MouseEvent) => {
+      if (!boxRef.current?.contains(e.target as Node)) setOpen(false);
+    };
+    document.addEventListener("mousedown", onClick);
+    return () => document.removeEventListener("mousedown", onClick);
+  }, []);
+
   const telefone = settings?.site.telefone || "(11) 4200-0000";
   const whatsapp = (settings?.site.whatsapp || "5511942000000").replace(/\D/g, "");
 
