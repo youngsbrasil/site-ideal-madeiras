@@ -287,6 +287,8 @@ export async function fetchCategories(): Promise<Category[]> {
   const { data, error } = await supabase.from("categories").select("*").order("sort_order");
   if (error) throw error;
   return (data ?? []) as Category[];
+}
+
 export function formatPriceDisplay(p: Product | null | any): string {
   if (!p) return "";
   if (p.availability === "sob_consulta") return "Sob consulta";
