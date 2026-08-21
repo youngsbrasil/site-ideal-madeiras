@@ -79,7 +79,7 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-  const depoimentos = settings?.site.depoimentos ?? [
+const fallbackDepoimentos = [
   { nome: "Anderson Vieira", texto: "A Ideal Madeiras é um ótimo lugar para comprar os primeiros portas da minha casa. Tive ótimas orientações." },
   { nome: "Eliana Sampaio", texto: "Segunda vez que faço compras de portas nessa loja, nunca mudaram o atendimento, sempre nos atenderam bem." },
   { nome: "Sandra Karito", texto: "Gisele fez um atendimento nota MIL. Voltarei a comprar com certeza." },
@@ -109,6 +109,7 @@ function Home() {
   const telefone = settings?.site.telefone || "(11) 4200-0000";
   const email = settings?.site.email || "contato@idealmadeiras.com.br";
   const whatsappHref = `https://wa.me/${whatsapp.replace(/\D/g, "")}`;
+  const depoimentos = settings?.site.depoimentos ?? fallbackDepoimentos;
 
   return (
     <div className="min-h-screen bg-white text-neutral-900">
@@ -379,7 +380,7 @@ function Home() {
             </div>
           </div>
           <div className="mx-auto max-w-7xl px-4 pb-4 text-center text-[10px] text-neutral-500">
-            © {new Date().getFullYear()} Lojas Ideal Madeiras · CNPJ: 00.000.000/0000-00 · Todos os direitos reservados.
+            © {new Date().getFullYear()} Lojas Ideal Madeiras · CNPJ: {settings?.site.cnpj || "00.000.000/0000-00"} · Todos os direitos reservados.
           </div>
         </div>
       </footer>
