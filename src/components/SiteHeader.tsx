@@ -18,6 +18,13 @@ export function SiteHeader() {
   const [debounced, setDebounced] = useState("");
   const boxRef = useRef<HTMLFormElement | null>(null);
 
+  const { data: suggestions = [] } = useQuery({
+    queryKey: ["suggestions", debounced],
+    queryFn: () => fetchSuggestions(debounced, 8),
+    enabled: debounced.trim().length >= 2,
+    staleTime: 30_000,
+  });
+
   const [annIdx, setAnnIdx] = useState(0);
 
   useEffect(() => {
