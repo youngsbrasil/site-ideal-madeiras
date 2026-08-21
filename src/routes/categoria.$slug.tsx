@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Heart, ChevronRight, MessageCircle, SlidersHorizontal, X, LayoutGrid, Grid3x3, Grid2x2, ChevronLeft, ChevronRight as ChevRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { fetchCategories, fetchSettings, productPath, type Product, type Category } from "@/lib/site-data";
+import { fetchCategories, fetchSettings, productPath, formatPriceDisplay, type Product, type Category } from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
 import { categoryMetaTitle, categoryMetaDescription, absoluteUrl, breadcrumbJsonLd, SITE_NAME } from "@/lib/seo";
@@ -347,7 +347,7 @@ function CategoryPage() {
                         <div className="mt-2 flex items-baseline gap-2">
                           {p.old_price && <span className="text-xs text-neutral-400 line-through">{p.old_price}</span>}
                           <span className="font-bold text-[#A7144C]">
-                            {p.availability === 'sob_consulta' ? 'Sob consulta' : (p.price_value && p.price_value > 0 ? p.price_value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : p.price)}
+                            {formatPriceDisplay(p)}
                           </span>
                         </div>
                       </div>
