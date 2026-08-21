@@ -7,7 +7,7 @@ import {
   Truck, CreditCard, ShieldCheck, Mail as MailIcon,
 } from "lucide-react";
 import {
-  fetchCategories, fetchProducts, fetchBanners, fetchSettings, fetchShoppableScenes, proxyImg, productPath,
+  fetchCategories, fetchProducts, fetchBanners, fetchShoppableScenes, proxyImg, productPath,
   formatPriceDisplay, type Product, type Banner, type ShoppableScene, type Category
 } from "@/lib/site-data";
 import { localBusinessJsonLd, organizationJsonLd } from "@/lib/seo";
@@ -15,6 +15,8 @@ import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
 import { CouponStrip } from "@/components/CouponStrip";
 import { ReviewsWidget } from "@/components/ReviewsWidget";
+import { useSiteSettings } from "./__root";
+
 import { useQuery as useRQ } from "@tanstack/react-query";
 import { fetchPublicReviews } from "@/lib/site-data";
 
@@ -66,12 +68,10 @@ function HeroCarousel({ banners }: { banners: Banner[] }) {
 }
 
 export const Route = createFileRoute("/")({
-  loader: async () => {
-    return { settings: await fetchSettings() };
-  },
-  head: ({ loaderData }) => {
-    const s = (loaderData as any)?.settings;
+  head: ({ context }) => {
+    // TanStack Start might not have context available in head yet, but settings are now in root
     return {
+
       meta: [
         { title: "Lojas Ideal Madeiras — Portas, Janelas, Fechaduras" },
         { name: "description", content: "Loja de Portas, Janelas, Ferragens e Fechaduras em São Paulo. Portas maciças, pivotantes, fechaduras digitais, puxadores, pisos e muito mais." },
@@ -83,10 +83,11 @@ export const Route = createFileRoute("/")({
       ],
       script: [
         { type: "application/ld+json", children: JSON.stringify(organizationJsonLd()) },
-        { type: "application/ld+json", children: JSON.stringify(localBusinessJsonLd(s)) },
+        // localBusinessJsonLd will be rendered by root, but we could add more specific ones here if needed
       ],
     };
   },
+
   component: Home,
 });
 
@@ -105,7 +106,8 @@ function Home() {
   const { data: categorias = [] } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
   const { data: produtos = [] } = useQuery({ queryKey: ["products"], queryFn: fetchProducts });
   const { data: banners = [] } = useQuery({ queryKey: ["banners"], queryFn: fetchBanners });
-  const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
+  const settings = useSiteSettings();
+
   const { data: shoppable = [] } = useQuery({ queryKey: ["shoppable-scenes"], queryFn: () => fetchShoppableScenes(true) });
 
   const destaques = produtos.filter((p) => p.featured).slice(0, 5);

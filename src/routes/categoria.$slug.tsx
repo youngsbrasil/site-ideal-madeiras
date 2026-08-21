@@ -3,10 +3,12 @@ import { useQuery } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { Heart, ChevronRight, MessageCircle, SlidersHorizontal, X, LayoutGrid, Grid3x3, Grid2x2, ChevronLeft, ChevronRight as ChevRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { fetchCategories, fetchSettings, productPath, formatPriceDisplay, type Product, type Category } from "@/lib/site-data";
+import { fetchCategories, productPath, formatPriceDisplay, type Product, type Category } from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
 import { categoryMetaTitle, categoryMetaDescription, absoluteUrl, breadcrumbJsonLd, organizationJsonLd, localBusinessJsonLd, SITE_NAME } from "@/lib/seo";
+import { useSiteSettings } from "../__root";
+
 
 export const Route = createFileRoute("/categoria/$slug")({
   loader: async ({ params }) => {
@@ -33,21 +35,12 @@ export const Route = createFileRoute("/categoria/$slug")({
       woods: Array.isArray(p.woods) ? p.woods : [],
       finishes: Array.isArray(p.finishes) ? p.finishes : [],
     })) as Product[];
-    const { data: settings } = await supabase.from("site_settings").select("*");
-    const settingsMap: any = {};
-    (settings ?? []).forEach((r: any) => (settingsMap[r.key] = r.value));
     return { 
       category: cat as Category, 
-      products, 
-      settings: { 
-        site: settingsMap.site ?? {},
-        topbar: settingsMap.topbar ?? {},
-        lojas: settingsMap.lojas ?? [],
-        prova_social: settingsMap.prova_social ?? {},
-        cores: settingsMap.cores ?? {},
-      } 
+      products,
     };
   },
+
   head: ({ loaderData, params }) => {
     if (!loaderData) {
       return { meta: [{ title: "Categoria não encontrada - Ideal Madeiras" }, { name: "robots", content: "noindex" }] };
@@ -76,10 +69,11 @@ export const Route = createFileRoute("/categoria/$slug")({
       script: [
         { type: "application/ld+json", children: JSON.stringify(crumbs) },
         { type: "application/ld+json", children: JSON.stringify(organizationJsonLd()) },
-        { type: "application/ld+json", children: JSON.stringify(localBusinessJsonLd(loaderData.settings)) },
+        // localBusinessJsonLd is now handled by root for consistency
       ],
     };
   },
+
   component: CategoryPage,
   notFoundComponent: () => (
     <div className="min-h-screen grid place-items-center p-8 text-center">
@@ -102,7 +96,8 @@ const FILTER_LABELS: Record<FilterKey, string> = {
 
 function CategoryPage() {
   const { category, products } = Route.useLoaderData() as { category: Category; products: Product[] };
-  const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
+  const settings = useSiteSettings();
+
   const { data: categorias = [] } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
   const whatsapp = (settings?.site.whatsapp || "").replace(/\D/g, "");
   const whatsappHref = whatsapp ? `https://wa.me/${whatsapp}` : null;
