@@ -220,6 +220,20 @@ export type SiteSettings = {
   telefone?: string;
   endereco?: string;
   trustindex_widget_id?: string;
+  logo?: string;
+  instagram?: string;
+  facebook?: string;
+  cnpj?: string;
+  nome_loja_1?: string;
+  endereco_loja_1?: string;
+  telefone_loja_1?: string;
+  nome_loja_2?: string;
+  endereco_loja_2?: string;
+  telefone_loja_2?: string;
+  nome_loja_3?: string;
+  endereco_loja_3?: string;
+  telefone_loja_3?: string;
+  depoimentos?: { nome: string; texto: string }[];
 };
 export type TopbarSettings = { texto?: string };
 
