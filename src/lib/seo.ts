@@ -81,49 +81,36 @@ export function breadcrumbJsonLd(items: { name: string; url: string }[]) {
 
 /** LocalBusiness — 3 lojas Ideal Madeiras na Rua do Gasômetro, Brás/SP */
 export function localBusinessJsonLd(settings?: any) {
-  const s = settings?.site;
-  const base = {
-    "@context": "https://schema.org",
-    "@type": "HomeGoodsStore",
-    name: SITE_NAME,
-    image: `${SITE_URL}/favicon.ico`,
-    url: SITE_URL,
-    priceRange: "$$",
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: "Rua do Gasômetro",
-      addressLocality: "São Paulo",
-      addressRegion: "SP",
-      postalCode: "03004-001",
-      addressCountry: "BR",
-    },
-    telephone: s?.telefone || "+55-11-4200-0000",
-    vatID: s?.cnpj || "00.000.000/0000-00",
-  };
-  
-  return [
-    {
-      ...base,
-      "@id": `${SITE_URL}#loja-1`,
-      name: s?.nome_loja_1 || `${SITE_NAME} - Loja 1`,
-      address: { ...base.address, streetAddress: s?.endereco_loja_1 || "Rua do Gasômetro, 500" },
-      telephone: s?.telefone_loja_1,
-    },
-    {
-      ...base,
-      "@id": `${SITE_URL}#loja-2`,
-      name: s?.nome_loja_2 || `${SITE_NAME} - Loja 2`,
-      address: { ...base.address, streetAddress: s?.endereco_loja_2 || "Rua do Gasômetro, 600" },
-      telephone: s?.telefone_loja_2,
-    },
-    {
-      ...base,
-      "@id": `${SITE_URL}#loja-3`,
-      name: s?.nome_loja_3 || `${SITE_NAME} - Loja 3`,
-      address: { ...base.address, streetAddress: s?.endereco_loja_3 || "Rua do Gasômetro, 700" },
-      telephone: s?.telefone_loja_3,
-    },
-  ];
+  const lojas = settings?.lojas || [];
+  const cnpj = settings?.site.cnpj;
+  const logo = "https://idealmadeiras.com.br/wp-content/uploads/2024/09/logo-ideal-madeiras.png";
+
+  if (lojas.length === 0) return null;
+
+  return lojas.map((loja: any) => {
+    const telephone = loja.telefone ? `+55${loja.telefone.replace(/\D/g, "")}` : undefined;
+    
+    const schema: any = {
+      "@context": "https://schema.org",
+      "@type": "HomeGoodsStore",
+      "name": `Lojas Ideal Madeiras — ${loja.nome}`,
+      "image": logo,
+      "url": SITE_URL,
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": loja.logradouro,
+        "addressLocality": loja.cidade,
+        "addressRegion": loja.uf,
+        "addressCountry": "BR"
+      },
+      "@id": `${SITE_URL}#${loja.nome.toLowerCase().replace(/\s+/g, "-")}`
+    };
+
+    if (telephone) schema.telephone = telephone;
+    if (cnpj) schema.vatID = cnpj;
+
+    return schema;
+  });
 }
 
 export function organizationJsonLd() {

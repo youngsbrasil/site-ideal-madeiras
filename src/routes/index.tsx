@@ -119,7 +119,7 @@ function Home() {
     const whatsapp = settings?.site.whatsapp || "";
     const telefone = settings?.site.telefone || "";
     const email = settings?.site.email || "";
-  const whatsappHref = whatsapp ? `https://wa.me/${whatsapp.replace(/\D/g, "")}` : "#";
+  const whatsappHref = whatsapp ? `https://wa.me/${whatsapp}` : null;
   const depoimentos = settings?.site.depoimentos ?? fallbackDepoimentos;
 
   return (
@@ -345,9 +345,11 @@ function Home() {
           <div>
             <img src={proxyImg(`${IMG}/2024/09/logo-ideal-madeiras.png`)} alt="Lojas Ideal Madeiras" className="h-16 w-auto mb-4" />
             <p className="text-xs leading-relaxed">A Maior Loja de Portas, Janelas e Pisos de Madeira da Rua do Gasômetro. Venha Conferir nossas Show Room e conhecer a maior coleção de Madeiras da região de São Paulo.</p>
-            <a href={whatsappHref} className="mt-4 inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1eb659] text-white px-4 py-2 rounded font-semibold text-xs">
-              <MessageCircle size={14} /> COMPRE PELO WHATSAPP AGORA
-            </a>
+            {whatsappHref && (
+              <a href={whatsappHref} className="mt-4 inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1eb659] text-white px-4 py-2 rounded font-semibold text-xs">
+                <MessageCircle size={14} /> COMPRE PELO WHATSAPP AGORA
+              </a>
+            )}
           </div>
           <div>
             <h4 className="text-white font-bold mb-4 tracking-wide">MENU PRINCIPAL</h4>
@@ -369,16 +371,33 @@ function Home() {
             </ul>
           </div>
           <div className="space-y-4 text-xs">
-            {[
-              { n: settings?.site.nome_loja_1, e: settings?.site.endereco_loja_1, t: settings?.site.telefone_loja_1 },
-              { n: settings?.site.nome_loja_2, e: settings?.site.endereco_loja_2, t: settings?.site.telefone_loja_2 },
-              { n: settings?.site.nome_loja_3, e: settings?.site.endereco_loja_3, t: settings?.site.telefone_loja_3 },
-            ].filter(l => l.n || l.e || l.t).map((l, idx) => (
-              <div key={idx}>
-                <div className="text-white font-bold">{l.n}</div>
-                {l.e && <div className="flex items-start gap-1 mt-1"><MapPin size={11} className="mt-0.5" style={{ color: ORANGE }} /><span>{l.e}</span></div>}
-                {l.t && <div className="flex items-center gap-1 mt-1"><MessageCircle size={11} style={{ color: ORANGE }} /><span>{l.t}</span></div>}
-              </div>
+            {(settings?.lojas || [])
+              .sort((a: any, b: any) => (a.ordem || 0) - (b.ordem || 0))
+              .map((l: any, idx: number) => (
+                <div key={idx}>
+                  <div className="text-white font-bold">{l.nome}</div>
+                  <div className="flex items-start gap-1 mt-1">
+                    <MapPin size={11} className="mt-0.5" style={{ color: ORANGE }} />
+                    <span>{l.logradouro} - {l.bairro} - {l.cidade}/{l.uf}</span>
+                  </div>
+                  {l.telefone && (
+                    <div className="flex items-center gap-1 mt-1">
+                      <Phone size={11} style={{ color: ORANGE }} />
+                      <span>{l.telefone}</span>
+                    </div>
+                  )}
+                  {l.whatsapp && (
+                    <a 
+                      href={`https://wa.me/${l.whatsapp.replace(/\D/g, "")}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center gap-1 mt-1 hover:text-white transition-colors"
+                    >
+                      <MessageCircle size={11} style={{ color: ORANGE }} />
+                      <span>Compre pelo WhatsApp</span>
+                    </a>
+                  )}
+                </div>
             ))}
           </div>
         </div>
@@ -391,14 +410,16 @@ function Home() {
             </div>
           </div>
           <div className="mx-auto max-w-7xl px-4 pb-4 text-center text-[10px] text-neutral-500">
-            © {new Date().getFullYear()} Lojas Ideal Madeiras · CNPJ: {settings?.site.cnpj || "00.000.000/0000-00"} · Todos os direitos reservados.
+            © {new Date().getFullYear()} {settings?.site.razao_social || "Lojas Ideal Madeiras"}{settings?.site.cnpj ? ` · CNPJ: ${settings.site.cnpj}` : ""} · Todos os direitos reservados.
           </div>
         </div>
       </footer>
 
-      <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="fixed bottom-6 right-6 bg-[#25D366] hover:bg-[#1eb659] text-white rounded-full w-14 h-14 grid place-items-center shadow-lg z-50" aria-label="WhatsApp">
-        <MessageCircle size={26} />
-      </a>
+      {whatsappHref && (
+        <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="fixed bottom-6 right-6 bg-[#25D366] hover:bg-[#1eb659] text-white rounded-full w-14 h-14 grid place-items-center shadow-lg z-50" aria-label="WhatsApp">
+          <MessageCircle size={26} />
+        </a>
+      )}
     </div>
   );
 }
@@ -445,8 +466,8 @@ function ProductCard({ p, compact, showOferta, categorias: catsProp }: { p: Prod
   const categoria = categorias.find((c: any) => c.id === p.category_id);
   const catNome = categoria?.name ?? "";
   const whatsapp = (settings?.site.whatsapp || "").replace(/\D/g, "");
-  const waMsg = encodeURIComponent(`Olá! Tenho interesse no produto: ${p.name} (${p.price}). Poderia me passar mais informações?`);
-  const waUrl = `https://wa.me/${whatsapp}?text=${waMsg}`;
+  const waMsg = encodeURIComponent(`Olá! Tenho interesse no produto: ${p.name} (${formatPriceDisplay(p)}). Poderia me passar mais informações?`);
+  const waUrl = whatsapp ? `https://wa.me/${whatsapp}?text=${waMsg}` : null;
   const descricao = p.description || "Fale com um de nossos vendedores e receba um orçamento personalizado com condições especiais.";
 
   return (
@@ -473,9 +494,11 @@ function ProductCard({ p, compact, showOferta, categorias: catsProp }: { p: Prod
           <Link to="/checkout" search={{ slug: p.slug, qty: 1 }} className="w-full text-center text-white text-[11px] font-bold px-3 py-2 rounded-full uppercase tracking-wide hover:opacity-90" style={{ background: ORANGE }}>
             Solicitar Orçamento
           </Link>
-          <a href={waUrl} target="_blank" rel="noreferrer" className="w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1eb659] text-white text-[11px] font-bold px-3 py-2 rounded-full uppercase tracking-wide">
-            <MessageCircle size={13} /> Falar com Vendedor Agora
-          </a>
+          {waUrl && (
+            <a href={waUrl} target="_blank" rel="noreferrer" className="w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1eb659] text-white text-[11px] font-bold px-3 py-2 rounded-full uppercase tracking-wide">
+              <MessageCircle size={13} /> Falar com Vendedor Agora
+            </a>
+          )}
           <button aria-label="Adicionar à Lista de Desejos" className="inline-flex items-center justify-center gap-1 text-[11px] text-neutral-600 hover:text-[color:var(--o)]">
             <Heart size={13} /> Adicionar à lista de desejos
           </button>

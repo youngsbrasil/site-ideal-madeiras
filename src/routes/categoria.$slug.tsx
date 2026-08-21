@@ -36,7 +36,17 @@ export const Route = createFileRoute("/categoria/$slug")({
     const { data: settings } = await supabase.from("site_settings").select("*");
     const settingsMap: any = {};
     (settings ?? []).forEach((r: any) => (settingsMap[r.key] = r.value));
-    return { category: cat as Category, products, settings: { site: settingsMap.site ?? {} } };
+    return { 
+      category: cat as Category, 
+      products, 
+      settings: { 
+        site: settingsMap.site ?? {},
+        topbar: settingsMap.topbar ?? {},
+        lojas: settingsMap.lojas ?? [],
+        prova_social: settingsMap.prova_social ?? {},
+        cores: settingsMap.cores ?? {},
+      } 
+    };
   },
   head: ({ loaderData, params }) => {
     if (!loaderData) {
@@ -94,8 +104,8 @@ function CategoryPage() {
   const { category, products } = Route.useLoaderData() as { category: Category; products: Product[] };
   const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
   const { data: categorias = [] } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
-  const whatsapp = (settings?.site.whatsapp || "5511942000000").replace(/\D/g, "");
-  const whatsappHref = `https://wa.me/${whatsapp}`;
+  const whatsapp = (settings?.site.whatsapp || "").replace(/\D/g, "");
+  const whatsappHref = whatsapp ? `https://wa.me/${whatsapp}` : null;
 
   const [selected, setSelected] = useState<Record<FilterKey, string[]>>({
     sizes: [], types: [], woods: [], finishes: [],
@@ -404,9 +414,11 @@ function CategoryPage() {
         </div>
       </section>
 
-      <a href={whatsappHref} target="_blank" rel="noreferrer" className="fixed bottom-6 right-6 bg-[#25D366] hover:bg-[#1eb659] text-white rounded-full w-14 h-14 grid place-items-center shadow-lg z-50" aria-label="WhatsApp">
-        <MessageCircle size={26} />
-      </a>
+      {whatsappHref && (
+        <a href={whatsappHref} target="_blank" rel="noreferrer" className="fixed bottom-6 right-6 bg-[#25D366] hover:bg-[#1eb659] text-white rounded-full w-14 h-14 grid place-items-center shadow-lg z-50" aria-label="WhatsApp">
+          <MessageCircle size={26} />
+        </a>
+      )}
     </div>
   );
 }

@@ -25,8 +25,8 @@ export function ProductView({ product }: { product: Product }) {
   const categoriaNome = categoria?.name ?? "";
   const whatsapp = (settings?.site.whatsapp || "").replace(/\D/g, "");
   const telefone = settings?.site.telefone || "";
-  const mensagem = encodeURIComponent(`Olá! Tenho interesse no produto: ${product.name} (${product.price}). Poderia me passar mais informações?`);
-  const whatsappUrl = `https://wa.me/${whatsapp}?text=${mensagem}`;
+  const mensagem = encodeURIComponent(`Olá! Tenho interesse no produto: ${product.name} (${formatPriceDisplay(product)}). Poderia me passar mais informações?`);
+  const whatsappUrl = whatsapp ? `https://wa.me/${whatsapp}?text=${mensagem}` : null;
 
   const relacionados = allProducts.filter((p) => p.slug !== product.slug && p.category_id === product.category_id).slice(0, 4);
 
@@ -65,7 +65,9 @@ export function ProductView({ product }: { product: Product }) {
             {categoriaNome && <p className="text-xs uppercase tracking-widest text-[#A7144C] font-semibold">{categoriaNome}</p>}
             <h1 className="text-2xl md:text-3xl font-bold mt-1">{product.name}</h1>
             <div className="mt-3 flex items-center gap-2">
-              <div className="flex text-yellow-400">{[...Array(5)].map((_, i) => <Star key={i} size={16} fill="currentColor" />)}</div>
+              {settings?.prova_social?.mostrar_estrelas_pdp && (
+                <div className="flex text-yellow-400">{[...Array(5)].map((_, i) => <Star key={i} size={16} fill="currentColor" />)}</div>
+              )}
             </div>
 
             <div className="mt-5 flex items-baseline gap-3">
@@ -85,9 +87,11 @@ export function ProductView({ product }: { product: Product }) {
               <Link to="/checkout" search={{ slug: product.slug, qty: qtd }} className="flex-1 text-center bg-[#A7144C] hover:bg-[#8b1140] text-white px-6 py-3 rounded-full font-semibold text-sm">SOLICITAR ORÇAMENTO</Link>
             </div>
 
-            <a href={whatsappUrl} target="_blank" rel="noreferrer" className="mt-3 w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1eb659] text-white px-6 py-3 rounded-full font-semibold text-sm">
-              <MessageCircle size={18} /> Falar com um vendedor no WhatsApp
-            </a>
+            {whatsappUrl && (
+              <a href={whatsappUrl} target="_blank" rel="noreferrer" className="mt-3 w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1eb659] text-white px-6 py-3 rounded-full font-semibold text-sm">
+                <MessageCircle size={18} /> Falar com um vendedor no WhatsApp
+              </a>
+            )}
 
             <div className="mt-4 flex items-center gap-4 text-sm text-neutral-600">
               <button className="inline-flex items-center gap-2 hover:text-[#A7144C]"><Heart size={16} /> Lista de desejos</button>
@@ -149,9 +153,11 @@ export function ProductView({ product }: { product: Product }) {
         )}
       </section>
 
-      <a href={whatsappUrl} target="_blank" rel="noreferrer" className="fixed bottom-6 right-6 bg-[#25D366] hover:bg-[#1eb659] text-white rounded-full w-14 h-14 grid place-items-center shadow-lg z-50" aria-label="WhatsApp">
-        <MessageCircle size={26} />
-      </a>
+      {whatsappUrl && (
+        <a href={whatsappUrl} target="_blank" rel="noreferrer" className="fixed bottom-6 right-6 bg-[#25D366] hover:bg-[#1eb659] text-white rounded-full w-14 h-14 grid place-items-center shadow-lg z-50" aria-label="WhatsApp">
+          <MessageCircle size={26} />
+        </a>
+      )}
     </div>
   );
 }
