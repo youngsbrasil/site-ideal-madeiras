@@ -5,7 +5,7 @@ import { z } from "zod";
 import { MessageCircle, ShoppingBag, Trash2, Minus, Plus, ChevronRight, Ticket, X, Check } from "lucide-react";
 import {
   fetchProductBySlug, fetchSettings, fetchCouponByCode, validateCoupon, parsePriceBRL,
-  type Coupon,
+  formatPriceDisplay, type Coupon,
 } from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -95,7 +95,7 @@ function CheckoutPage() {
 
   const previewQuoteUrl = previewProduct
     ? `https://wa.me/${whatsapp}?text=${encodeURIComponent(
-        `Olá! Gostaria de um orçamento para: ${previewProduct.name} (${qty}x) — ${previewProduct.price}`
+        `Olá! Gostaria de um orçamento para: ${previewProduct.name} (${qty}x) — ${formatPriceDisplay(previewProduct)}`
       )}`
     : "";
 
@@ -143,7 +143,7 @@ function CheckoutPage() {
               <h2 className="text-xl font-bold mt-1">{previewProduct.name}</h2>
               <div className="mt-2 flex items-baseline gap-3">
                 {previewProduct.old_price && <span className="text-neutral-400 line-through text-sm">{previewProduct.old_price}</span>}
-                <span className="text-2xl font-bold text-[#A7144C]">{previewProduct.price}</span>
+                <span className="text-2xl font-bold text-[#A7144C]">{formatPriceDisplay(previewProduct)}</span>
               </div>
               <p className="text-sm text-neutral-600 mt-1">Quantidade: {qty}</p>
             </div>
@@ -191,7 +191,7 @@ function CheckoutPage() {
                       <Link to="/produto/$slug" params={{ slug: it.slug }} className="font-medium text-sm hover:text-[#A7144C] line-clamp-2">
                         {it.name}
                       </Link>
-                      <div className="mt-1 text-[#A7144C] font-bold">{it.price}</div>
+                      <div className="mt-1 text-[#A7144C] font-bold">{it.price === 'Sob consulta' ? 'Sob consulta' : it.price}</div>
                     </div>
                     <div className="flex items-center border border-neutral-300 rounded-full">
                       <button onClick={() => updateQty(it.slug, it.qty - 1)} className="w-9 h-9 grid place-items-center text-neutral-600 hover:text-[#A7144C]" aria-label="Diminuir">
