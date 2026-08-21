@@ -389,12 +389,18 @@ export async function fetchAnnouncements(): Promise<Announcement[]> {
   return (data ?? []) as unknown as Announcement[];
 }
 
-export async function fetchSettings(): Promise<{ site: SiteSettings; topbar: TopbarSettings }> {
+export async function fetchSettings(): Promise<any> {
   const { data, error } = await supabase.from("site_settings").select("*");
   if (error) throw error;
   const map: Record<string, any> = {};
   (data ?? []).forEach((r: any) => (map[r.key] = r.value));
-  return { site: map.site ?? {}, topbar: map.topbar ?? {} };
+  return {
+    site: map.site ?? {},
+    topbar: map.topbar ?? {},
+    lojas: map.lojas ?? [],
+    prova_social: map.prova_social ?? {},
+    cores: map.cores ?? {},
+  };
 }
 
 export function slugify(s: string) {

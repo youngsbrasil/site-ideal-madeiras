@@ -25,8 +25,8 @@ export function ProductView({ product }: { product: Product }) {
   const categoriaNome = categoria?.name ?? "";
   const whatsapp = (settings?.site.whatsapp || "").replace(/\D/g, "");
   const telefone = settings?.site.telefone || "";
-  const mensagem = encodeURIComponent(`Olá! Tenho interesse no produto: ${product.name} (${product.price}). Poderia me passar mais informações?`);
-  const whatsappUrl = `https://wa.me/${whatsapp}?text=${mensagem}`;
+  const mensagem = encodeURIComponent(`Olá! Tenho interesse no produto: ${product.name} (${formatPriceDisplay(product)}). Poderia me passar mais informações?`);
+  const whatsappUrl = whatsapp ? `https://wa.me/${whatsapp}?text=${mensagem}` : null;
 
   const relacionados = allProducts.filter((p) => p.slug !== product.slug && p.category_id === product.category_id).slice(0, 4);
 
@@ -65,7 +65,9 @@ export function ProductView({ product }: { product: Product }) {
             {categoriaNome && <p className="text-xs uppercase tracking-widest text-[#A7144C] font-semibold">{categoriaNome}</p>}
             <h1 className="text-2xl md:text-3xl font-bold mt-1">{product.name}</h1>
             <div className="mt-3 flex items-center gap-2">
-              <div className="flex text-yellow-400">{[...Array(5)].map((_, i) => <Star key={i} size={16} fill="currentColor" />)}</div>
+              {settings?.prova_social?.mostrar_estrelas_pdp && (
+                <div className="flex text-yellow-400">{[...Array(5)].map((_, i) => <Star key={i} size={16} fill="currentColor" />)}</div>
+              )}
             </div>
 
             <div className="mt-5 flex items-baseline gap-3">
