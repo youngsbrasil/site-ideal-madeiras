@@ -287,6 +287,13 @@ export async function fetchCategories(): Promise<Category[]> {
   const { data, error } = await supabase.from("categories").select("*").order("sort_order");
   if (error) throw error;
   return (data ?? []) as Category[];
+export function formatPriceDisplay(p: Product | null | any): string {
+  if (!p) return "";
+  if (p.availability === "sob_consulta") return "Sob consulta";
+  if (p.price_value && p.price_value > 0) {
+    return p.price_value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  }
+  return p.price || "Sob consulta";
 }
 
 export async function fetchProducts(): Promise<Product[]> {
