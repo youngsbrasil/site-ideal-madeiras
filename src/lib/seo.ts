@@ -80,7 +80,8 @@ export function breadcrumbJsonLd(items: { name: string; url: string }[]) {
 }
 
 /** LocalBusiness — 3 lojas Ideal Madeiras na Rua do Gasômetro, Brás/SP */
-export function localBusinessJsonLd() {
+export function localBusinessJsonLd(settings?: any) {
+  const s = settings?.site;
   const base = {
     "@context": "https://schema.org",
     "@type": "HomeGoodsStore",
@@ -96,28 +97,31 @@ export function localBusinessJsonLd() {
       postalCode: "03004-001",
       addressCountry: "BR",
     },
-    telephone: "+55-11-4200-0000", // Will be dynamic in components
-    vatID: "00.000.000/0000-00", // Placeholder to be replaced by dynamic data if available
+    telephone: s?.telefone || "+55-11-4200-0000",
+    vatID: s?.cnpj || "00.000.000/0000-00",
   };
   
   return [
     {
       ...base,
       "@id": `${SITE_URL}#loja-1`,
-      name: `${SITE_NAME} - Loja 1`,
-      address: { ...base.address, streetAddress: "Rua do Gasômetro, 500" },
+      name: s?.nome_loja_1 || `${SITE_NAME} - Loja 1`,
+      address: { ...base.address, streetAddress: s?.endereco_loja_1 || "Rua do Gasômetro, 500" },
+      telephone: s?.telefone_loja_1,
     },
     {
       ...base,
       "@id": `${SITE_URL}#loja-2`,
-      name: `${SITE_NAME} - Loja 2`,
-      address: { ...base.address, streetAddress: "Rua do Gasômetro, 600" },
+      name: s?.nome_loja_2 || `${SITE_NAME} - Loja 2`,
+      address: { ...base.address, streetAddress: s?.endereco_loja_2 || "Rua do Gasômetro, 600" },
+      telephone: s?.telefone_loja_2,
     },
     {
       ...base,
       "@id": `${SITE_URL}#loja-3`,
-      name: `${SITE_NAME} - Loja 3`,
-      address: { ...base.address, streetAddress: "Rua do Gasômetro, 700" },
+      name: s?.nome_loja_3 || `${SITE_NAME} - Loja 3`,
+      address: { ...base.address, streetAddress: s?.endereco_loja_3 || "Rua do Gasômetro, 700" },
+      telephone: s?.telefone_loja_3,
     },
   ];
 }
