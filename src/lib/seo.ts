@@ -88,43 +88,36 @@ export function localBusinessJsonLd() {
     image: `${SITE_URL}/favicon.ico`,
     url: SITE_URL,
     priceRange: "$$",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Rua do Gasômetro",
+      addressLocality: "São Paulo",
+      addressRegion: "SP",
+      postalCode: "03004-001",
+      addressCountry: "BR",
+    },
+    telephone: "+55-11-4200-0000", // Will be dynamic in components
+    vatID: "00.000.000/0000-00", // Placeholder to be replaced by dynamic data if available
   };
+  
   return [
     {
       ...base,
       "@id": `${SITE_URL}#loja-1`,
       name: `${SITE_NAME} - Loja 1`,
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "Rua do Gasômetro",
-        addressLocality: "São Paulo",
-        addressRegion: "SP",
-        addressCountry: "BR",
-      },
+      address: { ...base.address, streetAddress: "Rua do Gasômetro, 500" },
     },
     {
       ...base,
       "@id": `${SITE_URL}#loja-2`,
       name: `${SITE_NAME} - Loja 2`,
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "Rua do Gasômetro",
-        addressLocality: "São Paulo",
-        addressRegion: "SP",
-        addressCountry: "BR",
-      },
+      address: { ...base.address, streetAddress: "Rua do Gasômetro, 600" },
     },
     {
       ...base,
       "@id": `${SITE_URL}#loja-3`,
       name: `${SITE_NAME} - Loja 3`,
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "Rua do Gasômetro",
-        addressLocality: "São Paulo",
-        addressRegion: "SP",
-        addressCountry: "BR",
-      },
+      address: { ...base.address, streetAddress: "Rua do Gasômetro, 700" },
     },
   ];
 }
