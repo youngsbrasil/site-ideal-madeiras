@@ -4,9 +4,11 @@ import { useMemo, useState } from "react";
 import { z } from "zod";
 import { MessageCircle, ShoppingBag, Trash2, Minus, Plus, ChevronRight, Ticket, X, Check } from "lucide-react";
 import {
-  fetchProductBySlug, fetchSettings, fetchCouponByCode, validateCoupon, parsePriceBRL,
+  fetchProductBySlug, fetchCouponByCode, validateCoupon, parsePriceBRL,
   formatPriceDisplay, type Coupon,
 } from "@/lib/site-data";
+import { useSiteSettings } from "@/routes/__root";
+
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
 import {
@@ -44,14 +46,14 @@ function CheckoutPage() {
   const [couponError, setCouponError] = useState<string | null>(null);
   const [appliedCoupon, setAppliedCoupon] = useState<Coupon | null>(null);
 
-  const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
+  const settings = useSiteSettings();
   const { data: previewProduct } = useQuery({
     queryKey: ["product", slug],
     queryFn: () => (slug ? fetchProductBySlug(slug) : Promise.resolve(null)),
     enabled: !!slug,
   });
 
-  const whatsapp = (settings?.site.whatsapp || "5511942000000").replace(/\D/g, "");
+  const whatsapp = (settings?.site?.whatsapp || "5511942000000").replace(/\D/g, "");
 
   const subtotal = useMemo(
     () => items.reduce((s, i) => s + parsePriceBRL(i.price) * i.qty, 0),

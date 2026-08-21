@@ -1,5 +1,6 @@
 import { createFileRoute, notFound, Link } from "@tanstack/react-router";
-import { fetchCategories, fetchProductBySlug, fetchSettings, productPath, type Product, type Category } from "@/lib/site-data";
+import { fetchCategories, fetchProductBySlug, productPath, type Product, type Category } from "@/lib/site-data";
+
 import { ProductView } from "@/components/ProductView";
 import {
   productMetaTitle,
@@ -18,15 +19,15 @@ export const Route = createFileRoute("/$")({
     const segments = splat.split("/").map((s) => decodeURIComponent(s)).filter(Boolean);
     const slug = segments[segments.length - 1];
     if (!slug) throw notFound();
-    const [product, categories, settings] = await Promise.all([
+    const [product, categories] = await Promise.all([
       fetchProductBySlug(slug),
       fetchCategories(),
-      fetchSettings()
     ]);
+
     if (!product) throw notFound();
-    return { product, categories, settings };
+    return { product, categories };
   },
-  head: ({ loaderData }) => {
+  head: ({ loaderData, context }) => {
     if (!loaderData) {
       return { meta: [{ title: "Produto não encontrado - Ideal Madeiras" }, { name: "robots", content: "noindex" }] };
     }
@@ -57,7 +58,7 @@ export const Route = createFileRoute("/$")({
         { type: "application/ld+json", children: JSON.stringify(productLd) },
         { type: "application/ld+json", children: JSON.stringify(crumbs) },
         { type: "application/ld+json", children: JSON.stringify(organizationJsonLd()) },
-        { type: "application/ld+json", children: JSON.stringify(localBusinessJsonLd(loaderData.settings)) },
+        { type: "application/ld+json", children: JSON.stringify(localBusinessJsonLd((context as any).settings)) },
       ],
     };
   },

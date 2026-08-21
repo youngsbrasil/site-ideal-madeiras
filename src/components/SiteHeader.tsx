@@ -2,14 +2,16 @@ import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { Search, User, Heart, ShoppingCart, Phone, Facebook, Instagram, Tag, Package as PackageIcon, ChevronLeft, ChevronRight } from "lucide-react";
-import { fetchCategories, fetchSettings, fetchAnnouncements, proxyImg, productPath } from "@/lib/site-data";
+import { fetchCategories, fetchAnnouncements, proxyImg, productPath } from "@/lib/site-data";
+import { useSiteSettings } from "@/routes/__root";
+
 import { fetchSuggestions, type Suggestion } from "@/lib/search";
 
 const LOGO = "https://idealmadeiras.com.br/wp-content/uploads/2024/09/logo-ideal-madeiras.png";
 
 export function SiteHeader() {
   const { data: categorias = [] } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
-  const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
+  const settings = useSiteSettings();
   const { data: announcements = [] } = useQuery({ queryKey: ["announcements"], queryFn: fetchAnnouncements });
   const navigate = useNavigate();
   const [q, setQ] = useState("");
@@ -46,8 +48,9 @@ export function SiteHeader() {
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
 
-  const telefone = settings?.site.telefone || "";
-  const whatsapp = (settings?.site.whatsapp || "").replace(/\D/g, "");
+  const telefone = settings?.site?.telefone || "";
+  const whatsapp = (settings?.site?.whatsapp || "").replace(/\D/g, "");
+
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
