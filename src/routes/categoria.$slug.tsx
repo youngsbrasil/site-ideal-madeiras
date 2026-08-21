@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { fetchCategories, fetchSettings, productPath, formatPriceDisplay, type Product, type Category } from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
-import { categoryMetaTitle, categoryMetaDescription, absoluteUrl, breadcrumbJsonLd, SITE_NAME } from "@/lib/seo";
+import { categoryMetaTitle, categoryMetaDescription, absoluteUrl, breadcrumbJsonLd, organizationJsonLd, localBusinessJsonLd, SITE_NAME } from "@/lib/seo";
 
 export const Route = createFileRoute("/categoria/$slug")({
   loader: async ({ params }) => {
@@ -33,7 +33,10 @@ export const Route = createFileRoute("/categoria/$slug")({
       woods: Array.isArray(p.woods) ? p.woods : [],
       finishes: Array.isArray(p.finishes) ? p.finishes : [],
     })) as Product[];
-    return { category: cat as Category, products };
+    const { data: settings } = await supabase.from("site_settings").select("*");
+    const settingsMap: any = {};
+    (settings ?? []).forEach((r: any) => (settingsMap[r.key] = r.value));
+    return { category: cat as Category, products, settings: { site: settingsMap.site ?? {} } };
   },
   head: ({ loaderData, params }) => {
     if (!loaderData) {
@@ -60,7 +63,11 @@ export const Route = createFileRoute("/categoria/$slug")({
         ...(img ? [{ property: "og:image", content: img }] : []),
       ],
       links: [{ rel: "canonical", href: url }],
-      scripts: [{ type: "application/ld+json", children: JSON.stringify(crumbs) }],
+      script: [
+        { type: "application/ld+json", children: JSON.stringify(crumbs) },
+        { type: "application/ld+json", children: JSON.stringify(organizationJsonLd()) },
+        { type: "application/ld+json", children: JSON.stringify(localBusinessJsonLd(loaderData.settings)) },
+      ],
     };
   },
   component: CategoryPage,
