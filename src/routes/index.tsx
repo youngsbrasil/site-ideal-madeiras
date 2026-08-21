@@ -8,8 +8,9 @@ import {
 } from "lucide-react";
 import {
   fetchCategories, fetchProducts, fetchBanners, fetchSettings, fetchShoppableScenes, proxyImg, productPath,
-  formatPriceDisplay, type Product, type Banner, type ShoppableScene,
+  formatPriceDisplay, type Product, type Banner, type ShoppableScene, type Category
 } from "@/lib/site-data";
+import { localBusinessJsonLd, organizationJsonLd } from "@/lib/seo";
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
 import { CouponStrip } from "@/components/CouponStrip";
