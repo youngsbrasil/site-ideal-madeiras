@@ -87,9 +87,10 @@ export function localBusinessJsonLd(settings?: any) {
 
   if (!lojas || lojas.length === 0) return null;
 
-
   return lojas.map((loja: any) => {
-    const telephone = loja.telefone ? `+55${loja.telefone.replace(/\D/g, "")}` : undefined;
+    // Format to E.164: +55 (DDD) XXXX-XXXX -> +55DDDX...
+    const cleanPhone = (loja.telefone || "").replace(/\D/g, "");
+    const telephone = cleanPhone ? `+55${cleanPhone}` : undefined;
     
     const schema: any = {
       "@context": "https://schema.org",
