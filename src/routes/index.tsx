@@ -119,7 +119,7 @@ function Home() {
     const whatsapp = settings?.site.whatsapp || "";
     const telefone = settings?.site.telefone || "";
     const email = settings?.site.email || "";
-  const whatsappHref = `https://wa.me/${whatsapp.replace(/\D/g, "")}`;
+  const whatsappHref = whatsapp ? `https://wa.me/${whatsapp.replace(/\D/g, "")}` : "#";
   const depoimentos = settings?.site.depoimentos ?? fallbackDepoimentos;
 
   return (
@@ -386,8 +386,8 @@ function Home() {
           <div className="mx-auto max-w-7xl px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] text-neutral-400">
             <div>Formas de Pagamento aceitas</div>
             <div className="flex gap-3 opacity-70">
-              <a href="#" aria-label="Facebook" className="hover:text-white"><Facebook size={14} /></a>
-              <a href="#" aria-label="Instagram" className="hover:text-white"><Instagram size={14} /></a>
+              {settings?.site.facebook && <a href={settings.site.facebook} target="_blank" rel="noreferrer" aria-label="Facebook" className="hover:text-white"><Facebook size={14} /></a>}
+              {settings?.site.instagram && <a href={settings.site.instagram} target="_blank" rel="noreferrer" aria-label="Instagram" className="hover:text-white"><Instagram size={14} /></a>}
             </div>
           </div>
           <div className="mx-auto max-w-7xl px-4 pb-4 text-center text-[10px] text-neutral-500">
