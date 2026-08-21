@@ -53,7 +53,7 @@ function CheckoutPage() {
     enabled: !!slug,
   });
 
-  const whatsapp = (settings?.site?.whatsapp || "5511942000000").replace(/\D/g, "");
+  const whatsapp = (settings?.site?.whatsapp || "").replace(/\D/g, "");
 
   const subtotal = useMemo(
     () => items.reduce((s, i) => s + parsePriceBRL(i.price) * i.qty, 0),
