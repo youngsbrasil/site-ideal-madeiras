@@ -15,7 +15,8 @@ import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
 import { CouponStrip } from "@/components/CouponStrip";
 import { ReviewsWidget } from "@/components/ReviewsWidget";
-import { useSiteSettings } from "./__root";
+import { useSiteSettings } from "@/routes/__root";
+
 
 import { useQuery as useRQ } from "@tanstack/react-query";
 import { fetchPublicReviews } from "@/lib/site-data";
@@ -68,9 +69,9 @@ function HeroCarousel({ banners }: { banners: Banner[] }) {
 }
 
 export const Route = createFileRoute("/")({
-  head: ({ context }) => {
-    // TanStack Start might not have context available in head yet, but settings are now in root
+  head: () => {
     return {
+
 
       meta: [
         { title: "Lojas Ideal Madeiras — Portas, Janelas, Fechaduras" },
@@ -417,11 +418,6 @@ function Home() {
         </div>
       </footer>
 
-      {whatsappHref && (
-        <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="fixed bottom-6 right-6 bg-[#25D366] hover:bg-[#1eb659] text-white rounded-full w-14 h-14 grid place-items-center shadow-lg z-50" aria-label="WhatsApp">
-          <MessageCircle size={26} />
-        </a>
-      )}
     </div>
   );
 }
@@ -462,14 +458,15 @@ function SectionTitle({ title, subtitle, center }: { title: string; subtitle?: s
 
 function ProductCard({ p, compact, showOferta, categorias: catsProp }: { p: Product; compact?: boolean; showOferta?: boolean; categorias?: any[] }) {
   const { data: categoriasQ = [] } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories, enabled: !catsProp });
-  const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
+  const settings = useSiteSettings();
   const categorias = catsProp ?? categoriasQ;
   const to = productPath(p, categorias) as any;
   const categoria = categorias.find((c: any) => c.id === p.category_id);
   const catNome = categoria?.name ?? "";
-  const whatsapp = (settings?.site.whatsapp || "").replace(/\D/g, "");
+  const whatsapp = (settings?.site?.whatsapp || "").replace(/\D/g, "");
   const waMsg = encodeURIComponent(`Olá! Tenho interesse no produto: ${p.name} (${formatPriceDisplay(p)}). Poderia me passar mais informações?`);
   const waUrl = whatsapp ? `https://wa.me/${whatsapp}?text=${waMsg}` : null;
+
   const descricao = p.description || "Fale com um de nossos vendedores e receba um orçamento personalizado com condições especiais.";
 
   return (

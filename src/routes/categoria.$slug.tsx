@@ -7,7 +7,7 @@ import { fetchCategories, productPath, formatPriceDisplay, type Product, type Ca
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
 import { categoryMetaTitle, categoryMetaDescription, absoluteUrl, breadcrumbJsonLd, organizationJsonLd, localBusinessJsonLd, SITE_NAME } from "@/lib/seo";
-import { useSiteSettings } from "../__root";
+import { useSiteSettings } from "@/routes/__root";
 
 
 export const Route = createFileRoute("/categoria/$slug")({
@@ -409,11 +409,6 @@ function CategoryPage() {
         </div>
       </section>
 
-      {whatsappHref && (
-        <a href={whatsappHref} target="_blank" rel="noreferrer" className="fixed bottom-6 right-6 bg-[#25D366] hover:bg-[#1eb659] text-white rounded-full w-14 h-14 grid place-items-center shadow-lg z-50" aria-label="WhatsApp">
-          <MessageCircle size={26} />
-        </a>
-      )}
     </div>
   );
 }
