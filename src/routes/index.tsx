@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 import {
   fetchCategories, fetchProducts, fetchBanners, fetchSettings, fetchShoppableScenes, proxyImg, productPath,
-  type Product, type Banner, type ShoppableScene,
+  formatPriceDisplay, type Product, type Banner, type ShoppableScene,
 } from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -219,7 +219,7 @@ function Home() {
               <div className="text-sm font-semibold text-center">{oferta.name}</div>
               <div className="flex items-center justify-center gap-2 mt-2">
                 {oferta.old_price && <span className="text-xs text-neutral-400 line-through">{oferta.old_price}</span>}
-                <span className="font-bold" style={{ color: ORANGE }}>{oferta.price}</span>
+                <span className="font-bold" style={{ color: ORANGE }}>{formatPriceDisplay(oferta)}</span>
               </div>
               <Link to={productPath(oferta, categorias) as any} className="mt-3 block text-center border border-neutral-800 text-neutral-800 hover:bg-neutral-800 hover:text-white text-xs font-semibold py-2 rounded transition-colors">
                 QUICK VIEW
@@ -528,7 +528,7 @@ function ShoppablePopularBlock({
           {shown.main_image && <SupabaseImage src={shown.main_image} alt={shown.name} className="w-full h-full object-contain p-4" />}
         </div>
         <div className="text-sm font-semibold text-center">{shown.name}</div>
-        <div className="text-center mt-2 font-bold" style={{ color: ORANGE }}>{shown.price}</div>
+        <div className="text-center mt-2 font-bold" style={{ color: ORANGE }}>{formatPriceDisplay(shown)}</div>
         <Link
           to={productPath(shown, categorias) as any}
           className="mt-3 block text-center border border-neutral-800 text-neutral-800 hover:bg-neutral-800 hover:text-white text-xs font-semibold py-2 rounded transition-colors"

@@ -32,7 +32,7 @@ export const Route = createFileRoute("/categoria/$slug")({
       types: Array.isArray(p.types) ? p.types : [],
       woods: Array.isArray(p.woods) ? p.woods : [],
       finishes: Array.isArray(p.finishes) ? p.finishes : [],
-    })) as Product[];
+    })).map(p => ({ ...p, price: (p as any).availability === 'sob_consulta' ? 'Sob consulta' : p.price })) as Product[];
     return { category: cat as Category, products };
   },
   head: ({ loaderData, params }) => {
@@ -346,7 +346,9 @@ function CategoryPage() {
                         <h3 className="text-sm font-medium line-clamp-2 min-h-[2.5rem]">{p.name}</h3>
                         <div className="mt-2 flex items-baseline gap-2">
                           {p.old_price && <span className="text-xs text-neutral-400 line-through">{p.old_price}</span>}
-                          <span className="font-bold text-[#A7144C]">{p.price}</span>
+                          <span className="font-bold text-[#A7144C]">
+                            {p.availability === 'sob_consulta' ? 'Sob consulta' : (p.price_value && p.price_value > 0 ? p.price_value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : p.price)}
+                          </span>
                         </div>
                       </div>
                     </Link>
