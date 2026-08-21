@@ -12,6 +12,8 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SITE_NAME, SITE_URL, organizationJsonLd, localBusinessJsonLd } from "@/lib/seo";
+import { fetchSettings } from "@/lib/site-data";
+
 
 function NotFoundComponent() {
   return (
@@ -74,7 +76,14 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
+  loader: async () => {
+    const settings = await fetchSettings();
+    return { settings };
+  },
+  head: ({ loaderData }) => {
+    const settings = loaderData?.settings;
+    return {
+
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
@@ -93,9 +102,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     ],
     scripts: [
       { type: "application/ld+json", children: JSON.stringify(organizationJsonLd()) },
-      { type: "application/ld+json", children: JSON.stringify(localBusinessJsonLd()) },
+      { type: "application/ld+json", children: JSON.stringify(localBusinessJsonLd(settings)) },
     ],
   }),
+
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
@@ -121,8 +131,13 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
     </QueryClientProvider>
   );
 }
+
+export function useSiteSettings() {
+  const { settings } = Route.useLoaderData();
+  return settings;
+}
+
