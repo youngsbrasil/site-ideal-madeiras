@@ -7,7 +7,7 @@ import {
   Truck, CreditCard, ShieldCheck, Mail as MailIcon,
 } from "lucide-react";
 import {
-  fetchCategories, fetchProducts, fetchBanners, fetchSettings, fetchShoppableScenes, proxyImg, productPath,
+  fetchCategories, fetchProducts, fetchBanners, fetchShoppableScenes, proxyImg, productPath,
   formatPriceDisplay, type Product, type Banner, type ShoppableScene, type Category
 } from "@/lib/site-data";
 import { localBusinessJsonLd, organizationJsonLd } from "@/lib/seo";
@@ -15,6 +15,9 @@ import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
 import { CouponStrip } from "@/components/CouponStrip";
 import { ReviewsWidget } from "@/components/ReviewsWidget";
+import { useSiteSettings } from "@/routes/__root";
+
+
 import { useQuery as useRQ } from "@tanstack/react-query";
 import { fetchPublicReviews } from "@/lib/site-data";
 
@@ -66,12 +69,10 @@ function HeroCarousel({ banners }: { banners: Banner[] }) {
 }
 
 export const Route = createFileRoute("/")({
-  loader: async () => {
-    return { settings: await fetchSettings() };
-  },
-  head: ({ loaderData }) => {
-    const s = (loaderData as any)?.settings;
+  head: () => {
     return {
+
+
       meta: [
         { title: "Lojas Ideal Madeiras — Portas, Janelas, Fechaduras" },
         { name: "description", content: "Loja de Portas, Janelas, Ferragens e Fechaduras em São Paulo. Portas maciças, pivotantes, fechaduras digitais, puxadores, pisos e muito mais." },
@@ -83,10 +84,11 @@ export const Route = createFileRoute("/")({
       ],
       script: [
         { type: "application/ld+json", children: JSON.stringify(organizationJsonLd()) },
-        { type: "application/ld+json", children: JSON.stringify(localBusinessJsonLd(s)) },
+        // localBusinessJsonLd will be rendered by root, but we could add more specific ones here if needed
       ],
     };
   },
+
   component: Home,
 });
 
@@ -105,7 +107,8 @@ function Home() {
   const { data: categorias = [] } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
   const { data: produtos = [] } = useQuery({ queryKey: ["products"], queryFn: fetchProducts });
   const { data: banners = [] } = useQuery({ queryKey: ["banners"], queryFn: fetchBanners });
-  const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
+  const settings = useSiteSettings();
+
   const { data: shoppable = [] } = useQuery({ queryKey: ["shoppable-scenes"], queryFn: () => fetchShoppableScenes(true) });
 
   const destaques = produtos.filter((p) => p.featured).slice(0, 5);
@@ -116,11 +119,12 @@ function Home() {
   const indicados = produtos.slice(5, 10);
   const campeoes = produtos.filter((p) => p.most_viewed).slice(0, 5);
 
-    const whatsapp = settings?.site.whatsapp || "";
-    const telefone = settings?.site.telefone || "";
-    const email = settings?.site.email || "";
+    const whatsapp = settings?.site?.whatsapp || "";
+    const telefone = settings?.site?.telefone || "";
+    const email = settings?.site?.email || "";
   const whatsappHref = whatsapp ? `https://wa.me/${whatsapp}` : null;
-  const depoimentos = settings?.site.depoimentos ?? fallbackDepoimentos;
+  const depoimentos = settings?.site?.depoimentos ?? fallbackDepoimentos;
+
 
   return (
     <div className="min-h-screen bg-white text-neutral-900">
@@ -386,17 +390,6 @@ function Home() {
                       <span>{l.telefone}</span>
                     </div>
                   )}
-                  {l.whatsapp && (
-                    <a 
-                      href={`https://wa.me/${l.whatsapp.replace(/\D/g, "")}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1 mt-1 hover:text-white transition-colors"
-                    >
-                      <MessageCircle size={11} style={{ color: ORANGE }} />
-                      <span>Compre pelo WhatsApp</span>
-                    </a>
-                  )}
                 </div>
             ))}
           </div>
@@ -405,21 +398,17 @@ function Home() {
           <div className="mx-auto max-w-7xl px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] text-neutral-400">
             <div>Formas de Pagamento aceitas</div>
             <div className="flex gap-3 opacity-70">
-              {settings?.site.facebook && <a href={settings.site.facebook} target="_blank" rel="noreferrer" aria-label="Facebook" className="hover:text-white"><Facebook size={14} /></a>}
-              {settings?.site.instagram && <a href={settings.site.instagram} target="_blank" rel="noreferrer" aria-label="Instagram" className="hover:text-white"><Instagram size={14} /></a>}
+              {settings?.site?.facebook && <a href={settings.site.facebook} target="_blank" rel="noreferrer" aria-label="Facebook" className="hover:text-white"><Facebook size={14} /></a>}
+              {settings?.site?.instagram && <a href={settings.site.instagram} target="_blank" rel="noreferrer" aria-label="Instagram" className="hover:text-white"><Instagram size={14} /></a>}
             </div>
           </div>
           <div className="mx-auto max-w-7xl px-4 pb-4 text-center text-[10px] text-neutral-500">
-            © {new Date().getFullYear()} {settings?.site.razao_social || "Lojas Ideal Madeiras"}{settings?.site.cnpj ? ` · CNPJ: ${settings.site.cnpj}` : ""} · Todos os direitos reservados.
+            © {new Date().getFullYear()} {settings?.site?.razao_social || "Lojas Ideal Madeiras"}{settings?.site?.cnpj ? ` · CNPJ: ${settings.site.cnpj}` : ""} · Todos os direitos reservados.
+
           </div>
         </div>
       </footer>
 
-      {whatsappHref && (
-        <a href={whatsappHref} target="_blank" rel="noopener noreferrer" className="fixed bottom-6 right-6 bg-[#25D366] hover:bg-[#1eb659] text-white rounded-full w-14 h-14 grid place-items-center shadow-lg z-50" aria-label="WhatsApp">
-          <MessageCircle size={26} />
-        </a>
-      )}
     </div>
   );
 }
@@ -460,14 +449,15 @@ function SectionTitle({ title, subtitle, center }: { title: string; subtitle?: s
 
 function ProductCard({ p, compact, showOferta, categorias: catsProp }: { p: Product; compact?: boolean; showOferta?: boolean; categorias?: any[] }) {
   const { data: categoriasQ = [] } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories, enabled: !catsProp });
-  const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
+  const settings = useSiteSettings();
   const categorias = catsProp ?? categoriasQ;
   const to = productPath(p, categorias) as any;
   const categoria = categorias.find((c: any) => c.id === p.category_id);
   const catNome = categoria?.name ?? "";
-  const whatsapp = (settings?.site.whatsapp || "").replace(/\D/g, "");
+  const whatsapp = (settings?.site?.whatsapp || "").replace(/\D/g, "");
   const waMsg = encodeURIComponent(`Olá! Tenho interesse no produto: ${p.name} (${formatPriceDisplay(p)}). Poderia me passar mais informações?`);
   const waUrl = whatsapp ? `https://wa.me/${whatsapp}?text=${waMsg}` : null;
+
   const descricao = p.description || "Fale com um de nossos vendedores e receba um orçamento personalizado com condições especiais.";
 
   return (

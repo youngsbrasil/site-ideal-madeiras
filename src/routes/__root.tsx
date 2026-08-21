@@ -12,6 +12,8 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SITE_NAME, SITE_URL, organizationJsonLd, localBusinessJsonLd } from "@/lib/seo";
+import { fetchSettings } from "@/lib/site-data";
+
 
 function NotFoundComponent() {
   return (
@@ -74,33 +76,41 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
 }
 
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
-  head: () => ({
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: `${SITE_NAME} - Portas, Pisos e Madeiras` },
-      { name: "description", content: `${SITE_NAME}: portas, pisos, decks e madeiras com entrega para todo o Brasil. 3 lojas na Rua do Gasômetro, Brás/SP.` },
-      { property: "og:site_name", content: SITE_NAME },
-      { property: "og:title", content: SITE_NAME },
-      { property: "og:description", content: `Portas, pisos, decks e madeiras.` },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: SITE_URL },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
-    ],
-    scripts: [
-      { type: "application/ld+json", children: JSON.stringify(organizationJsonLd()) },
-      { type: "application/ld+json", children: JSON.stringify(localBusinessJsonLd()) },
-    ],
-  }),
+  loader: async () => {
+    const settings = await fetchSettings();
+    return { settings };
+  },
+  head: ({ loaderData }) => {
+    const settings = (loaderData as any)?.settings;
+    return {
+      meta: [
+        { charSet: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { title: `${SITE_NAME} - Portas, Pisos e Madeiras` },
+        { name: "description", content: `${SITE_NAME}: portas, pisos, decks e madeiras com entrega para todo o Brasil. 3 lojas na Rua do Gasômetro, Brás/SP.` },
+        { property: "og:site_name", content: SITE_NAME },
+        { property: "og:title", content: SITE_NAME },
+        { property: "og:description", content: `Portas, pisos, decks e madeiras.` },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: SITE_URL },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links: [
+        { rel: "stylesheet", href: appCss },
+        { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      ],
+      scripts: [
+        { type: "application/ld+json", children: JSON.stringify(organizationJsonLd()) },
+        { type: "application/ld+json", children: JSON.stringify(localBusinessJsonLd(settings)) },
+      ],
+    };
+  },
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
+
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
@@ -121,8 +131,13 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
     </QueryClientProvider>
   );
 }
+
+export function useSiteSettings() {
+  const { settings } = Route.useLoaderData();
+  return settings;
+}
+

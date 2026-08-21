@@ -6,9 +6,11 @@ import {
 } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import {
-  fetchProducts, fetchSettings, fetchCategories, productPath,
+  fetchProducts, fetchCategories, productPath,
   formatPriceDisplay, type Product,
 } from "@/lib/site-data";
+import { useSiteSettings } from "@/routes/__root";
+
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
 
@@ -17,13 +19,13 @@ export function ProductView({ product }: { product: Product }) {
   const [imgAtiva, setImgAtiva] = useState(galeria[0] ?? "");
   const [qtd, setQtd] = useState(1);
 
-  const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
+  const settings = useSiteSettings();
   const { data: allProducts = [] } = useQuery({ queryKey: ["products"], queryFn: fetchProducts });
   const { data: categorias = [] } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
 
   const categoria = categorias.find((c) => c.id === product.category_id);
   const categoriaNome = categoria?.name ?? "";
-  const whatsapp = (settings?.site.whatsapp || "").replace(/\D/g, "");
+  const whatsapp = (settings?.site?.whatsapp || "").replace(/\D/g, "");
   const telefone = settings?.site.telefone || "";
   const mensagem = encodeURIComponent(`Olá! Tenho interesse no produto: ${product.name} (${formatPriceDisplay(product)}). Poderia me passar mais informações?`);
   const whatsappUrl = whatsapp ? `https://wa.me/${whatsapp}?text=${mensagem}` : null;
@@ -68,6 +70,7 @@ export function ProductView({ product }: { product: Product }) {
               {settings?.prova_social?.mostrar_estrelas_pdp && (
                 <div className="flex text-yellow-400">{[...Array(5)].map((_, i) => <Star key={i} size={16} fill="currentColor" />)}</div>
               )}
+
             </div>
 
             <div className="mt-5 flex items-baseline gap-3">
@@ -153,11 +156,6 @@ export function ProductView({ product }: { product: Product }) {
         )}
       </section>
 
-      {whatsappUrl && (
-        <a href={whatsappUrl} target="_blank" rel="noreferrer" className="fixed bottom-6 right-6 bg-[#25D366] hover:bg-[#1eb659] text-white rounded-full w-14 h-14 grid place-items-center shadow-lg z-50" aria-label="WhatsApp">
-          <MessageCircle size={26} />
-        </a>
-      )}
     </div>
   );
 }

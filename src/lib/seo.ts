@@ -82,10 +82,11 @@ export function breadcrumbJsonLd(items: { name: string; url: string }[]) {
 /** LocalBusiness — 3 lojas Ideal Madeiras na Rua do Gasômetro, Brás/SP */
 export function localBusinessJsonLd(settings?: any) {
   const lojas = settings?.lojas || [];
-  const cnpj = settings?.site.cnpj;
+  const cnpj = settings?.site?.cnpj;
   const logo = "https://idealmadeiras.com.br/wp-content/uploads/2024/09/logo-ideal-madeiras.png";
 
-  if (lojas.length === 0) return null;
+  if (!lojas || lojas.length === 0) return null;
+
 
   return lojas.map((loja: any) => {
     const telephone = loja.telefone ? `+55${loja.telefone.replace(/\D/g, "")}` : undefined;
