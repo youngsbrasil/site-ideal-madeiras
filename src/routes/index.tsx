@@ -79,7 +79,7 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const depoimentos = [
+  const depoimentos = settings?.site.depoimentos ?? [
   { nome: "Anderson Vieira", texto: "A Ideal Madeiras é um ótimo lugar para comprar os primeiros portas da minha casa. Tive ótimas orientações." },
   { nome: "Eliana Sampaio", texto: "Segunda vez que faço compras de portas nessa loja, nunca mudaram o atendimento, sempre nos atenderam bem." },
   { nome: "Sandra Karito", texto: "Gisele fez um atendimento nota MIL. Voltarei a comprar com certeza." },
@@ -361,11 +361,11 @@ function Home() {
               { l: "LOJA 1", e: "Rua do Gasômetro, 350 - Brás - SP", t: "(11) 99400-0507" },
               { l: "LOJA 2", e: "Rua do Gasômetro, 284 - Brás - SP", t: "(11) 3326-3197" },
               { l: "LOJA 3", e: "Rua do Gasômetro, 306 - Brás - SP", t: "(11) 98801-3370" },
-            ].map((l) => (
+            ].map((l, idx) => (
               <div key={l.l}>
-                <div className="text-white font-bold">{l.l}</div>
-                <div className="flex items-start gap-1 mt-1"><MapPin size={11} className="mt-0.5" style={{ color: ORANGE }} /><span>{l.e}</span></div>
-                <div className="flex items-center gap-1 mt-1"><MessageCircle size={11} style={{ color: ORANGE }} /><span>{l.t}</span></div>
+                <div className="text-white font-bold">{idx === 0 ? (settings?.site.nome_loja_1 || l.l) : idx === 1 ? (settings?.site.nome_loja_2 || l.l) : (settings?.site.nome_loja_3 || l.l)}</div>
+                <div className="flex items-start gap-1 mt-1"><MapPin size={11} className="mt-0.5" style={{ color: ORANGE }} /><span>{idx === 0 ? (settings?.site.endereco_loja_1 || l.e) : idx === 1 ? (settings?.site.endereco_loja_2 || l.e) : (settings?.site.endereco_loja_3 || l.e)}</span></div>
+                <div className="flex items-center gap-1 mt-1"><MessageCircle size={11} style={{ color: ORANGE }} /><span>{idx === 0 ? (settings?.site.telefone_loja_1 || l.t) : idx === 1 ? (settings?.site.telefone_loja_2 || l.t) : (settings?.site.telefone_loja_3 || l.t)}</span></div>
               </div>
             ))}
           </div>
