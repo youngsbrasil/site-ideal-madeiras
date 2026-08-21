@@ -81,36 +81,36 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     return { settings };
   },
   head: ({ loaderData }) => {
-    const settings = loaderData?.settings;
+    const settings = (loaderData as any)?.settings;
     return {
-
-    meta: [
-      { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: `${SITE_NAME} - Portas, Pisos e Madeiras` },
-      { name: "description", content: `${SITE_NAME}: portas, pisos, decks e madeiras com entrega para todo o Brasil. 3 lojas na Rua do Gasômetro, Brás/SP.` },
-      { property: "og:site_name", content: SITE_NAME },
-      { property: "og:title", content: SITE_NAME },
-      { property: "og:description", content: `Portas, pisos, decks e madeiras.` },
-      { property: "og:type", content: "website" },
-      { property: "og:url", content: SITE_URL },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-    links: [
-      { rel: "stylesheet", href: appCss },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
-    ],
-    scripts: [
-      { type: "application/ld+json", children: JSON.stringify(organizationJsonLd()) },
-      { type: "application/ld+json", children: JSON.stringify(localBusinessJsonLd(settings)) },
-    ],
-  }),
-
+      meta: [
+        { charSet: "utf-8" },
+        { name: "viewport", content: "width=device-width, initial-scale=1" },
+        { title: `${SITE_NAME} - Portas, Pisos e Madeiras` },
+        { name: "description", content: `${SITE_NAME}: portas, pisos, decks e madeiras com entrega para todo o Brasil. 3 lojas na Rua do Gasômetro, Brás/SP.` },
+        { property: "og:site_name", content: SITE_NAME },
+        { property: "og:title", content: SITE_NAME },
+        { property: "og:description", content: `Portas, pisos, decks e madeiras.` },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: SITE_URL },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      links: [
+        { rel: "stylesheet", href: appCss },
+        { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      ],
+      scripts: [
+        { type: "application/ld+json", children: JSON.stringify(organizationJsonLd()) },
+        { type: "application/ld+json", children: JSON.stringify(localBusinessJsonLd(settings)) },
+      ],
+    };
+  },
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,
   errorComponent: ErrorComponent,
 });
+
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
