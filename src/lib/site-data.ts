@@ -68,7 +68,8 @@ export type ProductRelated = {
   ordem: number;
 };
 
-export function formatPriceDisplay(p: { price?: string | null; price_value?: number | null; availability?: string | null }): string {
+export function formatPriceDisplay(p: { price?: string | null; price_value?: number | null; availability?: string | null } | null): string {
+  if (!p) return "";
   if (p.availability === "sob_consulta") return "Sob consulta";
   if (p.availability === "esgotado") return "Esgotado";
   if (typeof p.price_value === "number" && !isNaN(p.price_value) && p.price_value > 0) {
@@ -76,7 +77,6 @@ export function formatPriceDisplay(p: { price?: string | null; price_value?: num
   }
   const s = (p.price ?? "").trim();
   if (!s) return "Sob consulta";
-  // if it looks like currency (contains R$ or digits) show as-is, otherwise treat as no price
   if (/r\$|\d/i.test(s)) return s;
   return "Sob consulta";
 }
@@ -287,15 +287,6 @@ export async function fetchCategories(): Promise<Category[]> {
   const { data, error } = await supabase.from("categories").select("*").order("sort_order");
   if (error) throw error;
   return (data ?? []) as Category[];
-}
-
-export function formatPriceDisplay(p: Product | null | any): string {
-  if (!p) return "";
-  if (p.availability === "sob_consulta") return "Sob consulta";
-  if (p.price_value && p.price_value > 0) {
-    return p.price_value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
-  }
-  return p.price || "Sob consulta";
 }
 
 export async function fetchProducts(): Promise<Product[]> {
