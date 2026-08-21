@@ -494,9 +494,11 @@ function ProductCard({ p, compact, showOferta, categorias: catsProp }: { p: Prod
           <Link to="/checkout" search={{ slug: p.slug, qty: 1 }} className="w-full text-center text-white text-[11px] font-bold px-3 py-2 rounded-full uppercase tracking-wide hover:opacity-90" style={{ background: ORANGE }}>
             Solicitar Orçamento
           </Link>
-          <a href={waUrl} target="_blank" rel="noreferrer" className="w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1eb659] text-white text-[11px] font-bold px-3 py-2 rounded-full uppercase tracking-wide">
-            <MessageCircle size={13} /> Falar com Vendedor Agora
-          </a>
+          {waUrl && (
+            <a href={waUrl} target="_blank" rel="noreferrer" className="w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1eb659] text-white text-[11px] font-bold px-3 py-2 rounded-full uppercase tracking-wide">
+              <MessageCircle size={13} /> Falar com Vendedor Agora
+            </a>
+          )}
           <button aria-label="Adicionar à Lista de Desejos" className="inline-flex items-center justify-center gap-1 text-[11px] text-neutral-600 hover:text-[color:var(--o)]">
             <Heart size={13} /> Adicionar à lista de desejos
           </button>

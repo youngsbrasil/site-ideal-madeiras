@@ -153,9 +153,11 @@ export function ProductView({ product }: { product: Product }) {
         )}
       </section>
 
-      <a href={whatsappUrl} target="_blank" rel="noreferrer" className="fixed bottom-6 right-6 bg-[#25D366] hover:bg-[#1eb659] text-white rounded-full w-14 h-14 grid place-items-center shadow-lg z-50" aria-label="WhatsApp">
-        <MessageCircle size={26} />
-      </a>
+      {whatsappUrl && (
+        <a href={whatsappUrl} target="_blank" rel="noreferrer" className="fixed bottom-6 right-6 bg-[#25D366] hover:bg-[#1eb659] text-white rounded-full w-14 h-14 grid place-items-center shadow-lg z-50" aria-label="WhatsApp">
+          <MessageCircle size={26} />
+        </a>
+      )}
     </div>
   );
 }
