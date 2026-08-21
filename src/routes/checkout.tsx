@@ -93,8 +93,8 @@ function CheckoutPage() {
     return whatsapp ? `https://wa.me/${whatsapp}?text=${encodeURIComponent(msg)}` : "";
   }, [items, whatsapp, validation, subtotal, desconto, total]);
 
-  const previewQuoteUrl = previewProduct
-    ? (whatsapp ? `https://wa.me/${whatsapp}?text=${encodeURIComponent(
+  const previewQuoteUrl = previewProduct && whatsapp
+    ? `https://wa.me/${whatsapp}?text=${encodeURIComponent(
         `Olá! Gostaria de um orçamento para: ${previewProduct.name} (${qty}x) — ${formatPriceDisplay(previewProduct)}`
       )}`
     : "";

@@ -87,9 +87,11 @@ export function ProductView({ product }: { product: Product }) {
               <Link to="/checkout" search={{ slug: product.slug, qty: qtd }} className="flex-1 text-center bg-[#A7144C] hover:bg-[#8b1140] text-white px-6 py-3 rounded-full font-semibold text-sm">SOLICITAR ORÇAMENTO</Link>
             </div>
 
-            <a href={whatsappUrl} target="_blank" rel="noreferrer" className="mt-3 w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1eb659] text-white px-6 py-3 rounded-full font-semibold text-sm">
-              <MessageCircle size={18} /> Falar com um vendedor no WhatsApp
-            </a>
+            {whatsappUrl && (
+              <a href={whatsappUrl} target="_blank" rel="noreferrer" className="mt-3 w-full inline-flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#1eb659] text-white px-6 py-3 rounded-full font-semibold text-sm">
+                <MessageCircle size={18} /> Falar com um vendedor no WhatsApp
+              </a>
+            )}
 
             <div className="mt-4 flex items-center gap-4 text-sm text-neutral-600">
               <button className="inline-flex items-center gap-2 hover:text-[#A7144C]"><Heart size={16} /> Lista de desejos</button>

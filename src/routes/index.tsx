@@ -345,9 +345,11 @@ function Home() {
           <div>
             <img src={proxyImg(`${IMG}/2024/09/logo-ideal-madeiras.png`)} alt="Lojas Ideal Madeiras" className="h-16 w-auto mb-4" />
             <p className="text-xs leading-relaxed">A Maior Loja de Portas, Janelas e Pisos de Madeira da Rua do Gasômetro. Venha Conferir nossas Show Room e conhecer a maior coleção de Madeiras da região de São Paulo.</p>
-            <a href={whatsappHref} className="mt-4 inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1eb659] text-white px-4 py-2 rounded font-semibold text-xs">
-              <MessageCircle size={14} /> COMPRE PELO WHATSAPP AGORA
-            </a>
+            {whatsappHref && (
+              <a href={whatsappHref} className="mt-4 inline-flex items-center gap-2 bg-[#25D366] hover:bg-[#1eb659] text-white px-4 py-2 rounded font-semibold text-xs">
+                <MessageCircle size={14} /> COMPRE PELO WHATSAPP AGORA
+              </a>
+            )}
           </div>
           <div>
             <h4 className="text-white font-bold mb-4 tracking-wide">MENU PRINCIPAL</h4>
