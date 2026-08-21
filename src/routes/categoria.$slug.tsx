@@ -32,7 +32,7 @@ export const Route = createFileRoute("/categoria/$slug")({
       types: Array.isArray(p.types) ? p.types : [],
       woods: Array.isArray(p.woods) ? p.woods : [],
       finishes: Array.isArray(p.finishes) ? p.finishes : [],
-    })).map(p => ({ ...p, price: (p as any).availability === 'sob_consulta' ? 'Sob consulta' : p.price })) as Product[];
+    })) as Product[];
     return { category: cat as Category, products };
   },
   head: ({ loaderData, params }) => {
