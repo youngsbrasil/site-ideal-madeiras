@@ -19,7 +19,7 @@ export function productMetaDescription(p: Product): string {
   if (p.meta_description?.trim()) return p.meta_description.trim();
   const desc = (p.description ?? "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
   if (desc) return desc.slice(0, 160);
-  return `${p.name} por ${p.price}. Compre na ${SITE_NAME} com garantia e envio para todo o Brasil.`;
+  return `${p.name} — Ideal Madeiras. Compre com garantia e envio para todo o Brasil.`;
 }
 
 export function categoryMetaTitle(c: Category): string {

@@ -379,7 +379,7 @@ function Home() {
             </div>
           </div>
           <div className="mx-auto max-w-7xl px-4 pb-4 text-center text-[10px] text-neutral-500">
-            © {new Date().getFullYear()} Lojas Ideal Madeiras. Todos os direitos reservados.
+            © {new Date().getFullYear()} Lojas Ideal Madeiras · CNPJ: 00.000.000/0000-00 · Todos os direitos reservados.
           </div>
         </div>
       </footer>
