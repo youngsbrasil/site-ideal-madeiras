@@ -99,8 +99,9 @@ function CategoryPage() {
   const settings = useSiteSettings();
 
   const { data: categorias = [] } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
-  const whatsapp = (settings?.site.whatsapp || "").replace(/\D/g, "");
+  const whatsapp = (settings?.site?.whatsapp || "").replace(/\D/g, "");
   const whatsappHref = whatsapp ? `https://wa.me/${whatsapp}` : null;
+
 
   const [selected, setSelected] = useState<Record<FilterKey, string[]>>({
     sizes: [], types: [], woods: [], finishes: [],

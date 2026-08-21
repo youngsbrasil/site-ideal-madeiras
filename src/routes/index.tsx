@@ -119,11 +119,12 @@ function Home() {
   const indicados = produtos.slice(5, 10);
   const campeoes = produtos.filter((p) => p.most_viewed).slice(0, 5);
 
-    const whatsapp = settings?.site.whatsapp || "";
-    const telefone = settings?.site.telefone || "";
-    const email = settings?.site.email || "";
+    const whatsapp = settings?.site?.whatsapp || "";
+    const telefone = settings?.site?.telefone || "";
+    const email = settings?.site?.email || "";
   const whatsappHref = whatsapp ? `https://wa.me/${whatsapp}` : null;
-  const depoimentos = settings?.site.depoimentos ?? fallbackDepoimentos;
+  const depoimentos = settings?.site?.depoimentos ?? fallbackDepoimentos;
+
 
   return (
     <div className="min-h-screen bg-white text-neutral-900">
@@ -389,17 +390,6 @@ function Home() {
                       <span>{l.telefone}</span>
                     </div>
                   )}
-                  {l.whatsapp && (
-                    <a 
-                      href={`https://wa.me/${l.whatsapp.replace(/\D/g, "")}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex items-center gap-1 mt-1 hover:text-white transition-colors"
-                    >
-                      <MessageCircle size={11} style={{ color: ORANGE }} />
-                      <span>Compre pelo WhatsApp</span>
-                    </a>
-                  )}
                 </div>
             ))}
           </div>
@@ -408,12 +398,13 @@ function Home() {
           <div className="mx-auto max-w-7xl px-4 py-4 flex flex-col md:flex-row items-center justify-between gap-3 text-[11px] text-neutral-400">
             <div>Formas de Pagamento aceitas</div>
             <div className="flex gap-3 opacity-70">
-              {settings?.site.facebook && <a href={settings.site.facebook} target="_blank" rel="noreferrer" aria-label="Facebook" className="hover:text-white"><Facebook size={14} /></a>}
-              {settings?.site.instagram && <a href={settings.site.instagram} target="_blank" rel="noreferrer" aria-label="Instagram" className="hover:text-white"><Instagram size={14} /></a>}
+              {settings?.site?.facebook && <a href={settings.site.facebook} target="_blank" rel="noreferrer" aria-label="Facebook" className="hover:text-white"><Facebook size={14} /></a>}
+              {settings?.site?.instagram && <a href={settings.site.instagram} target="_blank" rel="noreferrer" aria-label="Instagram" className="hover:text-white"><Instagram size={14} /></a>}
             </div>
           </div>
           <div className="mx-auto max-w-7xl px-4 pb-4 text-center text-[10px] text-neutral-500">
-            © {new Date().getFullYear()} {settings?.site.razao_social || "Lojas Ideal Madeiras"}{settings?.site.cnpj ? ` · CNPJ: ${settings.site.cnpj}` : ""} · Todos os direitos reservados.
+            © {new Date().getFullYear()} {settings?.site?.razao_social || "Lojas Ideal Madeiras"}{settings?.site?.cnpj ? ` · CNPJ: ${settings.site.cnpj}` : ""} · Todos os direitos reservados.
+
           </div>
         </div>
       </footer>

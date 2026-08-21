@@ -70,6 +70,7 @@ export function ProductView({ product }: { product: Product }) {
               {settings?.prova_social?.mostrar_estrelas_pdp && (
                 <div className="flex text-yellow-400">{[...Array(5)].map((_, i) => <Star key={i} size={16} fill="currentColor" />)}</div>
               )}
+
             </div>
 
             <div className="mt-5 flex items-baseline gap-3">
