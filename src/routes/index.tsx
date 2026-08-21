@@ -404,7 +404,6 @@ function Home() {
           </div>
           <div className="mx-auto max-w-7xl px-4 pb-4 text-center text-[10px] text-neutral-500">
             © {new Date().getFullYear()} {settings?.site?.razao_social || "Lojas Ideal Madeiras"}{settings?.site?.cnpj ? ` · CNPJ: ${settings.site.cnpj}` : ""} · Todos os direitos reservados.
-
           </div>
         </div>
       </footer>
