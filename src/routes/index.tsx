@@ -66,17 +66,27 @@ function HeroCarousel({ banners }: { banners: Banner[] }) {
 }
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Lojas Ideal Madeiras — Portas, Janelas, Fechaduras" },
-      { name: "description", content: "Loja de Portas, Janelas, Ferragens e Fechaduras em São Paulo. Portas maciças, pivotantes, fechaduras digitais, puxadores, pisos e muito mais." },
-      { property: "og:title", content: "Lojas Ideal Madeiras" },
-      { property: "og:description", content: "Portas, Janelas, Esquadrias, Pisos e muito mais. Compra segura, entrega rápida e parcelamento." },
-      { property: "og:type", content: "website" },
-      { property: "og:image", content: `${IMG}/2024/11/COMPRE-PELO-WHATSAPP.png` },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  loader: async () => {
+    return { settings: await fetchSettings() };
+  },
+  head: ({ loaderData }) => {
+    const s = (loaderData as any)?.settings;
+    return {
+      meta: [
+        { title: "Lojas Ideal Madeiras — Portas, Janelas, Fechaduras" },
+        { name: "description", content: "Loja de Portas, Janelas, Ferragens e Fechaduras em São Paulo. Portas maciças, pivotantes, fechaduras digitais, puxadores, pisos e muito mais." },
+        { property: "og:title", content: "Lojas Ideal Madeiras" },
+        { property: "og:description", content: "Portas, Janelas, Esquadrias, Pisos e muito mais. Compra segura, entrega rápida e parcelamento." },
+        { property: "og:type", content: "website" },
+        { property: "og:image", content: `${IMG}/2024/11/COMPRE-PELO-WHATSAPP.png` },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      script: [
+        { type: "application/ld+json", children: JSON.stringify(organizationJsonLd()) },
+        { type: "application/ld+json", children: JSON.stringify(localBusinessJsonLd(s)) },
+      ],
+    };
+  },
   component: Home,
 });
 
