@@ -27,7 +27,7 @@ export const Route = createFileRoute("/$")({
     if (!product) throw notFound();
     return { product, categories };
   },
-  head: ({ loaderData, context }) => {
+  head: ({ loaderData }) => {
     if (!loaderData) {
       return { meta: [{ title: "Produto não encontrado - Ideal Madeiras" }, { name: "robots", content: "noindex" }] };
     }
@@ -58,10 +58,11 @@ export const Route = createFileRoute("/$")({
         { type: "application/ld+json", children: JSON.stringify(productLd) },
         { type: "application/ld+json", children: JSON.stringify(crumbs) },
         { type: "application/ld+json", children: JSON.stringify(organizationJsonLd()) },
-        { type: "application/ld+json", children: JSON.stringify(localBusinessJsonLd((context as any).settings)) },
+        // localBusinessJsonLd is handled by root
       ],
     };
   },
+
   component: SplatProductPage,
   notFoundComponent: SplatNotFound,
   errorComponent: SplatError,
