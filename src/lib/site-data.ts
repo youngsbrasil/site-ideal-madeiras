@@ -16,6 +16,7 @@ export type Category = SeoFields & {
   product_count: number;
   sort_order: number;
   parent_id?: string | null;
+  description?: string | null;
 };
 
 export type Product = SeoFields & {

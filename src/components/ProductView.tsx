@@ -7,7 +7,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import {
   fetchProducts, fetchSettings, fetchCategories, productPath,
-  type Product,
+  formatPriceDisplay, type Product,
 } from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -70,9 +70,11 @@ export function ProductView({ product }: { product: Product }) {
 
             <div className="mt-5 flex items-baseline gap-3">
               {product.old_price && <span className="text-neutral-400 line-through">{product.old_price}</span>}
-              <span className="text-4xl font-bold text-[#A7144C]">{product.price}</span>
+              <span className="text-4xl font-bold text-[#A7144C]">{formatPriceDisplay(product)}</span>
             </div>
-            <p className="text-sm text-neutral-600 mt-1">ou em até 12x sem juros no cartão</p>
+            {product.availability !== "sob_consulta" && product.availability !== "esgotado" && (
+              <p className="text-sm text-neutral-600 mt-1">ou em até 12x sem juros no cartão</p>
+            )}
 
             <div className="mt-6 flex items-center gap-3">
               <div className="flex items-center border border-neutral-300 rounded-full">
