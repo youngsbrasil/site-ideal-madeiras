@@ -7,6 +7,8 @@ import {
   absoluteUrl,
   productJsonLd,
   breadcrumbJsonLd,
+  localBusinessJsonLd,
+  organizationJsonLd,
   SITE_NAME,
 } from "@/lib/seo";
 
