@@ -8,8 +8,9 @@ import {
 } from "lucide-react";
 import {
   fetchCategories, fetchProducts, fetchBanners, fetchSettings, fetchShoppableScenes, proxyImg, productPath,
-  type Product, type Banner, type ShoppableScene,
+  formatPriceDisplay, type Product, type Banner, type ShoppableScene, type Category
 } from "@/lib/site-data";
+import { localBusinessJsonLd, organizationJsonLd } from "@/lib/seo";
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
 import { CouponStrip } from "@/components/CouponStrip";
@@ -65,21 +66,31 @@ function HeroCarousel({ banners }: { banners: Banner[] }) {
 }
 
 export const Route = createFileRoute("/")({
-  head: () => ({
-    meta: [
-      { title: "Lojas Ideal Madeiras — Portas, Janelas, Fechaduras" },
-      { name: "description", content: "Loja de Portas, Janelas, Ferragens e Fechaduras em São Paulo. Portas maciças, pivotantes, fechaduras digitais, puxadores, pisos e muito mais." },
-      { property: "og:title", content: "Lojas Ideal Madeiras" },
-      { property: "og:description", content: "Portas, Janelas, Esquadrias, Pisos e muito mais. Compra segura, entrega rápida e parcelamento." },
-      { property: "og:type", content: "website" },
-      { property: "og:image", content: `${IMG}/2024/11/COMPRE-PELO-WHATSAPP.png` },
-      { name: "twitter:card", content: "summary_large_image" },
-    ],
-  }),
+  loader: async () => {
+    return { settings: await fetchSettings() };
+  },
+  head: ({ loaderData }) => {
+    const s = (loaderData as any)?.settings;
+    return {
+      meta: [
+        { title: "Lojas Ideal Madeiras — Portas, Janelas, Fechaduras" },
+        { name: "description", content: "Loja de Portas, Janelas, Ferragens e Fechaduras em São Paulo. Portas maciças, pivotantes, fechaduras digitais, puxadores, pisos e muito mais." },
+        { property: "og:title", content: "Lojas Ideal Madeiras" },
+        { property: "og:description", content: "Portas, Janelas, Esquadrias, Pisos e muito mais. Compra segura, entrega rápida e parcelamento." },
+        { property: "og:type", content: "website" },
+        { property: "og:image", content: `${IMG}/2024/11/COMPRE-PELO-WHATSAPP.png` },
+        { name: "twitter:card", content: "summary_large_image" },
+      ],
+      script: [
+        { type: "application/ld+json", children: JSON.stringify(organizationJsonLd()) },
+        { type: "application/ld+json", children: JSON.stringify(localBusinessJsonLd(s)) },
+      ],
+    };
+  },
   component: Home,
 });
 
-const depoimentos = [
+const fallbackDepoimentos = [
   { nome: "Anderson Vieira", texto: "A Ideal Madeiras é um ótimo lugar para comprar os primeiros portas da minha casa. Tive ótimas orientações." },
   { nome: "Eliana Sampaio", texto: "Segunda vez que faço compras de portas nessa loja, nunca mudaram o atendimento, sempre nos atenderam bem." },
   { nome: "Sandra Karito", texto: "Gisele fez um atendimento nota MIL. Voltarei a comprar com certeza." },
@@ -109,6 +120,7 @@ function Home() {
   const telefone = settings?.site.telefone || "(11) 4200-0000";
   const email = settings?.site.email || "contato@idealmadeiras.com.br";
   const whatsappHref = `https://wa.me/${whatsapp.replace(/\D/g, "")}`;
+  const depoimentos = settings?.site.depoimentos ?? fallbackDepoimentos;
 
   return (
     <div className="min-h-screen bg-white text-neutral-900">
@@ -124,7 +136,7 @@ function Home() {
           {[
             { icon: MessageCircle, t: "COMPRE PELO WHATSAPP", s: "Clique aqui e fale agora mesmo", href: whatsappHref },
             { icon: Truck, t: "ENTREGA SUPER RÁPIDA", s: "Rápido e garantido" },
-            { icon: CreditCard, t: "10x PARCELAMENTO DIRETO", s: "Sem juros no cartão" },
+            { icon: CreditCard, t: "ATÉ 12x SEM JUROS", s: "No cartão de crédito" },
             { icon: ShieldCheck, t: "COMPRA 100% SEGURA", s: "Ambiente de alto nível" },
           ].map(({ icon: Icon, t, s, href }) => (
             <a key={t} href={href ?? "#"} className="flex items-center gap-3 bg-white rounded-full pl-3 pr-5 py-3 shadow-sm hover:shadow-md transition-shadow">
@@ -219,7 +231,7 @@ function Home() {
               <div className="text-sm font-semibold text-center">{oferta.name}</div>
               <div className="flex items-center justify-center gap-2 mt-2">
                 {oferta.old_price && <span className="text-xs text-neutral-400 line-through">{oferta.old_price}</span>}
-                <span className="font-bold" style={{ color: ORANGE }}>{oferta.price}</span>
+                <span className="font-bold" style={{ color: ORANGE }}>{formatPriceDisplay(oferta)}</span>
               </div>
               <Link to={productPath(oferta, categorias) as any} className="mt-3 block text-center border border-neutral-800 text-neutral-800 hover:bg-neutral-800 hover:text-white text-xs font-semibold py-2 rounded transition-colors">
                 QUICK VIEW
@@ -361,11 +373,11 @@ function Home() {
               { l: "LOJA 1", e: "Rua do Gasômetro, 350 - Brás - SP", t: "(11) 99400-0507" },
               { l: "LOJA 2", e: "Rua do Gasômetro, 284 - Brás - SP", t: "(11) 3326-3197" },
               { l: "LOJA 3", e: "Rua do Gasômetro, 306 - Brás - SP", t: "(11) 98801-3370" },
-            ].map((l) => (
+            ].map((l, idx) => (
               <div key={l.l}>
-                <div className="text-white font-bold">{l.l}</div>
-                <div className="flex items-start gap-1 mt-1"><MapPin size={11} className="mt-0.5" style={{ color: ORANGE }} /><span>{l.e}</span></div>
-                <div className="flex items-center gap-1 mt-1"><MessageCircle size={11} style={{ color: ORANGE }} /><span>{l.t}</span></div>
+                <div className="text-white font-bold">{idx === 0 ? (settings?.site.nome_loja_1 || l.l) : idx === 1 ? (settings?.site.nome_loja_2 || l.l) : (settings?.site.nome_loja_3 || l.l)}</div>
+                <div className="flex items-start gap-1 mt-1"><MapPin size={11} className="mt-0.5" style={{ color: ORANGE }} /><span>{idx === 0 ? (settings?.site.endereco_loja_1 || l.e) : idx === 1 ? (settings?.site.endereco_loja_2 || l.e) : (settings?.site.endereco_loja_3 || l.e)}</span></div>
+                <div className="flex items-center gap-1 mt-1"><MessageCircle size={11} style={{ color: ORANGE }} /><span>{idx === 0 ? (settings?.site.telefone_loja_1 || l.t) : idx === 1 ? (settings?.site.telefone_loja_2 || l.t) : (settings?.site.telefone_loja_3 || l.t)}</span></div>
               </div>
             ))}
           </div>
@@ -379,7 +391,7 @@ function Home() {
             </div>
           </div>
           <div className="mx-auto max-w-7xl px-4 pb-4 text-center text-[10px] text-neutral-500">
-            © {new Date().getFullYear()} Lojas Ideal Madeiras. Todos os direitos reservados.
+            © {new Date().getFullYear()} Lojas Ideal Madeiras · CNPJ: {settings?.site.cnpj || "00.000.000/0000-00"} · Todos os direitos reservados.
           </div>
         </div>
       </footer>
@@ -528,7 +540,7 @@ function ShoppablePopularBlock({
           {shown.main_image && <SupabaseImage src={shown.main_image} alt={shown.name} className="w-full h-full object-contain p-4" />}
         </div>
         <div className="text-sm font-semibold text-center">{shown.name}</div>
-        <div className="text-center mt-2 font-bold" style={{ color: ORANGE }}>{shown.price}</div>
+        <div className="text-center mt-2 font-bold" style={{ color: ORANGE }}>{formatPriceDisplay(shown)}</div>
         <Link
           to={productPath(shown, categorias) as any}
           className="mt-3 block text-center border border-neutral-800 text-neutral-800 hover:bg-neutral-800 hover:text-white text-xs font-semibold py-2 rounded transition-colors"
@@ -549,37 +561,5 @@ function ReviewsSection({ depoimentos }: { depoimentos: { nome: string; texto: s
     queryFn: () => fetchPublicReviews({ limit: 1 }),
   });
   if (reviews.length > 0) return <ReviewsWidget scope="home" />;
-  // Fallback estático quando ainda não há reviews cadastrados
-  return (
-    <section className="mx-auto max-w-7xl px-4 py-8">
-      <div className="grid md:grid-cols-4 gap-4 items-stretch bg-neutral-50 rounded-lg border border-neutral-200 p-4">
-        <div className="text-center md:border-r md:border-neutral-200 md:pr-4 flex flex-col justify-center">
-          <div className="text-lg font-bold">Excelente</div>
-          <div className="flex justify-center text-yellow-400 my-1">
-            {[...Array(5)].map((_, i) => <Star key={i} size={18} fill="currentColor" />)}
-          </div>
-          <div className="text-xs text-neutral-500">Com base em <b>84 avaliações</b></div>
-          <div className="mt-2 text-[11px] text-neutral-400">Google</div>
-        </div>
-        {depoimentos.map((d) => (
-          <div key={d.nome} className="bg-white rounded-md p-3 border border-neutral-200">
-            <div className="flex items-center gap-2 mb-1">
-              <span className="w-7 h-7 rounded-full grid place-items-center text-white text-xs font-bold" style={{ background: "#4285F4" }}>
-                {d.nome.charAt(0)}
-              </span>
-              <div>
-                <div className="text-xs font-semibold">{d.nome}</div>
-                <div className="text-[10px] text-neutral-400">1 ano atrás</div>
-              </div>
-              <span className="ml-auto text-[10px] font-bold text-neutral-400">G</span>
-            </div>
-            <div className="flex text-yellow-400 mb-1">
-              {[...Array(5)].map((_, i) => <Star key={i} size={11} fill="currentColor" />)}
-            </div>
-            <p className="text-[11px] text-neutral-700 leading-relaxed line-clamp-4">{d.texto}</p>
-          </div>
-        ))}
-      </div>
-    </section>
-  );
+  return null;
 }

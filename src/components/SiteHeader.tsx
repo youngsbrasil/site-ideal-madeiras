@@ -1,8 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Search, User, Heart, ShoppingCart, Phone, Facebook, Instagram, Tag, Package as PackageIcon } from "lucide-react";
-import { fetchCategories, fetchSettings, proxyImg, productPath } from "@/lib/site-data";
+import { Search, User, Heart, ShoppingCart, Phone, Facebook, Instagram, Tag, Package as PackageIcon, ChevronLeft, ChevronRight } from "lucide-react";
+import { fetchCategories, fetchSettings, fetchAnnouncements, proxyImg, productPath } from "@/lib/site-data";
 import { fetchSuggestions, type Suggestion } from "@/lib/search";
 
 const LOGO = "https://idealmadeiras.com.br/wp-content/uploads/2024/09/logo-ideal-madeiras.png";
@@ -10,6 +10,7 @@ const LOGO = "https://idealmadeiras.com.br/wp-content/uploads/2024/09/logo-ideal
 export function SiteHeader() {
   const { data: categorias = [] } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
   const { data: settings } = useQuery({ queryKey: ["settings"], queryFn: fetchSettings });
+  const { data: announcements = [] } = useQuery({ queryKey: ["announcements"], queryFn: fetchAnnouncements });
   const navigate = useNavigate();
   const [q, setQ] = useState("");
   const [categoria, setCategoria] = useState("");
@@ -17,17 +18,25 @@ export function SiteHeader() {
   const [debounced, setDebounced] = useState("");
   const boxRef = useRef<HTMLFormElement | null>(null);
 
-  useEffect(() => {
-    const t = setTimeout(() => setDebounced(q), 200);
-    return () => clearTimeout(t);
-  }, [q]);
-
   const { data: suggestions = [] } = useQuery({
     queryKey: ["suggestions", debounced],
     queryFn: () => fetchSuggestions(debounced, 8),
     enabled: debounced.trim().length >= 2,
     staleTime: 30_000,
   });
+
+  const [annIdx, setAnnIdx] = useState(0);
+
+  useEffect(() => {
+    if (announcements.length <= 1) return;
+    const id = setInterval(() => setAnnIdx((i) => (i + 1) % announcements.length), 5000);
+    return () => clearInterval(id);
+  }, [announcements.length]);
+
+  useEffect(() => {
+    const t = setTimeout(() => setDebounced(q), 200);
+    return () => clearTimeout(t);
+  }, [q]);
 
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
@@ -37,8 +46,8 @@ export function SiteHeader() {
     return () => document.removeEventListener("mousedown", onClick);
   }, []);
 
-  const topbarText = settings?.topbar.texto || "FRETE GRÁTIS PARA TODOS OS PEDIDOS ACIMA DE R$ 150";
   const telefone = settings?.site.telefone || "(11) 4200-0000";
+  const whatsapp = (settings?.site.whatsapp || "5511942000000").replace(/\D/g, "");
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,17 +72,59 @@ export function SiteHeader() {
 
   return (
     <>
-      {/* Top bar */}
-      <div className="bg-[#A7144C] text-white text-xs">
-        <div className="mx-auto max-w-7xl px-4 py-2 flex flex-wrap items-center justify-between gap-2">
-          <span className="tracking-wide">{topbarText}</span>
-          <div className="hidden md:flex items-center gap-4">
-            <a href={`tel:${telefone}`} className="hover:underline flex items-center gap-1"><Phone size={12} /> {telefone}</a>
-            <a href="#" className="hover:underline flex items-center gap-1"><Facebook size={14} /></a>
-            <a href="#" className="hover:underline flex items-center gap-1"><Instagram size={14} /></a>
+      {/* Announcements Bar */}
+      {announcements.length > 0 ? (
+        <div 
+          className="text-white text-xs relative overflow-hidden transition-colors duration-500"
+          style={{ backgroundColor: announcements[annIdx]?.cor_fundo || "#A7144C" }}
+        >
+          <div className="mx-auto max-w-7xl px-4 py-2 flex items-center justify-between gap-4">
+            <div className="flex-1 flex justify-center md:justify-start items-center gap-2 overflow-hidden">
+              <a 
+                href={announcements[annIdx].link_url || "#"} 
+                className={`tracking-wide truncate hover:underline ${announcements[annIdx].cor_texto ? "" : "text-white"}`}
+                style={announcements[annIdx].cor_texto ? { color: announcements[annIdx].cor_texto } : {}}
+              >
+                {announcements[annIdx].texto}
+              </a>
+            </div>
+            <div className="hidden md:flex items-center gap-4">
+              <a href={`tel:${telefone.replace(/\D/g, "")}`} className="hover:underline flex items-center gap-1">
+                <Phone size={12} /> {telefone}
+              </a>
+              <a href="#" className="hover:underline flex items-center gap-1"><Facebook size={14} /></a>
+              <a href="#" className="hover:underline flex items-center gap-1"><Instagram size={14} /></a>
+            </div>
+          </div>
+          {announcements.length > 1 && (
+            <>
+              <button 
+                onClick={() => setAnnIdx((i) => (i - 1 + announcements.length) % announcements.length)}
+                className="absolute left-1 top-1/2 -translate-y-1/2 p-1 opacity-50 hover:opacity-100 md:hidden"
+              >
+                <ChevronLeft size={14} />
+              </button>
+              <button 
+                onClick={() => setAnnIdx((i) => (i + 1) % announcements.length)}
+                className="absolute right-1 top-1/2 -translate-y-1/2 p-1 opacity-50 hover:opacity-100 md:hidden"
+              >
+                <ChevronRight size={14} />
+              </button>
+            </>
+          )}
+        </div>
+      ) : (
+        <div className="bg-[#A7144C] text-white text-xs">
+          <div className="mx-auto max-w-7xl px-4 py-2 flex flex-wrap items-center justify-between gap-2">
+            <span className="tracking-wide">LOJAS IDEAL MADEIRAS — QUALIDADE E TRADIÇÃO</span>
+            <div className="hidden md:flex items-center gap-4">
+              <a href={`tel:${telefone.replace(/\D/g, "")}`} className="hover:underline flex items-center gap-1"><Phone size={12} /> {telefone}</a>
+              <a href="#" className="hover:underline flex items-center gap-1"><Facebook size={14} /></a>
+              <a href="#" className="hover:underline flex items-center gap-1"><Instagram size={14} /></a>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Header sticky */}
       <header className="sticky top-0 z-50 shadow-sm">

@@ -69,7 +69,7 @@ export function buildQuoteMessage(
   opts?: { coupon?: { codigo: string; descricao?: string | null }; subtotalLabel?: string; descontoLabel?: string; totalLabel?: string }
 ) {
   const lines = items.map(
-    (i, idx) => `${idx + 1}. ${i.name} — ${i.qty}x — ${i.price}`
+    (i, idx) => `${idx + 1}. ${i.name} — ${i.qty}x — ${i.price === 'Sob consulta' ? 'Sob consulta' : i.price}`
   );
   let msg = `Olá! Gostaria de um orçamento para os seguintes produtos:\n\n${lines.join("\n")}`;
   if (opts?.subtotalLabel) msg += `\n\nSubtotal: ${opts.subtotalLabel}`;

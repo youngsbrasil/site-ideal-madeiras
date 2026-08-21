@@ -16,6 +16,7 @@ export type Category = SeoFields & {
   product_count: number;
   sort_order: number;
   parent_id?: string | null;
+  description?: string | null;
 };
 
 export type Product = SeoFields & {
@@ -67,7 +68,8 @@ export type ProductRelated = {
   ordem: number;
 };
 
-export function formatPriceDisplay(p: { price?: string | null; price_value?: number | null; availability?: string | null }): string {
+export function formatPriceDisplay(p: { price?: string | null; price_value?: number | null; availability?: string | null } | null): string {
+  if (!p) return "";
   if (p.availability === "sob_consulta") return "Sob consulta";
   if (p.availability === "esgotado") return "Esgotado";
   if (typeof p.price_value === "number" && !isNaN(p.price_value) && p.price_value > 0) {
@@ -75,7 +77,6 @@ export function formatPriceDisplay(p: { price?: string | null; price_value?: num
   }
   const s = (p.price ?? "").trim();
   if (!s) return "Sob consulta";
-  // if it looks like currency (contains R$ or digits) show as-is, otherwise treat as no price
   if (/r\$|\d/i.test(s)) return s;
   return "Sob consulta";
 }
@@ -219,6 +220,20 @@ export type SiteSettings = {
   telefone?: string;
   endereco?: string;
   trustindex_widget_id?: string;
+  logo?: string;
+  instagram?: string;
+  facebook?: string;
+  cnpj?: string;
+  nome_loja_1?: string;
+  endereco_loja_1?: string;
+  telefone_loja_1?: string;
+  nome_loja_2?: string;
+  endereco_loja_2?: string;
+  telefone_loja_2?: string;
+  nome_loja_3?: string;
+  endereco_loja_3?: string;
+  telefone_loja_3?: string;
+  depoimentos?: { nome: string; texto: string }[];
 };
 export type TopbarSettings = { texto?: string };
 
@@ -353,6 +368,26 @@ export async function fetchBanners(): Promise<Banner[]> {
   return (data ?? []) as Banner[];
 }
 
+
+export type Announcement = {
+  id: string;
+  texto: string;
+  link_url: string | null;
+  cor_fundo: string | null;
+  cor_texto: string | null;
+  ativo: boolean;
+  ordem: number;
+};
+
+export async function fetchAnnouncements(): Promise<Announcement[]> {
+  const { data, error } = await supabase
+    .from("announcements" as any)
+    .select("*")
+    .eq("ativo", true)
+    .order("ordem");
+  if (error) throw error;
+  return (data ?? []) as unknown as Announcement[];
+}
 
 export async function fetchSettings(): Promise<{ site: SiteSettings; topbar: TopbarSettings }> {
   const { data, error } = await supabase.from("site_settings").select("*");

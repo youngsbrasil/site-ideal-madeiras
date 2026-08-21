@@ -19,7 +19,7 @@ export function productMetaDescription(p: Product): string {
   if (p.meta_description?.trim()) return p.meta_description.trim();
   const desc = (p.description ?? "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
   if (desc) return desc.slice(0, 160);
-  return `${p.name} por ${p.price}. Compre na ${SITE_NAME} com garantia e envio para todo o Brasil.`;
+  return `${p.name} — Ideal Madeiras. Compre com garantia e envio para todo o Brasil.`;
 }
 
 export function categoryMetaTitle(c: Category): string {
@@ -80,7 +80,8 @@ export function breadcrumbJsonLd(items: { name: string; url: string }[]) {
 }
 
 /** LocalBusiness — 3 lojas Ideal Madeiras na Rua do Gasômetro, Brás/SP */
-export function localBusinessJsonLd() {
+export function localBusinessJsonLd(settings?: any) {
+  const s = settings?.site;
   const base = {
     "@context": "https://schema.org",
     "@type": "HomeGoodsStore",
@@ -88,43 +89,39 @@ export function localBusinessJsonLd() {
     image: `${SITE_URL}/favicon.ico`,
     url: SITE_URL,
     priceRange: "$$",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "Rua do Gasômetro",
+      addressLocality: "São Paulo",
+      addressRegion: "SP",
+      postalCode: "03004-001",
+      addressCountry: "BR",
+    },
+    telephone: s?.telefone || "+55-11-4200-0000",
+    vatID: s?.cnpj || "00.000.000/0000-00",
   };
+  
   return [
     {
       ...base,
       "@id": `${SITE_URL}#loja-1`,
-      name: `${SITE_NAME} - Loja 1`,
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "Rua do Gasômetro",
-        addressLocality: "São Paulo",
-        addressRegion: "SP",
-        addressCountry: "BR",
-      },
+      name: s?.nome_loja_1 || `${SITE_NAME} - Loja 1`,
+      address: { ...base.address, streetAddress: s?.endereco_loja_1 || "Rua do Gasômetro, 500" },
+      telephone: s?.telefone_loja_1,
     },
     {
       ...base,
       "@id": `${SITE_URL}#loja-2`,
-      name: `${SITE_NAME} - Loja 2`,
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "Rua do Gasômetro",
-        addressLocality: "São Paulo",
-        addressRegion: "SP",
-        addressCountry: "BR",
-      },
+      name: s?.nome_loja_2 || `${SITE_NAME} - Loja 2`,
+      address: { ...base.address, streetAddress: s?.endereco_loja_2 || "Rua do Gasômetro, 600" },
+      telephone: s?.telefone_loja_2,
     },
     {
       ...base,
       "@id": `${SITE_URL}#loja-3`,
-      name: `${SITE_NAME} - Loja 3`,
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "Rua do Gasômetro",
-        addressLocality: "São Paulo",
-        addressRegion: "SP",
-        addressCountry: "BR",
-      },
+      name: s?.nome_loja_3 || `${SITE_NAME} - Loja 3`,
+      address: { ...base.address, streetAddress: s?.endereco_loja_3 || "Rua do Gasômetro, 700" },
+      telephone: s?.telefone_loja_3,
     },
   ];
 }
