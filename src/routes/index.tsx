@@ -7,8 +7,8 @@ import {
   Truck, CreditCard, ShieldCheck, Mail as MailIcon,
 } from "lucide-react";
 import {
-  fetchCategories, fetchProducts, fetchBanners, fetchShoppableScenes, proxyImg, productPath,
-  formatPriceDisplay, type Product, type Banner, type ShoppableScene, type Category
+  fetchCategories, fetchHomeProducts, fetchBanners, fetchShoppableScenes, proxyImg, productPath,
+  formatPriceDisplay, type HomeProduct, type Banner, type ShoppableScene, type Category
 } from "@/lib/site-data";
 import { localBusinessJsonLd, organizationJsonLd } from "@/lib/seo";
 import { SupabaseImage } from "@/components/SupabaseImage";
@@ -72,13 +72,13 @@ function HeroCarousel({ banners }: { banners: Banner[] }) {
 
 export const Route = createFileRoute("/")({
   loader: async () => {
-    const [categorias, produtos, banners, shoppable] = await Promise.all([
+    const [categorias, homeProducts, banners, shoppable] = await Promise.all([
       fetchCategories(),
-      fetchProducts(),
+      fetchHomeProducts(),
       fetchBanners(),
       fetchShoppableScenes(true),
     ]);
-    return { categorias, produtos, banners, shoppable };
+    return { categorias, homeProducts, banners, shoppable };
   },
 
   head: () => {
@@ -141,16 +141,10 @@ function formatCategoryProductCount(category: Category, allCategories: Category[
 }
 
 function Home() {
-  const { categorias, produtos, banners, shoppable } = Route.useLoaderData();
+  const { categorias, homeProducts, banners, shoppable } = Route.useLoaderData();
   const settings = useSiteSettings();
 
-  const destaques = produtos.filter((p) => p.featured).slice(0, 5);
-  const grade = produtos.filter((p) => !p.featured).slice(0, 12);
-  const maisPopular = produtos.find((p) => p.most_viewed) || produtos[0];
-  const oferta = produtos.find((p) => p.old_price);
-  const novos = produtos.slice(0, 5);
-  const indicados = produtos.slice(5, 10);
-  const campeoes = produtos.filter((p) => p.most_viewed).slice(0, 5);
+  const { destaques, grade, maisPopular, oferta, novos, indicados, campeoes } = homeProducts;
 
     const whatsapp = settings?.site?.whatsapp || "";
     const telefone = settings?.site?.telefone || "";
@@ -247,7 +241,7 @@ function Home() {
               key={scene?.id ?? `default-${i}`}
               scene={scene}
               defaultProduct={maisPopular}
-              products={produtos}
+              products={[...destaques, ...grade, ...campeoes, ...novos, ...indicados, ...(oferta ? [oferta] : [])]}
               categorias={categorias}
               fallbackImage={`${IMG}/2024/11/SALA-DE-ESTAR-795x600.webp`}
             />
@@ -267,7 +261,11 @@ function Home() {
               </div>
               <div className="text-sm font-semibold text-center">{oferta.name}</div>
               <div className="flex items-center justify-center gap-2 mt-2">
-                {oferta.old_price && <span className="text-xs text-neutral-400 line-through">{oferta.old_price}</span>}
+                {oferta.old_price_value != null && (
+                  <span className="text-xs text-neutral-400 line-through">
+                    {oferta.old_price_value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}
+                  </span>
+                )}
                 <span className="font-bold" style={{ color: ORANGE }}>{formatPriceDisplay(oferta)}</span>
               </div>
               <Link to={productPath(oferta, categorias) as any} className="mt-3 block text-center border border-neutral-800 text-neutral-800 hover:bg-neutral-800 hover:text-white text-xs font-semibold py-2 rounded transition-colors">
@@ -445,7 +443,7 @@ function Home() {
   );
 }
 
-function OfertasTabs({ novos, indicados, campeoes, categorias }: { novos: Product[]; indicados: Product[]; campeoes: Product[]; categorias: any[] }) {
+function OfertasTabs({ novos, indicados, campeoes, categorias }: { novos: HomeProduct[]; indicados: HomeProduct[]; campeoes: HomeProduct[]; categorias: any[] }) {
   const [tab, setTab] = useState<"novos" | "indicados" | "campeoes">("novos");
   const lista = tab === "novos" ? novos : tab === "indicados" ? indicados : campeoes;
   return (
@@ -479,7 +477,7 @@ function SectionTitle({ title, subtitle, center }: { title: string; subtitle?: s
   );
 }
 
-function ProductCard({ p, compact, showOferta, categorias: catsProp }: { p: Product; compact?: boolean; showOferta?: boolean; categorias?: any[] }) {
+function ProductCard({ p, compact, showOferta, categorias: catsProp }: { p: HomeProduct; compact?: boolean; showOferta?: boolean; categorias?: any[] }) {
   const { data: categoriasQ = [] } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories, enabled: !catsProp });
   const settings = useSiteSettings();
   const categorias = catsProp ?? categoriasQ;
@@ -496,7 +494,7 @@ function ProductCard({ p, compact, showOferta, categorias: catsProp }: { p: Prod
     <div className="group relative border border-neutral-200 rounded bg-white hover:shadow-xl hover:border-[color:var(--o)] hover:z-20 transition-all flex flex-col" style={{ ["--o" as any]: ORANGE }}>
       <Link to={to} className="block">
         <div className="relative aspect-square bg-neutral-50 overflow-hidden">
-          {showOferta && p.old_price && (
+          {showOferta && p.old_price_value != null && (
             <span className="absolute top-2 left-2 z-10 text-white text-[10px] font-bold px-2 py-1" style={{ background: ORANGE }}>OFERTA</span>
           )}
           {p.main_image && (
@@ -538,15 +536,15 @@ function ShoppablePopularBlock({
   fallbackImage,
 }: {
   scene: ShoppableScene | null;
-  defaultProduct: Product;
-  products: Product[];
+  defaultProduct: HomeProduct;
+  products: HomeProduct[];
   categorias: any[];
   fallbackImage: string;
 }) {
   const productById = new Map(products.map((p) => [p.id, p]));
   const [hoverProductId, setHoverProductId] = useState<string | null>(null);
   const hovered = hoverProductId ? productById.get(hoverProductId) : null;
-  const shown: Product = hovered ?? defaultProduct;
+  const shown: HomeProduct = hovered ?? defaultProduct;
   const pins = scene?.pins ?? [];
 
   return (

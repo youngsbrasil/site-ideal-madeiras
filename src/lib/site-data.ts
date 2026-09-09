@@ -313,6 +313,55 @@ export async function fetchProducts(): Promise<Product[]> {
   return (data ?? []).map(normalizeProduct) as Product[];
 }
 
+export type HomeProduct = Pick<Product,
+  "id" | "slug" | "name" | "main_image" | "category_id" |
+  "price_value" | "old_price_value" | "availability" |
+  "featured" | "most_viewed" | "description">;
+
+const HOME_COLS =
+  "id,slug,name,main_image,category_id,price_value,old_price_value," +
+  "availability,featured,most_viewed,description";
+
+export async function fetchHomeProducts() {
+  const [destaquesRes, gradeRes, campeoesRes, ofertaRes, novosRes, indicadosRes] = await Promise.all([
+    supabase.from("products").select(HOME_COLS).eq("active", true).eq("featured", true).order("sort_order").limit(5),
+    supabase.from("products").select(HOME_COLS).eq("active", true).eq("featured", false).order("sort_order").limit(12),
+    supabase.from("products").select(HOME_COLS).eq("active", true).eq("most_viewed", true).order("sort_order").limit(5),
+    supabase.from("products").select(HOME_COLS).eq("active", true).not("old_price_value", "is", null).order("sort_order").limit(1),
+    supabase.from("products").select(HOME_COLS).eq("active", true).order("created_at", { ascending: false }).limit(5),
+    supabase.from("products").select(HOME_COLS).eq("active", true).order("sort_order").range(5, 9),
+  ]);
+
+  for (const r of [destaquesRes, gradeRes, campeoesRes, ofertaRes, novosRes, indicadosRes]) {
+    if (r.error) throw r.error;
+  }
+
+  const destaques = (destaquesRes.data ?? []) as unknown as HomeProduct[];
+  const grade = (gradeRes.data ?? []) as unknown as HomeProduct[];
+  const campeoes = (campeoesRes.data ?? []) as unknown as HomeProduct[];
+  const ofertaList = (ofertaRes.data ?? []) as unknown as HomeProduct[];
+  const novos = (novosRes.data ?? []) as unknown as HomeProduct[];
+  const indicados = (indicadosRes.data ?? []) as unknown as HomeProduct[];
+
+  let maisPopular: HomeProduct | null = campeoes[0] ?? null;
+  if (!maisPopular) {
+    const fallback = await supabase.from("products").select(HOME_COLS).eq("active", true).order("sort_order").limit(1);
+    if (fallback.error) throw fallback.error;
+    const rows = (fallback.data ?? []) as unknown as HomeProduct[];
+    maisPopular = rows[0] ?? null;
+  }
+
+  return {
+    destaques,
+    grade,
+    maisPopular,
+    oferta: ofertaList[0] ?? null,
+    novos,
+    indicados,
+    campeoes,
+  };
+}
+
 function normalizeProduct(p: any): Product {
   return {
     ...p,
@@ -371,20 +420,27 @@ export async function fetchBanners(): Promise<Banner[]> {
 
 export type Announcement = {
   id: string;
-  texto: string;
+  message: string;
+  emoji: string | null;
   link_url: string | null;
-  cor_fundo: string | null;
-  cor_texto: string | null;
-  ativo: boolean;
-  ordem: number;
+  link_label: string | null;
+  bg_color: string | null;
+  text_color: string | null;
+  countdown_ends_at: string | null;
+  starts_at: string | null;
+  ends_at: string | null;
+  scope: "all" | "home" | "category" | "product" | "checkout";
+  priority: number;
+  dismissible: boolean;
+  active: boolean;
 };
 
 export async function fetchAnnouncements(): Promise<Announcement[]> {
   const { data, error } = await supabase
     .from("announcements" as any)
     .select("*")
-    .eq("ativo", true)
-    .order("ordem");
+    .order("priority", { ascending: false })
+    .order("created_at", { ascending: false });
   if (error) throw error;
   return (data ?? []) as unknown as Announcement[];
 }
@@ -412,10 +468,6 @@ export function slugify(s: string) {
     .replace(/(^-|-$)/g, "");
 }
 
-/**
- * Builds the canonical URL for a product: /categoria/[subcategoria]/produto-slug.
- * Falls back to /produto/<slug> when the category chain cannot be resolved.
- */
 export function productPath(product: Product, categories: Category[]): string {
   const cat = categories.find((c) => c.id === product.category_id);
   if (!cat) return `/produto/${product.slug}`;
@@ -424,20 +476,10 @@ export function productPath(product: Product, categories: Category[]): string {
   return "/" + parts.map(encodeURIComponent).join("/");
 }
 
-/**
- * Proxy remote images through images.weserv.nl to bypass hotlink protection / rate limits
- * on the original idealmadeiras.com.br host. Leaves local, data:, blob:, and Supabase URLs alone.
- */
 export function proxyImg(url: string | null | undefined): string {
   if (!url) return "";
   if (/^(data:|blob:|\/)/.test(url)) return url;
-  try {
-    const u = new URL(url);
-    if (u.hostname.endsWith("supabase.co") || u.hostname.includes("localhost")) return url;
-    // weserv expects url without protocol
-    const stripped = url.replace(/^https?:\/\//, "");
-    return `https://images.weserv.nl/?url=${encodeURIComponent(stripped)}`;
-  } catch {
-    return url;
-  }
+  if (url.includes("supabase.co") || url.includes("localhost")) return url;
+  const stripped = url.replace("https://", "").replace("http://", "");
+  return "https://images.weserv.nl/?url=" + encodeURIComponent(stripped);
 }
