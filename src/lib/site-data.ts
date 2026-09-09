@@ -322,7 +322,15 @@ const HOME_COLS =
   "id,slug,name,main_image,category_id,price_value,old_price_value," +
   "availability,featured,most_viewed,description";
 
-export async function fetchHomeProducts() {
+export async function fetchHomeProducts(): Promise<{
+  destaques: HomeProduct[];
+  grade: HomeProduct[];
+  maisPopular: HomeProduct | null;
+  oferta: HomeProduct | null;
+  novos: HomeProduct[];
+  indicados: HomeProduct[];
+  campeoes: HomeProduct[];
+}> {
   const [destaquesRes, gradeRes, campeoesRes, ofertaRes, novosRes, indicadosRes] = await Promise.all([
     supabase.from("products").select(HOME_COLS).eq("active", true).eq("featured", true).order("sort_order").limit(5),
     supabase.from("products").select(HOME_COLS).eq("active", true).eq("featured", false).order("sort_order").limit(12),
