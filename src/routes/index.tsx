@@ -21,7 +21,8 @@ import { useSiteSettings } from "@/routes/__root";
 import { useQuery as useRQ } from "@tanstack/react-query";
 import { fetchPublicReviews } from "@/lib/site-data";
 
-const ORANGE = "#f59318";
+const ORANGE = "#F4A51C";
+const ORANGE_ALT = "#FBBC34";
 const NAVY = "#0b1a34";
 const IMG = "https://idealmadeiras.com.br/wp-content/uploads";
 
@@ -473,7 +474,7 @@ function ProductCard({ p, compact, showOferta, categorias: catsProp }: { p: Prod
         <div className={`p-3 ${compact ? "text-center" : ""}`}>
           <h3 className={`font-medium text-neutral-800 ${compact ? "text-[11px]" : "text-xs"} line-clamp-2 min-h-[2.25rem]`}>{p.name}</h3>
           {catNome && <div className="mt-1 text-[10px] uppercase tracking-widest text-neutral-500">{catNome}</div>}
-          <div className={`mt-1 font-bold ${compact ? "text-xs" : "text-sm"}`} style={{ color: ORANGE }}>{p.price}</div>
+          <div className={`mt-1 font-bold ${compact ? "text-xs" : "text-sm"}`} style={{ color: ORANGE }}>{formatPriceDisplay(p)}</div>
         </div>
       </Link>
 
