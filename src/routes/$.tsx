@@ -54,7 +54,7 @@ export const Route = createFileRoute("/$")({
         { name: "twitter:card", content: "summary_large_image" },
       ],
       links: [{ rel: "canonical", href: url }],
-      script: [
+      scripts: [
         { type: "application/ld+json", children: JSON.stringify(productLd) },
         { type: "application/ld+json", children: JSON.stringify(crumbs) },
         { type: "application/ld+json", children: JSON.stringify(organizationJsonLd()) },

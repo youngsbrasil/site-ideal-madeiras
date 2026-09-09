@@ -82,7 +82,7 @@ export const Route = createFileRoute("/")({
         { property: "og:image", content: `${IMG}/2024/11/COMPRE-PELO-WHATSAPP.png` },
         { name: "twitter:card", content: "summary_large_image" },
       ],
-      script: [
+      scripts: [
         { type: "application/ld+json", children: JSON.stringify(organizationJsonLd()) },
         // localBusinessJsonLd will be rendered by root, but we could add more specific ones here if needed
       ],
