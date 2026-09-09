@@ -79,16 +79,17 @@ export function SiteHeader() {
       {announcements.length > 0 ? (
         <div 
           className="text-white text-xs relative overflow-hidden transition-colors duration-500"
-          style={{ backgroundColor: announcements[annIdx]?.cor_fundo || "#A7144C" }}
+          style={{ backgroundColor: announcements[annIdx]?.bg_color || "#A7144C" }}
         >
           <div className="mx-auto max-w-7xl px-4 py-2 flex items-center justify-between gap-4">
             <div className="flex-1 flex justify-center md:justify-start items-center gap-2 overflow-hidden">
               <a 
                 href={announcements[annIdx].link_url || "#"} 
-                className={`tracking-wide truncate hover:underline ${announcements[annIdx].cor_texto ? "" : "text-white"}`}
-                style={announcements[annIdx].cor_texto ? { color: announcements[annIdx].cor_texto } : {}}
+                className={`tracking-wide truncate hover:underline ${announcements[annIdx].text_color ? "" : "text-white"}`}
+                style={announcements[annIdx].text_color ? { color: announcements[annIdx].text_color } : {}}
               >
-                {announcements[annIdx].texto}
+                {announcements[annIdx].emoji ? announcements[annIdx].emoji + " " : ""}
+                {announcements[annIdx].message}
               </a>
             </div>
             <div className="hidden md:flex items-center gap-4">
@@ -170,7 +171,7 @@ export function SiteHeader() {
                 <button
                   type="submit"
                   aria-label="Buscar"
-                  className="bg-[#f59318] hover:bg-[#e08210] text-white px-5 flex items-center justify-center transition-colors"
+                  className="bg-[#F4A51C] hover:bg-[#D18E12] text-white px-5 flex items-center justify-center transition-colors"
                 >
                   <Search size={18} />
                 </button>
@@ -198,7 +199,7 @@ export function SiteHeader() {
                                 className="w-10 h-10 object-cover rounded bg-neutral-100 shrink-0"
                               />
                             ) : (
-                              <span className="w-10 h-10 grid place-items-center bg-[#f59318]/10 text-[#f59318] rounded shrink-0">
+                              <span className="w-10 h-10 grid place-items-center bg-[#F4A51C]/10 text-[#F4A51C] rounded shrink-0">
                                 <Tag size={16} />
                               </span>
                             )}
@@ -227,13 +228,13 @@ export function SiteHeader() {
             </form>
 
             <div className="flex items-center gap-5 md:gap-6">
-              <a href="#" aria-label="Lista de desejos" className="hover:text-[#f59318]">
+              <a href="#" aria-label="Lista de desejos" className="hover:text-[#F4A51C]">
                 <Heart size={22} />
               </a>
-              <a href="#" aria-label="Carrinho" className="relative flex items-center gap-2 hover:text-[#f59318]">
+              <a href="#" aria-label="Carrinho" className="relative flex items-center gap-2 hover:text-[#F4A51C]">
                 <span className="relative">
                   <ShoppingCart size={22} />
-                  <span className="absolute -top-2 -right-2 bg-[#f59318] text-white text-[10px] font-bold rounded-full w-4 h-4 grid place-items-center">0</span>
+                  <span className="absolute -top-2 -right-2 bg-[#F4A51C] text-white text-[10px] font-bold rounded-full w-4 h-4 grid place-items-center">0</span>
                 </span>
                 <span className="hidden md:inline text-sm font-semibold">R$ 0,00</span>
               </a>
@@ -251,8 +252,8 @@ export function SiteHeader() {
                     <Link
                       to="/categoria/$slug"
                       params={{ slug: c.slug }}
-                      className="hover:text-[#f59318] transition-colors inline-flex items-center gap-1"
-                      activeProps={{ className: "text-[#f59318]" }}
+                      className="hover:text-[#F4A51C] transition-colors inline-flex items-center gap-1"
+                      activeProps={{ className: "text-[#F4A51C]" }}
                     >
                       {c.name}
                       {subs.length > 0 && <span className="text-[9px]">▼</span>}
@@ -264,7 +265,7 @@ export function SiteHeader() {
                             <Link
                               to="/categoria/$slug"
                               params={{ slug: s.slug }}
-                              className="block px-4 py-2 text-xs hover:bg-neutral-100 hover:text-[#f59318] normal-case font-medium"
+                              className="block px-4 py-2 text-xs hover:bg-neutral-100 hover:text-[#F4A51C] normal-case font-medium"
                             >
                               {s.name}
                             </Link>

@@ -71,6 +71,16 @@ function HeroCarousel({ banners }: { banners: Banner[] }) {
 }
 
 export const Route = createFileRoute("/")({
+  loader: async () => {
+    const [categorias, produtos, banners, shoppable] = await Promise.all([
+      fetchCategories(),
+      fetchProducts(),
+      fetchBanners(),
+      fetchShoppableScenes(true),
+    ]);
+    return { categorias, produtos, banners, shoppable };
+  },
+
   head: () => {
     return {
 
@@ -131,12 +141,8 @@ function formatCategoryProductCount(category: Category, allCategories: Category[
 }
 
 function Home() {
-  const { data: categorias = [] } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
-  const { data: produtos = [] } = useQuery({ queryKey: ["products"], queryFn: fetchProducts });
-  const { data: banners = [] } = useQuery({ queryKey: ["banners"], queryFn: fetchBanners });
+  const { categorias, produtos, banners, shoppable } = Route.useLoaderData();
   const settings = useSiteSettings();
-
-  const { data: shoppable = [] } = useQuery({ queryKey: ["shoppable-scenes"], queryFn: () => fetchShoppableScenes(true) });
 
   const destaques = produtos.filter((p) => p.featured).slice(0, 5);
   const grade = produtos.filter((p) => !p.featured).slice(0, 12);
@@ -210,7 +216,7 @@ function Home() {
         <section className="mx-auto max-w-7xl px-4 py-6">
           <SectionTitle title="PRODUTOS EM DESTAQUE" />
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mt-6">
-            {destaques.map((p) => <ProductCard key={p.id} p={p} showOferta />)}
+            {destaques.map((p) => <ProductCard key={p.id} p={p} showOferta categorias={categorias} />)}
           </div>
         </section>
       )}
@@ -223,7 +229,7 @@ function Home() {
             <p className="text-xs text-neutral-500">Portas, Janelas, Esquadrias, Pisos e muito mais...</p>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-6">
-            {grade.map((p) => <ProductCard key={p.id} p={p} />)}
+            {grade.map((p) => <ProductCard key={p.id} p={p} categorias={categorias} />)}
           </div>
         </section>
       )}
