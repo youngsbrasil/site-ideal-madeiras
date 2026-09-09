@@ -11,6 +11,28 @@ import { categoryMetaTitle, categoryMetaDescription, absoluteUrl, breadcrumbJson
 import { useSiteSettings } from "@/routes/__root";
 
 
+function collectSubtreeIds(rootId: string, allCategories: { id: string; parent_id: string | null }[]): string[] {
+  const childrenByParent = new Map<string, string[]>();
+  for (const c of allCategories) {
+    if (!c.parent_id) continue;
+    const list = childrenByParent.get(c.parent_id) ?? [];
+    list.push(c.id);
+    childrenByParent.set(c.parent_id, list);
+  }
+  const ids = new Set<string>();
+  const queue = [rootId];
+  while (queue.length) {
+    const current = queue.shift()!;
+    if (ids.has(current)) continue;
+    ids.add(current);
+    const children = childrenByParent.get(current) ?? [];
+    for (const childId of children) {
+      if (!ids.has(childId)) queue.push(childId);
+    }
+  }
+  return Array.from(ids);
+}
+
 export const Route = createFileRoute("/categoria/$slug")({
   loader: async ({ params }) => {
     const { data: cat, error } = await supabase
@@ -20,10 +42,15 @@ export const Route = createFileRoute("/categoria/$slug")({
       .maybeSingle();
     if (error) throw error;
     if (!cat) throw notFound();
+    const { data: allCategories, error: eCats } = await supabase
+      .from("categories")
+      .select("id, parent_id");
+    if (eCats) throw eCats;
+    const subtreeIds = collectSubtreeIds((cat as Category).id, (allCategories ?? []) as { id: string; parent_id: string | null }[]);
     const { data: prods, error: e2 } = await supabase
       .from("products")
       .select("*")
-      .eq("category_id", (cat as Category).id)
+      .in("category_id", subtreeIds)
       .eq("active", true)
       .order("sort_order");
     if (e2) throw e2;

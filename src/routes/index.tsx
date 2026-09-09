@@ -105,6 +105,31 @@ const dicas = [
   { tag: "DICAS IMPORTANTES", titulo: "15 Tipos de Madeiras que darão Charme e Requinte para sua Casa ou Escritório", img: `${IMG}/2024/11/COZINHA-795x600.webp` },
 ];
 
+function formatCategoryProductCount(category: Category, allCategories: Category[]): string {
+  const childrenByParent = new Map<string, string[]>();
+  for (const c of allCategories) {
+    if (!c.parent_id) continue;
+    const list = childrenByParent.get(c.parent_id) ?? [];
+    list.push(c.id);
+    childrenByParent.set(c.parent_id, list);
+  }
+  const byId = new Map(allCategories.map((c) => [c.id, c] as const));
+  const visited = new Set<string>();
+  const queue = [category.id];
+  let total = 0;
+  while (queue.length) {
+    const current = queue.shift()!;
+    if (visited.has(current)) continue;
+    visited.add(current);
+    total += byId.get(current)?.product_count ?? 0;
+    const children = childrenByParent.get(current) ?? [];
+    for (const childId of children) {
+      if (!visited.has(childId)) queue.push(childId);
+    }
+  }
+  return total === 1 ? "1 produto" : `${total} produtos`;
+}
+
 function Home() {
   const { data: categorias = [] } = useQuery({ queryKey: ["categories"], queryFn: fetchCategories });
   const { data: produtos = [] } = useQuery({ queryKey: ["products"], queryFn: fetchProducts });
@@ -173,7 +198,7 @@ function Home() {
                   )}
                 </div>
                 <div className="mt-3 font-semibold text-sm tracking-wide">{c.name}</div>
-                <div className="text-xs text-neutral-500">{c.product_count} produtos</div>
+                <div className="text-xs text-neutral-500">{formatCategoryProductCount(c, categorias)}</div>
               </Link>
             ))}
           </div>
