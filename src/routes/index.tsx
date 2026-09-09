@@ -104,12 +104,6 @@ export const Route = createFileRoute("/")({
   component: Home,
 });
 
-const fallbackDepoimentos = [
-  { nome: "Anderson Vieira", texto: "A Ideal Madeiras é um ótimo lugar para comprar os primeiros portas da minha casa. Tive ótimas orientações." },
-  { nome: "Eliana Sampaio", texto: "Segunda vez que faço compras de portas nessa loja, nunca mudaram o atendimento, sempre nos atenderam bem." },
-  { nome: "Sandra Karito", texto: "Gisele fez um atendimento nota MIL. Voltarei a comprar com certeza." },
-];
-
 const dicas = [
   { tag: "DICAS IMPORTANTES", titulo: "25 Ideias para Comprar a Porta Certa para sua Casa ou Escritório", img: `${IMG}/2024/11/SALA-DE-ESTAR-795x600.webp` },
   { tag: "DICAS IMPORTANTES", titulo: "15 Tipos de Madeiras que darão Charme e Requinte para sua Casa ou Escritório", img: `${IMG}/2024/11/COZINHA-795x600.webp` },
@@ -150,7 +144,6 @@ function Home() {
     const telefone = settings?.site?.telefone || "";
     const email = settings?.site?.email || "";
   const whatsappHref = whatsapp ? `https://wa.me/${whatsapp}` : null;
-  const depoimentos = settings?.site?.depoimentos ?? fallbackDepoimentos;
 
 
   return (
@@ -229,8 +222,11 @@ function Home() {
       )}
 
 
-      {/* Reviews dinâmicos (configurável em /admin/avaliacoes) com fallback estático */}
-      <ReviewsSection depoimentos={depoimentos} />
+      {/* Reviews dinâmicos (configurável em /admin/avaliacoes) */}
+      <ReviewsSection />
+      {settings?.prova_social?.trustindex_habilitado && settings?.site?.trustindex_widget_id && (
+        <TrustindexWidget widgetId={settings.site.trustindex_widget_id} />
+      )}
 
 
       {/* O Mais Popular + ambiente (com pins interativos quando houver cenas) */}
@@ -598,11 +594,24 @@ function ShoppablePopularBlock({
   );
 }
 
-function ReviewsSection({ depoimentos }: { depoimentos: { nome: string; texto: string }[] }) {
+function ReviewsSection() {
   const { data: reviews = [] } = useRQ({
     queryKey: ["public-reviews-any"],
     queryFn: () => fetchPublicReviews({ limit: 1 }),
   });
   if (reviews.length > 0) return <ReviewsWidget scope="home" />;
+  return null;
+}
+
+function TrustindexWidget({ widgetId }: { widgetId: string }) {
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = `https://cdn.trustindex.io/loader.js?${widgetId}`;
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, [widgetId]);
   return null;
 }
