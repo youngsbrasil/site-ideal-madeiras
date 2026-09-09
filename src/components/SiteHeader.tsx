@@ -79,17 +79,16 @@ export function SiteHeader() {
       {announcements.length > 0 ? (
         <div 
           className="text-white text-xs relative overflow-hidden transition-colors duration-500"
-          style={{ backgroundColor: announcements[annIdx]?.bg_color || "#A7144C" }}
+          style={{ backgroundColor: announcements[annIdx]?.cor_fundo || "#A7144C" }}
         >
           <div className="mx-auto max-w-7xl px-4 py-2 flex items-center justify-between gap-4">
             <div className="flex-1 flex justify-center md:justify-start items-center gap-2 overflow-hidden">
               <a 
                 href={announcements[annIdx].link_url || "#"} 
-                className={`tracking-wide truncate hover:underline ${announcements[annIdx].text_color ? "" : "text-white"}`}
-                style={announcements[annIdx].text_color ? { color: announcements[annIdx].text_color } : {}}
+                className={`tracking-wide truncate hover:underline ${announcements[annIdx].cor_texto ? "" : "text-white"}`}
+                style={announcements[annIdx].cor_texto ? { color: announcements[annIdx].cor_texto } : {}}
               >
-                {announcements[annIdx].emoji ? announcements[annIdx].emoji + " " : ""}
-                {announcements[annIdx].message}
+                {announcements[annIdx].texto}
               </a>
             </div>
             <div className="hidden md:flex items-center gap-4">
