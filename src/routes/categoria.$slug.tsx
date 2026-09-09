@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { fetchCategories, productPath, formatPriceDisplay, type Product, type Category } from "@/lib/site-data";
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
+import { SiteFooterSignature } from "@/components/SiteFooterSignature";
 import { categoryMetaTitle, categoryMetaDescription, absoluteUrl, breadcrumbJsonLd, organizationJsonLd, localBusinessJsonLd, SITE_NAME } from "@/lib/seo";
 import { useSiteSettings } from "@/routes/__root";
 
@@ -409,7 +410,7 @@ function CategoryPage() {
           )}
         </div>
       </section>
-
+      <SiteFooterSignature />
     </div>
   );
 }

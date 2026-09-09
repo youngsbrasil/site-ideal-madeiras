@@ -13,6 +13,7 @@ import {
 import { localBusinessJsonLd, organizationJsonLd } from "@/lib/seo";
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
+import { SiteFooterSignature } from "@/components/SiteFooterSignature";
 import { CouponStrip } from "@/components/CouponStrip";
 import { ReviewsWidget } from "@/components/ReviewsWidget";
 import { useSiteSettings } from "@/routes/__root";
@@ -408,7 +409,7 @@ function Home() {
           </div>
         </div>
       </footer>
-
+      <SiteFooterSignature />
     </div>
   );
 }

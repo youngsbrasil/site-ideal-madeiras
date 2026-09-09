@@ -11,6 +11,7 @@ import { useSiteSettings } from "@/routes/__root";
 
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
+import { SiteFooterSignature } from "@/components/SiteFooterSignature";
 import {
   addToCart,
   buildQuoteMessage,
@@ -272,6 +273,7 @@ function CheckoutPage() {
           )}
         </div>
       </section>
+      <SiteFooterSignature />
     </div>
   );
 }

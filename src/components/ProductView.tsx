@@ -13,6 +13,7 @@ import { useSiteSettings } from "@/routes/__root";
 
 import { SupabaseImage } from "@/components/SupabaseImage";
 import { SiteHeader } from "@/components/SiteHeader";
+import { SiteFooterSignature } from "@/components/SiteFooterSignature";
 
 export function ProductView({ product }: { product: Product }) {
   const galeria = product.gallery.length > 0 ? product.gallery : (product.main_image ? [product.main_image] : []);
@@ -155,7 +156,7 @@ export function ProductView({ product }: { product: Product }) {
           </div>
         )}
       </section>
-
+      <SiteFooterSignature />
     </div>
   );
 }
